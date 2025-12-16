@@ -12,51 +12,44 @@ import {
 } from '@/components/ui/card'
 import { AuthForm } from '@/features/auth/components/auth-form'
 import { AUTH_COPY } from '@/features/auth/constants/auth-copy'
-import { registerSchema, type RegisterInput } from '@/features/auth/schemas/auth.schema'
+import { updatePasswordSchema, type UpdatePasswordInput } from '@/features/auth/schemas/auth.schema'
 import { authService } from '@/features/auth/services/auth.service'
 import { useToast } from '@/hooks/use-toast'
 
-export const RegisterPage = () => {
+export const UpdatePasswordPage = () => {
   const { success, error } = useToast()
   const navigate = useNavigate()
 
-  const { registerPage, messages } = AUTH_COPY
+  const { updatePasswordPage, messages } = AUTH_COPY
 
-  const form = useForm<RegisterInput>({
-    resolver: zodResolver(registerSchema),
+  const form = useForm<UpdatePasswordInput>({
+    resolver: zodResolver(updatePasswordSchema),
   })
 
   const { isSubmitting } = form.formState
 
-  const onSubmit = async (data: RegisterInput) => {
+  const onSubmit = async (data: UpdatePasswordInput) => {
     try {
-      await authService.signUp(data.email, data.password)
+      await authService.updatePassword(data.password)
+      success(messages.success, { description: messages.passwordUpdateSuccess })
       navigate('/login')
-      success(messages.success, { description: messages.registerSuccess })
     } catch (err) {
-      error(messages.failed, { description: err instanceof Error ? err.message : messages.registerError })
+      error(messages.failed, { description: err instanceof Error ? err.message : messages.passwordUpdateError })
     }
   }
 
   const formFields = [
     {
-      name: 'email' as const,
-      label: registerPage.fields.emailLabel,
-      placeholder: registerPage.fields.emailPlaceholder,
-      type: 'email',
-      autoComplete: 'username',
-    },
-    {
       name: 'password' as const,
-      label: registerPage.fields.passwordLabel,
-      placeholder: registerPage.fields.passwordPlaceholder,
+      label: updatePasswordPage.fields.passwordLabel,
+      placeholder: updatePasswordPage.fields.passwordPlaceholder,
       type: 'password',
       autoComplete: 'new-password',
     },
     {
       name: 'confirmPassword' as const,
-      label: registerPage.fields.confirmPasswordLabel,
-      placeholder: registerPage.fields.confirmPasswordPlaceholder,
+      label: updatePasswordPage.fields.confirmPasswordLabel,
+      placeholder: updatePasswordPage.fields.confirmPasswordPlaceholder,
       type: 'password',
       autoComplete: 'new-password',
     },
@@ -66,29 +59,26 @@ export const RegisterPage = () => {
     <div className='min-h-screen flex items-center justify-center'>
       <Card className='relative max-w-md w-full bg-linear-to-b from-muted/50 dark:from-transparent to-card overflow-hidden'>
         <CardHeader>
-          <CardTitle>{registerPage.title}</CardTitle>
-          <CardDescription>{registerPage.description}</CardDescription>
+          <CardTitle>{updatePasswordPage.title}</CardTitle>
+          <CardDescription>{updatePasswordPage.description}</CardDescription>
         </CardHeader>
 
         <CardContent>
           <AuthForm
             form={form}
             onSubmit={onSubmit}
-            submitText={registerPage.submitButton}
+            submitText={updatePasswordPage.submitButton}
             isLoading={isSubmitting}
             fields={formFields}
           />
         </CardContent>
 
         <CardFooter>
-          <p className='text-sm text-center text-muted-foreground'>
-            {registerPage.signIn.question}
-            <Link
-              to={registerPage.signIn.link}
-              className='ml-1 text-primary hover:underline'>
-              {registerPage.signIn.label}
-            </Link>
-          </p>
+          <Link
+            to={updatePasswordPage.signIn.link}
+            className='text-sm text-primary hover:underline'>
+            {updatePasswordPage.signIn.label}
+          </Link>
         </CardFooter>
       </Card>
     </div>

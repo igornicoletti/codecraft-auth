@@ -1,38 +1,39 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
-import { LoginPage } from "@/features/auth/pages/login";
-import { RegisterPage } from "@/features/auth/pages/register";
-import { ForgotPasswordPage } from "@/features/auth/pages/forgot-password";
-import { DashboardPage } from "@/pages/dashboard";
-import { NotFoundPage } from "@/pages/not-found";
-import { ProtectedRoute } from "./protected-route";
+import { createBrowserRouter, Navigate } from 'react-router-dom'
+
+import { LazyLoadedRoute } from '@/app/router/lazyloaded-route'
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Navigate to="/login" replace />,
+    path: '/',
+    element: <Navigate to='/login' replace />,
   },
   {
-    path: "/login",
-    element: <LoginPage />,
+    path: '/login',
+    element: <LazyLoadedRoute.LoginPage />,
   },
   {
-    path: "/register",
-    element: <RegisterPage />,
+    path: '/register',
+    element: <LazyLoadedRoute.RegisterPage />,
   },
   {
-    path: "/forgot-password",
-    element: <ForgotPasswordPage />,
+    path: '/forgot-password',
+    element: <LazyLoadedRoute.ForgotPasswordPage />,
   },
   {
-    path: "/dashboard",
-    element: (
-      <ProtectedRoute>
-        <DashboardPage />
-      </ProtectedRoute>
-    ),
+    path: '/update-password',
+    element: <LazyLoadedRoute.UpdatePasswordPage />,
   },
   {
-    path: "*",
-    element: <NotFoundPage />,
+    element: <LazyLoadedRoute.ProtectedRoute />,
+    children: [
+      {
+        path: '/dashboard',
+        element: <LazyLoadedRoute.DashboardPage />,
+      },
+    ]
   },
-]);
+  {
+    path: '*',
+    element: <LazyLoadedRoute.NotFoundPage />,
+  },
+])

@@ -1,6 +1,6 @@
-import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
-import type { Control, FieldPath, FieldValues } from "react-hook-form";
+import { Eye, EyeOff } from 'lucide-react'
+import { useState } from 'react'
+import type { Control, FieldPath, FieldValues } from 'react-hook-form'
 
 import {
   FormControl,
@@ -8,23 +8,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from '@/components/ui/input-group'
 
 interface AuthFormFieldProps<T extends FieldValues> {
-  control: Control<T>;
-  name: FieldPath<T>;
-  label: string;
-  placeholder?: string;
-  type?: string;
-  autoComplete?: string;
-  disabled?: boolean;
+  control: Control<T>
+  name: FieldPath<T>
+  label: string
+  placeholder?: string
+  type?: string
+  autoComplete?: string
+  disabled?: boolean
 }
 
 export const AuthFormField = <T extends FieldValues>({
@@ -32,16 +32,16 @@ export const AuthFormField = <T extends FieldValues>({
   name,
   label,
   placeholder,
-  type = "text",
+  type = 'text',
   autoComplete,
   disabled,
 }: AuthFormFieldProps<T>) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false)
 
-  const isPassword = type === "password";
-  const inputType = isPassword && isVisible ? "text" : type;
+  const isPassword = type === 'password'
+  const inputType = isPassword && isVisible ? 'text' : type
 
-  const toggleVisibility = () => setIsVisible((prev) => !prev);
+  const toggleVisibility = () => setIsVisible((prev) => !prev)
 
   return (
     <FormField
@@ -58,16 +58,14 @@ export const AuthFormField = <T extends FieldValues>({
                   type={inputType}
                   placeholder={placeholder}
                   autoComplete={autoComplete}
-                  disabled={disabled}
-                />
-                <InputGroupAddon align="inline-end">
+                  disabled={disabled} />
+                <InputGroupAddon align='inline-end'>
                   <InputGroupButton
-                    type="button"
-                    variant="ghost"
-                    className="cursor-pointer hover:bg-transparent!"
-                    aria-label={isVisible ? "Hide password" : "Show password"}
-                    onClick={toggleVisibility}
-                  >
+                    type='button'
+                    variant='ghost'
+                    className='cursor-pointer hover:bg-transparent!'
+                    aria-label={isVisible ? 'Hide password' : 'Show password'}
+                    onClick={toggleVisibility}>
                     {isVisible ? <EyeOff /> : <Eye />}
                   </InputGroupButton>
                 </InputGroupAddon>
@@ -78,13 +76,12 @@ export const AuthFormField = <T extends FieldValues>({
                 type={inputType}
                 placeholder={placeholder}
                 autoComplete={autoComplete}
-                disabled={disabled}
-              />
+                disabled={disabled} />
             )}
           </FormControl>
-          <FormMessage className="text-xs text-right" />
+          <FormMessage className='text-xs text-right' />
         </FormItem>
       )}
     />
-  );
-};
+  )
+}

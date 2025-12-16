@@ -1,17 +1,27 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { Link, useNavigate } from "react-router-dom"
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router-dom'
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { AuthForm } from "@/features/auth/components/AuthForm"
-import { AUTH_TEXTS } from "@/features/auth/constants/auth-texts"
-import { loginSchema, type LoginInput } from "../schemas/auth.schema"
-import { authService } from "../services/auth.service"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { AuthForm } from '@/features/auth/components/auth-form'
+import { AUTH_COPY } from '@/features/auth/constants/auth-copy'
+import { loginSchema, type LoginInput } from '@/features/auth/schemas/auth.schema'
+import { authService } from '@/features/auth/services/auth.service'
+import { useToast } from '@/hooks/use-toast'
 
-export function LoginPage() {
+export const LoginPage = () => {
+  const { success, error } = useToast()
   const navigate = useNavigate()
-  const [error, setError] = useState<string | null>(null)
+
+  const { loginPage, messages } = AUTH_COPY
+
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
   })
@@ -20,67 +30,64 @@ export function LoginPage() {
 
   const onSubmit = async (data: LoginInput) => {
     try {
-      setError(null)
       await authService.signIn(data.email, data.password)
-      navigate("/dashboard")
+      navigate('/dashboard')
+      success(messages.success, { description: messages.loginSuccess })
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to sign in")
+      error(messages.failed, { description: err instanceof Error ? err.message : messages.loginError })
     }
   }
 
-  return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl">
-            {AUTH_TEXTS.login.title}
-          </CardTitle>
-          <p className="text-center text-sm text-muted-foreground">
-            {AUTH_TEXTS.login.subtitle}{" "}
-            <Link to="/register" className="font-medium hover:underline">
-              {AUTH_TEXTS.login.subtitleLink}
-            </Link>
-          </p>
-        </CardHeader>
-        <CardContent>
-          {error && (
-            <div className="mb-4 rounded-md bg-destructive/15 p-3 text-sm text-destructive">
-              {error}
-            </div>
-          )}
+  const formFields = [
+    {
+      name: 'email' as const,
+      label: loginPage.fields.emailLabel,
+      placeholder: loginPage.fields.emailPlaceholder,
+      type: 'email',
+      autoComplete: 'username',
+    },
+    {
+      name: 'password' as const,
+      label: loginPage.fields.passwordLabel,
+      placeholder: loginPage.fields.passwordPlaceholder,
+      type: 'password',
+      autoComplete: 'current-password',
+    },
+  ]
 
+  return (
+    <div className='min-h-screen flex items-center justify-center'>
+      <Card className='relative max-w-md w-full bg-linear-to-b from-muted/50 dark:from-transparent to-card overflow-hidden'>
+        <CardHeader>
+          <CardTitle>{loginPage.title}</CardTitle>
+          <CardDescription>{loginPage.description}</CardDescription>
+        </CardHeader>
+
+        <CardContent>
           <AuthForm
             form={form}
             onSubmit={onSubmit}
-            submitText={AUTH_TEXTS.login.submit}
+            submitText={loginPage.submitButton}
             isLoading={isSubmitting}
-            fields={[
-              {
-                name: "email",
-                label: AUTH_TEXTS.login.emailLabel,
-                placeholder: AUTH_TEXTS.login.emailPlaceholder,
-                type: "email",
-                autoComplete: "username",
-              },
-              {
-                name: "password",
-                label: AUTH_TEXTS.login.passwordLabel,
-                placeholder: AUTH_TEXTS.login.passwordPlaceholder,
-                type: "password",
-                autoComplete: "current-password",
-              },
-            ]}
-          />
-
-          <div className="mt-4 text-center">
-            <Link
-              to="/forgot-password"
-              className="text-sm font-medium hover:underline"
-            >
-              {AUTH_TEXTS.login.forgotPasswordLink}
-            </Link>
-          </div>
+            fields={formFields} />
         </CardContent>
+
+        <CardFooter>
+          <Link
+            to={loginPage.forgotPassword.link}
+            className='text-sm text-primary hover:underline'>
+            {loginPage.forgotPassword.question}
+          </Link>
+
+          <p className='text-sm text-center text-muted-foreground'>
+            {loginPage.signUp.question}
+            <Link
+              to={loginPage.signUp.link}
+              className='ml-1 text-primary hover:underline'>
+              {loginPage.signUp.label}
+            </Link>
+          </p>
+        </CardFooter>
       </Card>
     </div>
   )

@@ -1,27 +1,23 @@
-import { Navigate } from "react-router-dom";
-import { useAuth } from "@/app/providers/auth-provider";
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-}
+import { useAuth } from '@/app/providers/auth-provider'
+import { Spinner } from '@/components/ui/spinner'
 
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user, loading } = useAuth();
+export const ProtectedRoute = () => {
+  const { user, loading } = useAuth()
+  const location = useLocation()
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-          <p className="mt-2 text-sm text-muted-foreground">Loading...</p>
-        </div>
+      <div className='flex items-center justify-center min-h-screen'>
+        <Spinner />
       </div>
-    );
+    )
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to='/login' state={{ from: location }} replace />
   }
 
-  return <>{children}</>;
+  return <Outlet />
 }
