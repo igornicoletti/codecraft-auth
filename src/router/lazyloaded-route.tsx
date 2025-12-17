@@ -18,5 +18,5 @@ export const LazyLoadedRoute = {
   ForgotPasswordPage: lazyImport(() => import('@/features/auth/pages/forgot-password'), 'ForgotPasswordPage'),
   UpdatePasswordPage: lazyImport(() => import('@/features/auth/pages/update-password'), 'UpdatePasswordPage'),
   NotFoundPage: lazyImport(() => import('@/components/common/not-found'), 'NotFoundPage'),
-  ProtectedRoute: lazyImport(() => import('@/app/router/protected-route'), 'ProtectedRoute'),
+  ProtectedRoute: lazyImport(() => import('@/router/protected-route'), 'ProtectedRoute'),
 }

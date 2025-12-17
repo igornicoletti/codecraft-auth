@@ -1,10 +1,9 @@
 import { type ReactNode, Suspense } from 'react'
 
-import { AuthProvider } from '@/app/providers/auth-provider'
-import { ThemeProvider } from '@/app/providers/theme-provider'
-import { ErrorBoundary } from '@/components/common/error-boundary'
 import { Toaster } from '@/components/ui/sonner'
 import { Spinner } from '@/components/ui/spinner'
+import { AuthProvider } from '@/providers/auth-provider'
+import { ThemeProvider } from '@/providers/theme-provider'
 
 const LoadingFallback = () => (
   <div className='flex min-h-screen items-center justify-center p-4'>
@@ -13,14 +12,12 @@ const LoadingFallback = () => (
 )
 
 export const AppProvider = ({ children }: { children: ReactNode }) => (
-  <ErrorBoundary>
+  <ThemeProvider>
     <Suspense fallback={<LoadingFallback />}>
-      <ThemeProvider>
-        <AuthProvider>
-          {children}
-          <Toaster />
-        </AuthProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        {children}
+        <Toaster />
+      </AuthProvider>
     </Suspense>
-  </ErrorBoundary>
+  </ThemeProvider>
 )

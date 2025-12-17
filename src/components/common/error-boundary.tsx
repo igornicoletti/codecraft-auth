@@ -1,5 +1,7 @@
-import { Button } from '@/components/ui/button'
 import { Component, type ErrorInfo, type ReactNode } from 'react'
+
+import { Button } from '@/components/ui/button'
+import { LineShadowText } from '@/components/ui/line-shadow-text'
 
 interface Props {
   children: ReactNode
@@ -33,7 +35,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   handleReload = () => {
     window.location.reload()
-  };
+  }
 
   render() {
     if (this.state.hasError) {
@@ -42,22 +44,22 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className='flex min-h-screen items-center justify-center p-4'>
-          <div className='w-full max-w-md'>
-            <div className='space-y-2'>
-              <h2 className='mb-6 text-5xl font-semibold'>Whoops!</h2>
-              <h3 className='mb-1.5 text-3xl font-semibold'>Something went wrong</h3>
-            </div>
-
+        <div className='min-h-screen flex flex-col items-center justify-center px-4 py-8'>
+          <div className='text-center space-y-6'>
+            <h1 className='text-6xl font-semibold leading-none text-primary tracking-tighter'>
+              <LineShadowText>Whoops!</LineShadowText>
+            </h1>
+            <p className='text-sm text-muted-foreground'>
+              Something went wrong
+            </p>
             {import.meta.env.DEV && this.state.error && (
-              <div className='p-4 text-left'>
+              <div className='text-left'>
                 <code className='text-xs wrap-break-word'>
                   {this.state.error.toString()}
                 </code>
               </div>
             )}
-
-            <Button onClick={this.handleReload} size='lg'>
+            <Button onClick={this.handleReload}>
               Try again
             </Button>
           </div>

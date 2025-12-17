@@ -17,7 +17,7 @@ import {
   InputGroupInput,
 } from '@/components/ui/input-group'
 
-interface AuthFormFieldProps<T extends FieldValues> {
+interface AuthFieldProps<T extends FieldValues> {
   control: Control<T>
   name: FieldPath<T>
   label: string
@@ -27,7 +27,7 @@ interface AuthFormFieldProps<T extends FieldValues> {
   disabled?: boolean
 }
 
-export const AuthFormField = <T extends FieldValues>({
+export const AuthField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -35,7 +35,7 @@ export const AuthFormField = <T extends FieldValues>({
   type = 'text',
   autoComplete,
   disabled,
-}: AuthFormFieldProps<T>) => {
+}: AuthFieldProps<T>) => {
   const [isVisible, setIsVisible] = useState(false)
 
   const isPassword = type === 'password'

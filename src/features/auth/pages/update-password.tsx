@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -56,31 +57,33 @@ export const UpdatePasswordPage = () => {
   ]
 
   return (
-    <div className='min-h-screen flex items-center justify-center'>
-      <Card className='relative max-w-md w-full bg-linear-to-b from-muted/50 dark:from-transparent to-card overflow-hidden'>
-        <CardHeader>
-          <CardTitle>{updatePasswordPage.title}</CardTitle>
-          <CardDescription>{updatePasswordPage.description}</CardDescription>
-        </CardHeader>
+    <div className='min-h-screen flex items-center justify-center px-4 py-8'>
+      <div className='relative max-w-md w-full overflow-hidden'>
+        <Card className='bg-linear-to-t from-muted/50 to-card'>
+          <CardHeader>
+            <CardTitle>{updatePasswordPage.title}</CardTitle>
+            <CardDescription>{updatePasswordPage.description}</CardDescription>
+          </CardHeader>
 
-        <CardContent>
-          <AuthForm
-            form={form}
-            onSubmit={onSubmit}
-            submitText={updatePasswordPage.submitButton}
-            isLoading={isSubmitting}
-            fields={formFields}
-          />
-        </CardContent>
+          <CardContent>
+            <AuthForm
+              form={form}
+              onSubmit={onSubmit}
+              submitText={updatePasswordPage.submitButton}
+              isLoading={isSubmitting}
+              fields={formFields}
+            />
+          </CardContent>
 
-        <CardFooter>
-          <Link
-            to={updatePasswordPage.signIn.link}
-            className='text-sm text-primary hover:underline'>
-            {updatePasswordPage.signIn.label}
-          </Link>
-        </CardFooter>
-      </Card>
+          <CardFooter>
+            <Button asChild size='sm' variant='link'>
+              <Link to={updatePasswordPage.signIn.link}>
+                {updatePasswordPage.signIn.label}
+              </Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   )
 }

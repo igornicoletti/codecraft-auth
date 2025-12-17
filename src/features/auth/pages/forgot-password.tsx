@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -47,31 +48,38 @@ export const ForgotPasswordPage = () => {
   ]
 
   return (
-    <div className='min-h-screen flex items-center justify-center'>
-      <Card className='relative max-w-md w-full bg-linear-to-b from-muted/50 dark:from-transparent to-card overflow-hidden'>
-        <CardHeader>
-          <CardTitle>{forgotPasswordPage.title}</CardTitle>
-          <CardDescription>{forgotPasswordPage.description}</CardDescription>
-        </CardHeader>
+    <div className='min-h-screen flex items-center justify-center px-4 py-8'>
+      <div className='relative max-w-md w-full overflow-hidden'>
+        <Card className='bg-linear-to-t from-muted/50 to-card'>
+          <CardHeader>
+            <CardTitle>{forgotPasswordPage.title}</CardTitle>
+            <CardDescription>{forgotPasswordPage.description}</CardDescription>
+          </CardHeader>
 
-        <CardContent>
-          <AuthForm
-            form={form}
-            onSubmit={onSubmit}
-            submitText={forgotPasswordPage.submitButton}
-            isLoading={isSubmitting}
-            fields={formFields}
-          />
-        </CardContent>
+          <CardContent>
+            <AuthForm
+              form={form}
+              onSubmit={onSubmit}
+              submitText={forgotPasswordPage.submitButton}
+              isLoading={isSubmitting}
+              fields={formFields}
+            />
+          </CardContent>
 
-        <CardFooter>
-          <Link
-            to={forgotPasswordPage.signIn.link}
-            className='text-sm text-primary hover:underline'>
-            {forgotPasswordPage.signIn.label}
-          </Link>
-        </CardFooter>
-      </Card>
+          <CardFooter>
+            <div className="flex items-baseline">
+              <p className='text-sm text-muted-foreground'>
+                {forgotPasswordPage.signIn.question}
+              </p>
+              <Button asChild size='sm' variant='link'>
+                <Link to={forgotPasswordPage.signIn.link}>
+                  {forgotPasswordPage.signIn.label}
+                </Link>
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   )
 }

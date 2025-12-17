@@ -13,7 +13,7 @@ pnpm install
 ### Create a Supabase Project
 
 1. Go to [supabase.com](https://supabase.com) and sign up/login
-2. Click "New Project"
+2. Click 'New Project'
 3. Fill in your project details:
    - **Name**: codecraft-auth (or any name)
    - **Database Password**: Create a strong password
@@ -53,9 +53,9 @@ Open [http://localhost:5173](http://localhost:5173) in your browser!
 
 ### Create Your First User
 
-1. Click "create a new account" on the login page
+1. Click 'create a new account' on the login page
 2. Enter an email and password (minimum 6 characters)
-3. Click "Create account"
+3. Click 'Create account'
 4. Check your email for the confirmation link
 5. Click the link to verify your account
 
@@ -63,7 +63,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser!
 
 1. Go back to the login page
 2. Enter your email and password
-3. Click "Sign in"
+3. Click 'Sign in'
 4. You'll be redirected to the dashboard!
 
 ## Troubleshooting
@@ -74,7 +74,7 @@ By default, Supabase requires email confirmation. For development, you can disab
 
 1. Go to **Authentication** > **Providers** in Supabase dashboard
 2. Click **Email** provider
-3. Toggle off "Confirm email"
+3. Toggle off 'Confirm email'
 4. Save changes
 
 Now you can sign in immediately after registration!

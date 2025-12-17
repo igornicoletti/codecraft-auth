@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 
-import { LazyLoadedRoute } from '@/app/router/lazyloaded-route'
+import { LazyLoadedRoute } from '@/router/lazyloaded-route'
 
 export const router = createBrowserRouter([
   {
