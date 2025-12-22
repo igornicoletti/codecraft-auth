@@ -11,7 +11,8 @@ import { forgotPasswordSchema, type ForgotPasswordInput } from '@/features/auth/
 import { authService } from '@/services/auth.service'
 
 export const ForgotPasswordPage = () => {
-  const { forgotPasswordPage, messages } = AUTH_CONTENT
+  const { forgotPasswordPage } = AUTH_CONTENT
+
   const { handleSubmit: authSubmit } = useAuthSubmit<ForgotPasswordInput>()
 
   const form = useForm<ForgotPasswordInput>({
@@ -22,13 +23,8 @@ export const ForgotPasswordPage = () => {
   const { isSubmitting } = form.formState
 
   const onSubmit = async (data: ForgotPasswordInput) => {
-    await authSubmit({
-      action: (vals) => authService.resetPassword(vals.email),
-      successMessage: messages.resetLinkSent,
-      errorMessage: messages.resetLinkError,
-    }, data)
+    await authSubmit((vals) => authService.resetPassword(vals.email), data, 'forgotPassword')
   }
-
   const formFields = [
     {
       name: 'email' as const,

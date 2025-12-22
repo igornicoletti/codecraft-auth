@@ -12,7 +12,7 @@ import { loginSchema, type LoginInput } from '@/features/auth/schemas/auth.schem
 import { authService } from '@/services/auth.service'
 
 export const LoginPage = () => {
-  const { loginPage, messages } = AUTH_CONTENT
+  const { loginPage } = AUTH_CONTENT
   const { handleSubmit: authSubmit } = useAuthSubmit<LoginInput>()
 
   const form = useForm<LoginInput>({
@@ -26,19 +26,14 @@ export const LoginPage = () => {
   const { isSubmitting } = form.formState
 
   const onSubmit = async (data: LoginInput) => {
-    await authSubmit({
-      action: (vals) => authService.signIn(vals.email, vals.password),
-      successMessage: messages.loginSuccess,
-      errorMessage: messages.loginError,
-      redirectTo: '/dashboard',
-    }, data)
+    await authSubmit((vals) => authService.signIn(vals.email, vals.password), data, 'signIn', '/dashboard')
   }
 
   const handleGoogleLogin = async () => {
     try {
       await authService.signInWithGoogle()
     } catch (err) {
-      console.error(err)
+      console.error('Google Auth Error:', err)
     }
   }
 

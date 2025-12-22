@@ -11,7 +11,7 @@ import { updatePasswordSchema, type UpdatePasswordInput } from '@/features/auth/
 import { authService } from '@/services/auth.service'
 
 export const UpdatePasswordPage = () => {
-  const { updatePasswordPage, messages } = AUTH_CONTENT
+  const { updatePasswordPage } = AUTH_CONTENT
   const { handleSubmit: authSubmit } = useAuthSubmit<UpdatePasswordInput>()
 
   const form = useForm<UpdatePasswordInput>({
@@ -25,12 +25,7 @@ export const UpdatePasswordPage = () => {
   const { isSubmitting } = form.formState
 
   const onSubmit = async (data: UpdatePasswordInput) => {
-    await authSubmit({
-      action: (vals) => authService.updatePassword(vals.password),
-      successMessage: messages.passwordUpdateSuccess,
-      errorMessage: messages.passwordUpdateError,
-      redirectTo: '/login',
-    }, data)
+    await authSubmit((vals) => authService.updatePassword(vals.password), data, 'updatePassword', '/login')
   }
 
   const formFields = [

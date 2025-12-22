@@ -21,7 +21,13 @@ export const authService = {
   },
 
   signUp: async (email: string, password: string): Promise<AuthResponse['data']> => {
-    const { data, error } = await supabase.auth.signUp({ email, password })
+    const { data, error } = await supabase.auth.signUp({
+      email, password, options: {
+        data: {
+          email_confirmed: true
+        }
+      }
+    })
     if (error) throw error
     return data
   },

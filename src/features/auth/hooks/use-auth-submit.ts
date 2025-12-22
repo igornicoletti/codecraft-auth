@@ -1,39 +1,26 @@
 import { useNavigate } from 'react-router-dom'
 
-import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
+import { AUTH_ERROR_MAP, AUTH_MESSAGES } from '@/features/auth/constants/auth-messages'
 import { useToast } from '@/hooks/use-toast'
 
-interface UseAuthSubmitProps<T> {
-  action: (data: T) => Promise<any>
-  successMessage: string
-  errorMessage: string
-  redirectTo?: string
-}
+type AuthActionKey = keyof typeof AUTH_MESSAGES.actions
 
 export const useAuthSubmit = <T>() => {
-  const { success, error } = useToast()
+  const { success, error: errorToast } = useToast()
   const navigate = useNavigate()
 
-  const { messages } = AUTH_CONTENT
+  const handleSubmit = async (action: (data: T) => Promise<any>, data: T, actionKey: AuthActionKey, redirectTo?: string) => {
+    const config = AUTH_MESSAGES.actions[actionKey]
 
-  const handleSubmit = async ({
-    action,
-    successMessage,
-    errorMessage,
-    redirectTo,
-  }: UseAuthSubmitProps<T>, data: T) => {
     try {
       await action(data)
+      success(AUTH_MESSAGES.titles.success, { description: config.success })
 
-      success(messages.success, { description: successMessage })
+      if (redirectTo) navigate(redirectTo)
+    } catch (err: any) {
+      const description = AUTH_ERROR_MAP[err?.message] || err?.message || config.defaultError
 
-      if (redirectTo) {
-        navigate(redirectTo)
-      }
-    } catch (err) {
-      const description = err instanceof Error ? err.message : errorMessage
-      error(messages.failed, { description })
-      throw err
+      errorToast(AUTH_MESSAGES.titles.error, { description })
     }
   }
 

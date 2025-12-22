@@ -66,16 +66,4 @@ export const AUTH_CONTENT = {
       link: '/login',
     },
   },
-  messages: {
-    success: 'Success!',
-    failed: 'Whoops!',
-    loginSuccess: 'You are successfully signed in.',
-    loginError: 'Failed to sign in.',
-    registerSuccess: 'Account created successfully! Check your email for confirmation.',
-    registerError: 'Failed to create account.',
-    resetLinkSent: 'Password reset link sent to your email.',
-    resetLinkError: 'Failed to send reset link.',
-    passwordUpdateSuccess: 'Password successfully updated. Please sign in.',
-    passwordUpdateError: 'Failed to update password.',
-  }
 } as const

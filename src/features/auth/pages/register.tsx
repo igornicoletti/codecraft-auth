@@ -12,7 +12,7 @@ import { registerSchema, type RegisterInput } from '@/features/auth/schemas/auth
 import { authService } from '@/services/auth.service'
 
 export const RegisterPage = () => {
-  const { registerPage, messages } = AUTH_CONTENT
+  const { registerPage } = AUTH_CONTENT
   const { handleSubmit: authSubmit } = useAuthSubmit<RegisterInput>()
 
   const form = useForm<RegisterInput>({
@@ -27,19 +27,14 @@ export const RegisterPage = () => {
   const { isSubmitting } = form.formState
 
   const onSubmit = async (data: RegisterInput) => {
-    await authSubmit({
-      action: (vals) => authService.signUp(vals.email, vals.password),
-      successMessage: messages.registerSuccess,
-      errorMessage: messages.registerError,
-      redirectTo: '/login',
-    }, data)
+    await authSubmit((vals) => authService.signUp(vals.email, vals.password), data, 'signUp', '/login')
   }
 
   const handleGoogleLogin = async () => {
     try {
       await authService.signInWithGoogle()
     } catch (err) {
-      console.error(err)
+      console.error('Google Auth Error:', err)
     }
   }
 

@@ -32,13 +32,13 @@ export const router = createBrowserRouter([
           { path: 'login', element: <LazyLoaded.LoginPage /> },
           { path: 'register', element: <LazyLoaded.RegisterPage /> },
           { path: 'forgot-password', element: <LazyLoaded.ForgotPasswordPage /> },
-          { path: 'update-password', element: <LazyLoaded.UpdatePasswordPage /> },
         ],
       },
       {
         element: <LazyLoaded.ProtectedRoute />,
         children: [
           { path: 'dashboard', element: <LazyLoaded.DashboardPage /> },
+          { path: 'update-password', element: <LazyLoaded.UpdatePasswordPage /> },
         ],
       },
       { path: '*', element: <LazyLoaded.NotFoundPage /> },
