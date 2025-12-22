@@ -50,7 +50,6 @@ export const AuthField = <T extends FieldValues>({
                   <InputGroupButton
                     type='button'
                     variant='ghost'
-                    className='cursor-pointer hover:bg-transparent!'
                     onClick={() => setIsVisible(!isVisible)}>
                     {isVisible ? <EyeOff /> : <Eye />}
                   </InputGroupButton>

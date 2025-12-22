@@ -37,7 +37,7 @@ export class ErrorBoundary extends Component<Props, State> {
         <main className="grid min-h-svh place-content-center p-4">
           <div className="flex items-center gap-4 md:gap-6">
             {import.meta.env.DEV && this.state.error && (
-              <pre className='text-muted-foreground overflow-auto max-w-2xl'>
+              <pre className='max-w-2xl text-sm text-muted-foreground overflow-auto'>
                 <code>{this.state.error.stack}</code>
               </pre>
             )}
