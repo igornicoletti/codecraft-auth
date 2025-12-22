@@ -1,41 +1,24 @@
-import { env } from '@/lib/env'
-import type { CookieOptions } from '@supabase/ssr'
 import { createServerClient } from '@supabase/ssr'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
-export const createSupabaseServerClient = (req: Request, resHeaders: Headers) => {
-  const cookies = new Map<string, string>()
+import { env } from '@/lib/env'
 
-  const cookieHeader = req.headers.get('cookie')
-  if (cookieHeader) {
-    cookieHeader.split(';').forEach((cookie) => {
-      const [name, value] = cookie.trim().split('=')
-      cookies.set(name, decodeURIComponent(value))
-    })
-  }
-
-  return createServerClient(
-    env.supabase.url,
-    env.supabase.anonKey,
-    {
-      cookies: {
-        get(name) {
-          return cookies.get(name)
-        },
-        set(name, value, options: CookieOptions) {
-          let cookie = `${name}=${encodeURIComponent(value)}`
-          if (options?.path) cookie += `; Path=${options.path}`
-          if (options?.maxAge) cookie += `; Max-Age=${options.maxAge}`
-          if (options?.secure) cookie += `; Secure`
-          if (options?.sameSite) cookie += `; SameSite=${options.sameSite}`
-          resHeaders.append('Set-Cookie', cookie)
-        },
-        remove(name, options: CookieOptions) {
-          resHeaders.append(
-            'Set-Cookie',
-            `${name}=; Path=${options?.path || '/'}; Max-Age=0`
-          )
-        },
+export const createSupabaseServerClient = (req: Request, resHeaders: Headers): SupabaseClient => {
+  return createServerClient(env.supabase.url, env.supabase.anonKey, {
+    cookies: {
+      getAll: () => {
+        const cookieHeader = req.headers.get('cookie') ?? ''
+        return cookieHeader.split('; ').map((cookie) => {
+          const [name, ...rest] = cookie.split('=')
+          return { name, value: decodeURIComponent(rest.join('=')) }
+        })
       },
-    }
-  )
+      setAll: (cookies) => {
+        for (const cookie of cookies) {
+          const serialized = `${cookie.name}=${encodeURIComponent(cookie.value)}; Path=/; HttpOnly; SameSite=Lax`
+          resHeaders.append('Set-Cookie', serialized)
+        }
+      },
+    },
+  })
 }

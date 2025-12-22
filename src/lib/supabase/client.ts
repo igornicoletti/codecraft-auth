@@ -6,10 +6,18 @@ export const supabase = createBrowserClient(
   env.supabase.anonKey,
   {
     cookies: {
-      get(name) {
-        if (typeof document === 'undefined') return null
-        const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`))
-        return match ? decodeURIComponent(match[2]) : null
+      getAll: () => {
+        return document.cookie
+          .split('; ')
+          .map((cookie) => {
+            const [name, ...rest] = cookie.split('=')
+            return { name, value: decodeURIComponent(rest.join('=')) }
+          })
+      },
+      setAll: (cookies) => {
+        for (const cookie of cookies) {
+          document.cookie = `${cookie.name}=${encodeURIComponent(cookie.value)}; path=/; SameSite=Lax`
+        }
       },
     },
   }
