@@ -1,20 +1,11 @@
 import { env } from '@/lib/env'
 import { createBrowserClient } from '@supabase/ssr'
-import { createClient } from '@supabase/supabase-js'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
-const isServer = typeof window === 'undefined'
+let browserClient: SupabaseClient | null = null
 
-if (!env.supabase.url || !env.supabase.anonKey) {
-  throw new Error('Missing Supabase environment variables')
-}
-
-export const supabase = isServer
-  ? createClient(env.supabase.url, env.supabase.anonKey, {
-    auth: {
-      persistSession: false,
-    },
-  })
-  : createBrowserClient(env.supabase.url, env.supabase.anonKey, {
+if (typeof window !== 'undefined') {
+  browserClient = createBrowserClient(env.supabase.url, env.supabase.anonKey, {
     cookies: {
       getAll() {
         return document.cookie.split('; ').map((cookie) => {
@@ -29,3 +20,11 @@ export const supabase = isServer
       },
     },
   })
+}
+
+export function getSupabaseClient(): SupabaseClient {
+  if (!browserClient) {
+    throw new Error('Supabase client is only available in the browser environment.')
+  }
+  return browserClient
+}

@@ -4,7 +4,7 @@
   "outputDirectory": "dist",
   "builds": [
     {
-      "src": "src/entry.server.tsx",
+      "src": "dist/entry.server.js",
       "use": "@vercel/node"
     },
     {
@@ -15,7 +15,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "src/entry.server.tsx"
+      "dest": "dist/entry.server.js"
     }
   ]
 }
