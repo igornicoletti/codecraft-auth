@@ -10,25 +10,21 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-
   build: {
-    outDir: 'dist',
     ssr: 'src/entry.server.tsx',
+    outDir: 'dist',
     rollupOptions: {
       input: {
         client: path.resolve(__dirname, 'src/entry.client.tsx'),
       },
       output: {
-        entryFileNames: 'entry.server.js',
+        entryFileNames: '[name].js',
+        chunkFileNames: 'chunks/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash][extname]',
       },
     },
   },
-
   ssr: {
     noExternal: ['@supabase/ssr', '@supabase/supabase-js'],
-  },
-
-  optimizeDeps: {
-    include: ['@supabase/ssr', '@supabase/supabase-js'],
   },
 })

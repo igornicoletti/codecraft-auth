@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && vite build --ssr src/entry.server.tsx",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "serve": "node dist/entry.server.js",
     "test": "vitest",
-    "test:ui": "vitest --ui",
-    "serve": "node dist/entry.server.js"
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
