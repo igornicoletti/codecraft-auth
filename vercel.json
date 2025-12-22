@@ -6,7 +6,7 @@
   "functions": {
     "api/ssr.js": {
       "runtime": "nodejs20.x",
-      "entrypoint": "dist/entry.server.js"
+      "source": "dist/entry.server.js"
     }
   },
   "routes": [
