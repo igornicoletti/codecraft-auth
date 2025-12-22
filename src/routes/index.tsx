@@ -2,11 +2,11 @@ import { Suspense } from 'react'
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 
 import { Spinner } from '@/components/ui/spinner'
-import { ErrorBoundary } from '@/features/route/error-boundary'
-import { LazyLoaded } from '@/features/route/lazy-loaded'
+import { ErrorBoundary } from '@/routes/components/error-boundary'
+import { LazyLoaded } from '@/routes/lazy-loaded'
 
 const Loading = () => (
-  <main className="grid min-h-svh place-content-center p-4">
+  <main className='grid min-h-svh place-content-center'>
     <Spinner />
   </main>
 )
@@ -25,7 +25,7 @@ export const router = createBrowserRouter([
     element: <Root />,
     errorElement: <ErrorBoundary />,
     children: [
-      { index: true, element: <Navigate to="/login" replace /> },
+      { index: true, element: <Navigate to='/login' replace /> },
       {
         element: <LazyLoaded.PublicRoute />,
         children: [

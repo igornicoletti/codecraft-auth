@@ -1,4 +1,4 @@
-export const AUTH_COPY = {
+export const AUTH_CONTENT = {
   loginPage: {
     title: 'Sign in to your account',
     description: 'Welcome back. Please sign in to continue.',
@@ -78,4 +78,4 @@ export const AUTH_COPY = {
     passwordUpdateSuccess: 'Password successfully updated. Please sign in.',
     passwordUpdateError: 'Failed to update password.',
   }
-}
+} as const

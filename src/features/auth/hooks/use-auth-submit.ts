@@ -1,42 +1,39 @@
 import { useNavigate } from 'react-router-dom'
 
+import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
 import { useToast } from '@/hooks/use-toast'
 
-interface UseAuthSubmitOptions {
-  onSuccess?: () => void
+interface UseAuthSubmitProps<T> {
+  action: (data: T) => Promise<any>
   successMessage: string
-  successDescription?: string
   errorMessage: string
-  redirectPath?: string
+  redirectTo?: string
 }
 
 export const useAuthSubmit = <T>() => {
   const { success, error } = useToast()
   const navigate = useNavigate()
 
-  const handleSubmit = async (
-    action: (data: T) => Promise<void> | Promise<any>,
-    data: T,
-    options: UseAuthSubmitOptions
-  ) => {
+  const { messages } = AUTH_CONTENT
+
+  const handleSubmit = async ({
+    action,
+    successMessage,
+    errorMessage,
+    redirectTo,
+  }: UseAuthSubmitProps<T>, data: T) => {
     try {
       await action(data)
 
-      success(options.successMessage, {
-        description: options.successDescription
-      })
+      success(messages.success, { description: successMessage })
 
-      if (options.redirectPath) {
-        navigate(options.redirectPath)
-      }
-
-      if (options.onSuccess) {
-        options.onSuccess()
+      if (redirectTo) {
+        navigate(redirectTo)
       }
     } catch (err) {
-      error(options.errorMessage, {
-        description: err instanceof Error ? err.message : 'An error occurred'
-      })
+      const description = err instanceof Error ? err.message : errorMessage
+      error(messages.failed, { description })
+      throw err
     }
   }
 

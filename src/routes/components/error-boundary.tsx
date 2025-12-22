@@ -16,11 +16,11 @@ export class ErrorBoundary extends Component<Props, State> {
     this.state = { hasError: false, error: null }
   }
 
-  static getDerivedStateFromError(error: Error): State {
+  static getDerivedStateFromError = (error: Error): State => {
     return { hasError: true, error }
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch = (error: Error, errorInfo: ErrorInfo) => {
     console.error('ErrorBoundary caught an error:', error, errorInfo)
   }
 
@@ -37,7 +37,7 @@ export class ErrorBoundary extends Component<Props, State> {
         <main className="grid min-h-svh place-content-center p-4">
           <div className="flex items-center gap-4 md:gap-6">
             {import.meta.env.DEV && this.state.error && (
-              <pre className='text-muted-foreground text-balance'>
+              <pre className='text-muted-foreground overflow-auto max-w-2xl'>
                 <code>{this.state.error.stack}</code>
               </pre>
             )}

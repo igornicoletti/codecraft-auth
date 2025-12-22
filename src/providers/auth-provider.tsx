@@ -1,7 +1,7 @@
 import type { Session, User } from '@supabase/supabase-js'
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 
-import { getSupabaseClient } from '@/lib/supabase/client'
+import { supabase } from '@/lib/supabase'
 
 interface AuthContextType {
   user: User | null
@@ -17,17 +17,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const supabase = getSupabaseClient()
+    const initializeAuth = async () => {
+      try {
+        const { data } = await supabase.auth.getSession()
+        setSession(data.session)
+        setUser(data.session?.user ?? null)
+      } catch (error) {
+        console.error('Erro ao inicializar auth:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session)
-      setUser(data.session?.user ?? null)
-      setLoading(false)
-    })
+    initializeAuth()
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
       setUser(session?.user ?? null)
+      setLoading(false)
     })
 
     return () => {

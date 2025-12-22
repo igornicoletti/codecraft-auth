@@ -9,18 +9,16 @@ export const PublicRoute = () => {
 
   if (loading) {
     return (
-      <main className="grid min-h-svh place-content-center p-4">
+      <main className='grid min-h-svh place-content-center'>
         <Spinner />
       </main>
     )
   }
 
   if (user) {
-    const from = location.state?.from?.pathname || '/dashboard'
+    const from = (location.state as any)?.from?.pathname || '/dashboard'
     return <Navigate to={from} replace />
   }
 
   return <Outlet />
 }
-
-export default PublicRoute

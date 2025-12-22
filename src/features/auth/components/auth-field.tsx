@@ -2,20 +2,9 @@ import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 import type { Control, FieldPath, FieldValues } from 'react-hook-form'
 
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from '@/components/ui/input-group'
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group'
 
 interface AuthFieldProps<T extends FieldValues> {
   control: Control<T>
@@ -41,8 +30,6 @@ export const AuthField = <T extends FieldValues>({
   const isPassword = type === 'password'
   const inputType = isPassword && isVisible ? 'text' : type
 
-  const toggleVisibility = () => setIsVisible((prev) => !prev)
-
   return (
     <FormField
       control={control}
@@ -64,8 +51,7 @@ export const AuthField = <T extends FieldValues>({
                     type='button'
                     variant='ghost'
                     className='cursor-pointer hover:bg-transparent!'
-                    aria-label={isVisible ? 'Hide password' : 'Show password'}
-                    onClick={toggleVisibility}>
+                    onClick={() => setIsVisible(!isVisible)}>
                     {isVisible ? <EyeOff /> : <Eye />}
                   </InputGroupButton>
                 </InputGroupAddon>

@@ -9,17 +9,15 @@ export const ProtectedRoute = () => {
 
   if (loading) {
     return (
-      <main className="grid min-h-svh place-content-center p-4">
+      <main className='grid min-h-svh place-content-center'>
         <Spinner />
       </main>
     )
   }
 
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />
+    return <Navigate to='/login' state={{ from: location }} replace />
   }
 
   return <Outlet />
 }
-
-export default ProtectedRoute

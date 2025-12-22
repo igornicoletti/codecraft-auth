@@ -1,0 +1,46 @@
+import type { AuthResponse, UserResponse } from '@supabase/supabase-js'
+
+import { supabase } from '@/lib/supabase'
+
+export const authService = {
+  signInWithGoogle: async (): Promise<void> => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+        queryParams: { access_type: 'offline', prompt: 'consent' },
+      },
+    })
+    if (error) throw error
+  },
+
+  signIn: async (email: string, password: string): Promise<AuthResponse['data']> => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
+    return data
+  },
+
+  signUp: async (email: string, password: string): Promise<AuthResponse['data']> => {
+    const { data, error } = await supabase.auth.signUp({ email, password })
+    if (error) throw error
+    return data
+  },
+
+  signOut: async (): Promise<void> => {
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
+  },
+
+  resetPassword: async (email: string): Promise<void> => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/update-password`,
+    })
+    if (error) throw error
+  },
+
+  updatePassword: async (password: string): Promise<UserResponse['data']> => {
+    const { data, error } = await supabase.auth.updateUser({ password })
+    if (error) throw error
+    return data
+  },
+}

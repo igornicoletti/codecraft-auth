@@ -3,38 +3,30 @@ import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { AuthForm } from '@/features/auth/components/auth-form'
-import { AUTH_COPY } from '@/features/auth/constants/auth-copy'
+import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
+import { useAuthSubmit } from '@/features/auth/hooks/use-auth-submit'
 import { forgotPasswordSchema, type ForgotPasswordInput } from '@/features/auth/schemas/auth.schema'
-import { authService } from '@/features/auth/services/auth.service'
-import { useToast } from '@/hooks/use-toast'
+import { authService } from '@/services/auth.service'
 
 export const ForgotPasswordPage = () => {
-  const { success, error } = useToast()
-
-  const { forgotPasswordPage, messages } = AUTH_COPY
+  const { forgotPasswordPage, messages } = AUTH_CONTENT
+  const { handleSubmit: authSubmit } = useAuthSubmit<ForgotPasswordInput>()
 
   const form = useForm<ForgotPasswordInput>({
     resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: { email: '' },
   })
 
   const { isSubmitting } = form.formState
 
   const onSubmit = async (data: ForgotPasswordInput) => {
-    try {
-      await authService.resetPassword(data.email)
-      success(messages.success, { description: messages.resetLinkSent })
-    } catch (err) {
-      error(messages.failed, { description: err instanceof Error ? err.message : messages.resetLinkError })
-    }
+    await authSubmit({
+      action: (vals) => authService.resetPassword(vals.email),
+      successMessage: messages.resetLinkSent,
+      errorMessage: messages.resetLinkError,
+    }, data)
   }
 
   const formFields = [
@@ -48,9 +40,8 @@ export const ForgotPasswordPage = () => {
   ]
 
   return (
-    <main className="flex min-h-svh w-full items-center justify-center p-4">
-      <div className="w-full max-w-md flex flex-col gap-4 md:gap-6">
-
+    <main className='flex min-h-svh w-full items-center justify-center p-4'>
+      <div className='w-full max-w-md flex flex-col gap-4 md:gap-6'>
         <Card className='w-full bg-linear-to-t from-muted/50 to-card'>
           <CardHeader>
             <CardTitle>{forgotPasswordPage.title}</CardTitle>
@@ -63,12 +54,11 @@ export const ForgotPasswordPage = () => {
               onSubmit={onSubmit}
               submitText={forgotPasswordPage.submitButton}
               isLoading={isSubmitting}
-              fields={formFields}
-            />
+              fields={formFields} />
           </CardContent>
 
           <CardFooter>
-            <div className="flex items-baseline gap-1">
+            <div className='flex items-baseline gap-1'>
               <p className='text-sm text-muted-foreground'>
                 {forgotPasswordPage.signIn.question}
               </p>

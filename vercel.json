@@ -1,21 +1,11 @@
 {
   "version": 2,
-  "buildCommand": "pnpm build",
-  "outputDirectory": "dist",
-  "builds": [
+  "cleanUrls": true,
+  "framework": "vite",
+  "rewrites": [
     {
-      "src": "dist/entry.server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "dist/(.*)",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "dist/entry.server.js"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }

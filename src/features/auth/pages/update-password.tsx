@@ -1,42 +1,36 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { AuthForm } from '@/features/auth/components/auth-form'
-import { AUTH_COPY } from '@/features/auth/constants/auth-copy'
+import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
+import { useAuthSubmit } from '@/features/auth/hooks/use-auth-submit'
 import { updatePasswordSchema, type UpdatePasswordInput } from '@/features/auth/schemas/auth.schema'
-import { authService } from '@/features/auth/services/auth.service'
-import { useToast } from '@/hooks/use-toast'
+import { authService } from '@/services/auth.service'
 
 export const UpdatePasswordPage = () => {
-  const { success, error } = useToast()
-  const navigate = useNavigate()
-
-  const { updatePasswordPage, messages } = AUTH_COPY
+  const { updatePasswordPage, messages } = AUTH_CONTENT
+  const { handleSubmit: authSubmit } = useAuthSubmit<UpdatePasswordInput>()
 
   const form = useForm<UpdatePasswordInput>({
     resolver: zodResolver(updatePasswordSchema),
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    },
   })
 
   const { isSubmitting } = form.formState
 
   const onSubmit = async (data: UpdatePasswordInput) => {
-    try {
-      await authService.updatePassword(data.password)
-      success(messages.success, { description: messages.passwordUpdateSuccess })
-      navigate('/login')
-    } catch (err) {
-      error(messages.failed, { description: err instanceof Error ? err.message : messages.passwordUpdateError })
-    }
+    await authSubmit({
+      action: (vals) => authService.updatePassword(vals.password),
+      successMessage: messages.passwordUpdateSuccess,
+      errorMessage: messages.passwordUpdateError,
+      redirectTo: '/login',
+    }, data)
   }
 
   const formFields = [
@@ -57,9 +51,8 @@ export const UpdatePasswordPage = () => {
   ]
 
   return (
-    <main className="flex min-h-svh w-full items-center justify-center p-4">
-      <div className="w-full max-w-md flex flex-col gap-4 md:gap-6">
-
+    <main className='flex min-h-svh w-full items-center justify-center p-4'>
+      <div className='w-full max-w-md flex flex-col gap-4 md:gap-6'>
         <Card className='w-full bg-linear-to-t from-muted/50 to-card'>
           <CardHeader>
             <CardTitle>{updatePasswordPage.title}</CardTitle>
@@ -72,8 +65,7 @@ export const UpdatePasswordPage = () => {
               onSubmit={onSubmit}
               submitText={updatePasswordPage.submitButton}
               isLoading={isSubmitting}
-              fields={formFields}
-            />
+              fields={formFields} />
           </CardContent>
 
           <CardFooter>

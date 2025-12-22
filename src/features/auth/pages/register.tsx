@@ -1,50 +1,45 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { AuthForm } from '@/features/auth/components/auth-form'
-import { AUTH_COPY } from '@/features/auth/constants/auth-copy'
+import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
+import { useAuthSubmit } from '@/features/auth/hooks/use-auth-submit'
 import { registerSchema, type RegisterInput } from '@/features/auth/schemas/auth.schema'
-import { authService } from '@/features/auth/services/auth.service'
-import { useToast } from '@/hooks/use-toast'
+import { authService } from '@/services/auth.service'
 
 export const RegisterPage = () => {
-  const { success, error } = useToast()
-  const navigate = useNavigate()
-
-  const { registerPage, messages } = AUTH_COPY
+  const { registerPage, messages } = AUTH_CONTENT
+  const { handleSubmit: authSubmit } = useAuthSubmit<RegisterInput>()
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   })
 
   const { isSubmitting } = form.formState
 
   const onSubmit = async (data: RegisterInput) => {
-    try {
-      await authService.signUp(data.email, data.password)
-      navigate('/login')
-      success(messages.success, { description: messages.registerSuccess })
-    } catch (err) {
-      error(messages.failed, { description: err instanceof Error ? err.message : messages.registerError })
-    }
+    await authSubmit({
+      action: (vals) => authService.signUp(vals.email, vals.password),
+      successMessage: messages.registerSuccess,
+      errorMessage: messages.registerError,
+      redirectTo: '/login',
+    }, data)
   }
 
   const handleGoogleLogin = async () => {
     try {
       await authService.signInWithGoogle()
     } catch (err) {
-      error(err instanceof Error ? err.message : messages.loginError)
+      console.error(err)
     }
   }
 
@@ -73,9 +68,8 @@ export const RegisterPage = () => {
   ]
 
   return (
-    <main className="flex min-h-svh w-full items-center justify-center p-4">
-      <div className="w-full max-w-md flex flex-col gap-4 md:gap-6">
-
+    <main className='flex min-h-svh w-full items-center justify-center p-4'>
+      <div className='w-full max-w-md flex flex-col gap-4 md:gap-6'>
         <Card className='w-full bg-linear-to-t from-muted/50 to-card'>
           <CardHeader>
             <CardTitle>{registerPage.title}</CardTitle>
@@ -88,14 +82,14 @@ export const RegisterPage = () => {
               variant='secondary'
               className='w-full'
               onClick={handleGoogleLogin}
-              disabled={isSubmitting} >
+              disabled={isSubmitting}>
               Continue with Google
             </Button>
 
             <div className='flex items-center justify-center gap-2 overflow-hidden'>
-              <Separator className="shrink" />
+              <Separator className='shrink' />
               <span className='text-sm text-muted-foreground min-w-fit'>or</span>
-              <Separator className="shrink" />
+              <Separator className='shrink' />
             </div>
 
             <AuthForm
@@ -103,12 +97,11 @@ export const RegisterPage = () => {
               onSubmit={onSubmit}
               submitText={registerPage.submitButton}
               isLoading={isSubmitting}
-              fields={formFields}
-            />
+              fields={formFields} />
           </CardContent>
 
           <CardFooter>
-            <div className="flex items-baseline gap-1">
+            <div className='flex items-baseline gap-1'>
               <p className='text-sm text-muted-foreground'>
                 {registerPage.signIn.question}
               </p>
