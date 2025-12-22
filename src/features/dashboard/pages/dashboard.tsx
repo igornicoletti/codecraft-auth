@@ -89,9 +89,9 @@ export const DashboardPage = () => {
 
       {/* CONTENT */}
       <main className="container mx-auto p-4 md:p-8">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2">
           {/* Welcome Card */}
-          <Card className="col-span-full bg-linear-to-br from-primary/5 via-transparent to-transparent">
+          <Card className="col-span-full">
             <CardHeader>
               <CardTitle className="text-2xl">Welcome back!</CardTitle>
               <CardDescription>
@@ -99,7 +99,7 @@ export const DashboardPage = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-center text-sm text-muted-foreground">
                 Your account was created on {new Date(user?.created_at ?? '').toLocaleDateString()}.
                 This is your central hub for managing your projects and security settings.
               </p>

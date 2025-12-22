@@ -9,7 +9,7 @@ export const App = () => (
   <ThemeProvider>
     <AuthProvider>
       <RouterProvider router={router} />
-      <Toaster richColors position='top-right' />
+      <Toaster />
     </AuthProvider>
   </ThemeProvider>
 )
