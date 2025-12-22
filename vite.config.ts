@@ -13,9 +13,6 @@ export default defineConfig(({ command }) => ({
   build: {
     ssr: 'src/entry.server.tsx',
     outDir: 'dist',
-    emptyOutDir: true,
-    manifest: true,
-
     rollupOptions: {
       input: {
         client: path.resolve(__dirname, 'src/entry.client.tsx'),
