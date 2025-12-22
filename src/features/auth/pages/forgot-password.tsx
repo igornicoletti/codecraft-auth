@@ -48,9 +48,10 @@ export const ForgotPasswordPage = () => {
   ]
 
   return (
-    <div className='min-h-screen flex items-center justify-center px-4 py-8'>
-      <div className='relative max-w-md w-full overflow-hidden'>
-        <Card className='bg-linear-to-t from-muted/50 to-card'>
+    <main className="flex min-h-svh w-full items-center justify-center p-4">
+      <div className="w-full max-w-md flex flex-col gap-4 md:gap-6">
+
+        <Card className='w-full bg-linear-to-t from-muted/50 to-card'>
           <CardHeader>
             <CardTitle>{forgotPasswordPage.title}</CardTitle>
             <CardDescription>{forgotPasswordPage.description}</CardDescription>
@@ -67,7 +68,7 @@ export const ForgotPasswordPage = () => {
           </CardContent>
 
           <CardFooter>
-            <div className="flex items-baseline">
+            <div className="flex items-baseline gap-1">
               <p className='text-sm text-muted-foreground'>
                 {forgotPasswordPage.signIn.question}
               </p>
@@ -80,6 +81,6 @@ export const ForgotPasswordPage = () => {
           </CardFooter>
         </Card>
       </div>
-    </div>
+    </main>
   )
 }

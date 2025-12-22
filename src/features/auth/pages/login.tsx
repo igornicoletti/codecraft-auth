@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { GoogleLogoIcon } from "@phosphor-icons/react"
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -35,9 +34,17 @@ export const LoginPage = () => {
     try {
       await authService.signIn(data.email, data.password)
       navigate('/dashboard')
-      success(messages.success, { description: messages.loginSuccess })
+      success(messages.loginSuccess)
     } catch (err) {
-      error(messages.failed, { description: err instanceof Error ? err.message : messages.loginError })
+      error(err instanceof Error ? err.message : messages.loginError)
+    }
+  }
+
+  const handleGoogleLogin = async () => {
+    try {
+      await authService.signInWithGoogle()
+    } catch (err) {
+      error(err instanceof Error ? err.message : messages.loginError)
     }
   }
 
@@ -59,24 +66,29 @@ export const LoginPage = () => {
   ]
 
   return (
-    <div className='min-h-screen flex items-center justify-center px-4 py-8'>
-      <div className='relative max-w-md w-full overflow-hidden'>
-        <Card className='bg-linear-to-t from-muted/50 to-card'>
+    <main className="flex min-h-svh w-full items-center justify-center p-4">
+      <div className="w-full max-w-md flex flex-col gap-4 md:gap-6">
+
+        <Card className='w-full bg-linear-to-t from-muted/50 to-card'>
           <CardHeader>
             <CardTitle>{loginPage.title}</CardTitle>
             <CardDescription>{loginPage.description}</CardDescription>
           </CardHeader>
 
           <CardContent>
-            <Button type='button' variant='secondary' className='w-full'>
-              <GoogleLogoIcon weight='bold' className='size-6' />
-              Google
+            <Button
+              type='button'
+              variant='secondary'
+              className='w-full'
+              onClick={handleGoogleLogin}
+              disabled={isSubmitting} >
+              Continue with Google
             </Button>
 
             <div className='flex items-center justify-center gap-2 overflow-hidden'>
-              <Separator />
+              <Separator className="shrink" />
               <span className='text-sm text-muted-foreground min-w-fit'>or</span>
-              <Separator />
+              <Separator className="shrink" />
             </div>
 
             <AuthForm
@@ -93,7 +105,7 @@ export const LoginPage = () => {
                 {loginPage.forgotPassword.question}
               </Link>
             </Button>
-            <div className="flex items-baseline">
+            <div className="flex items-baseline gap-1">
               <p className='text-sm text-muted-foreground'>
                 {loginPage.signUp.question}
               </p>
@@ -106,6 +118,6 @@ export const LoginPage = () => {
           </CardFooter>
         </Card>
       </div>
-    </div>
+    </main>
   )
 }

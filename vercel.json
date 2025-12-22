@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "framework": "vite",
+  "buildCommand": "vite build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/ssr.js": {
+      "runtime": "nodejs20.x",
+      "entrypoint": "dist/entry.server.js"
+    }
+  },
+  "routes": [
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/favicon.ico"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/ssr.js"
+    }
+  ]
+}

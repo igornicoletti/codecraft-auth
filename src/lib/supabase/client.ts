@@ -1,10 +1,16 @@
-import { createClient } from '@supabase/supabase-js'
+import { env } from '@/lib/env'
+import { createBrowserClient } from '@supabase/ssr'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createBrowserClient(
+  env.supabase.url,
+  env.supabase.anonKey,
+  {
+    cookies: {
+      get(name) {
+        if (typeof document === 'undefined') return null
+        const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`))
+        return match ? decodeURIComponent(match[2]) : null
+      },
+    },
+  }
+)

@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 import { AuthForm } from '@/features/auth/components/auth-form'
 import { AUTH_COPY } from '@/features/auth/constants/auth-copy'
 import { registerSchema, type RegisterInput } from '@/features/auth/schemas/auth.schema'
@@ -39,6 +40,14 @@ export const RegisterPage = () => {
     }
   }
 
+  const handleGoogleLogin = async () => {
+    try {
+      await authService.signInWithGoogle()
+    } catch (err) {
+      error(err instanceof Error ? err.message : messages.loginError)
+    }
+  }
+
   const formFields = [
     {
       name: 'email' as const,
@@ -64,15 +73,31 @@ export const RegisterPage = () => {
   ]
 
   return (
-    <div className='min-h-screen flex items-center justify-center px-4 py-8'>
-      <div className='relative max-w-md w-full overflow-hidden'>
-        <Card className='bg-linear-to-t from-muted/50 to-card'>
+    <main className="flex min-h-svh w-full items-center justify-center p-4">
+      <div className="w-full max-w-md flex flex-col gap-4 md:gap-6">
+
+        <Card className='w-full bg-linear-to-t from-muted/50 to-card'>
           <CardHeader>
             <CardTitle>{registerPage.title}</CardTitle>
             <CardDescription>{registerPage.description}</CardDescription>
           </CardHeader>
 
           <CardContent>
+            <Button
+              type='button'
+              variant='secondary'
+              className='w-full'
+              onClick={handleGoogleLogin}
+              disabled={isSubmitting} >
+              Continue with Google
+            </Button>
+
+            <div className='flex items-center justify-center gap-2 overflow-hidden'>
+              <Separator className="shrink" />
+              <span className='text-sm text-muted-foreground min-w-fit'>or</span>
+              <Separator className="shrink" />
+            </div>
+
             <AuthForm
               form={form}
               onSubmit={onSubmit}
@@ -83,7 +108,7 @@ export const RegisterPage = () => {
           </CardContent>
 
           <CardFooter>
-            <div className="flex items-baseline">
+            <div className="flex items-baseline gap-1">
               <p className='text-sm text-muted-foreground'>
                 {registerPage.signIn.question}
               </p>
@@ -96,6 +121,6 @@ export const RegisterPage = () => {
           </CardFooter>
         </Card>
       </div>
-    </div>
+    </main>
   )
 }

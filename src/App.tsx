@@ -1,10 +1,15 @@
 import { RouterProvider } from 'react-router-dom'
 
-import { AppProvider } from '@/providers'
-import { router } from '@/router'
+import { Toaster } from '@/components/ui/sonner'
+import { router } from '@/features/route/router.client'
+import { AuthProvider } from '@/providers/auth-provider'
+import { ThemeProvider } from '@/providers/theme-provider'
 
 export const App = () => (
-  <AppProvider>
-    <RouterProvider router={router} />
-  </AppProvider>
+  <ThemeProvider>
+    <AuthProvider>
+      <RouterProvider router={router} />
+      <Toaster richColors position='top-right' />
+    </AuthProvider>
+  </ThemeProvider>
 )

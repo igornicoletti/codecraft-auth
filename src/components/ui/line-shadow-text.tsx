@@ -11,7 +11,7 @@ interface LineShadowTextProps
 
 export function LineShadowText({
   children,
-  shadowColor = "gray",
+  shadowColor = "white",
   className,
   as: Component = "span",
   ...props
