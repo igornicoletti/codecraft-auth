@@ -6,22 +6,14 @@
       "use": "@vercel/node"
     },
     {
-      "src": "public/**/*",
+      "src": "dist/**/*",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/favicon.ico",
-      "dest": "/favicon.ico"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/dist/entry.server.js"
+      "dest": "dist/entry.server.js"
     }
   ]
 }
