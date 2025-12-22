@@ -55,8 +55,8 @@ export const LoginPage = () => {
   ]
 
   return (
-    <main className="flex min-h-svh w-full items-center justify-center p-4">
-      <div className="w-full max-w-md flex flex-col gap-4 md:gap-6">
+    <main className='flex min-h-svh w-full items-center justify-center p-4'>
+      <div className='w-full max-w-md flex flex-col gap-4 md:gap-6'>
         <Card className='w-full bg-linear-to-t from-muted/50 to-card'>
           <CardHeader>
             <CardTitle>{loginPage.title}</CardTitle>
@@ -74,9 +74,9 @@ export const LoginPage = () => {
             </Button>
 
             <div className='flex items-center justify-center gap-2 overflow-hidden'>
-              <Separator className="shrink" />
+              <Separator className='shrink' />
               <span className='text-sm text-muted-foreground min-w-fit'>or</span>
-              <Separator className="shrink" />
+              <Separator className='shrink' />
             </div>
 
             <AuthForm
@@ -93,7 +93,7 @@ export const LoginPage = () => {
                 {loginPage.forgotPassword.question}
               </Link>
             </Button>
-            <div className="flex items-baseline gap-1">
+            <div className='flex items-baseline gap-1'>
               <p className='text-sm text-muted-foreground'>
                 {loginPage.signUp.question}
               </p>

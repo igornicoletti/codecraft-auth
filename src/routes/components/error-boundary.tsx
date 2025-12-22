@@ -34,8 +34,8 @@ export class ErrorBoundary extends Component<Props, State> {
       if (this.props.fallback) return this.props.fallback
 
       return (
-        <main className="grid min-h-svh place-content-center p-4">
-          <div className="flex items-center gap-4 md:gap-6">
+        <main className='grid min-h-svh place-content-center p-4'>
+          <div className='flex items-center gap-4 md:gap-6'>
             {import.meta.env.DEV && this.state.error && (
               <pre className='max-w-2xl text-sm text-muted-foreground overflow-auto'>
                 <code>{this.state.error.stack}</code>
