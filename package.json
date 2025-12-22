@@ -8,9 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "serve": "node dist/entry.server.js",
     "test": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "serve": "NODE_ENV=production node dist/entry.server.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
