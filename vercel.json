@@ -5,7 +5,7 @@
   "builds": [
     {
       "src": "dist/entry.server.js",
-      "use": "@vercel/static"
+      "use": "@vercel/node"
     },
     {
       "src": "dist/(.*)",
@@ -14,24 +14,8 @@
   ],
   "routes": [
     {
-      "src": "/chunks/(.*)",
-      "dest": "/dist/chunks/$1"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/dist/assets/$1"
-    },
-    {
-      "src": "/codecraft.svg",
-      "dest": "/dist/codecraft.svg"
-    },
-    {
-      "src": "/favicon.ico",
-      "dest": "/dist/codecraft.svg"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/dist/entry.server.js"
+      "dest": "dist/entry.server.js"
     }
   ]
 }
