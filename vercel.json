@@ -1,8 +1,15 @@
 {
-  "version": 3,
-  "framework": "vite",
-  "buildCommand": "vite build",
-  "outputDirectory": "dist",
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/entry.server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "dist/**/*",
+      "use": "@vercel/static"
+    }
+  ],
   "routes": [
     {
       "src": "/assets/(.*)",
@@ -14,7 +21,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/dist/entry.server.js"
+      "dest": "dist/entry.server.js"
     }
   ]
 }

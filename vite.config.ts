@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import { defineConfig } from 'vite'
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
@@ -13,6 +13,9 @@ export default defineConfig({
   build: {
     ssr: 'src/entry.server.tsx',
     outDir: 'dist',
+    emptyOutDir: true,
+    manifest: true,
+
     rollupOptions: {
       input: {
         client: path.resolve(__dirname, 'src/entry.client.tsx'),
@@ -25,6 +28,7 @@ export default defineConfig({
     },
   },
   ssr: {
-    noExternal: ['@supabase/ssr', '@supabase/supabase-js'],
+    noExternal: ['@supabase/ssr', '@supabase/supabase-js', 'lucide-react'],
   },
-})
+  base: command === 'serve' ? '/' : '/',
+}))
