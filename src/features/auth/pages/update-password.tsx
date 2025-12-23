@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { AuthForm } from '@/features/auth/components/auth-form'
 import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
@@ -48,7 +47,7 @@ export const UpdatePasswordPage = () => {
   return (
     <main className='flex min-h-svh w-full items-center justify-center p-4'>
       <div className='w-full max-w-md flex flex-col gap-4 md:gap-6'>
-        <Card className='w-full bg-linear-to-t from-muted/50 to-card'>
+        <Card className='bg-linear-to-b from-secondary/50'>
           <CardHeader>
             <CardTitle>{updatePasswordPage.title}</CardTitle>
             <CardDescription>{updatePasswordPage.description}</CardDescription>
@@ -64,11 +63,9 @@ export const UpdatePasswordPage = () => {
           </CardContent>
 
           <CardFooter>
-            <Button asChild size='sm' variant='link'>
-              <Link to={updatePasswordPage.signIn.link}>
-                {updatePasswordPage.signIn.label}
-              </Link>
-            </Button>
+            <Link to={updatePasswordPage.signIn.link} className='text-primary underline-offset-4 hover:underline'>
+              {updatePasswordPage.signIn.label}
+            </Link>
           </CardFooter>
         </Card>
       </div>

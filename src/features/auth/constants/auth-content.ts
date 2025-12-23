@@ -47,7 +47,7 @@ export const AUTH_CONTENT = {
     submitButton: 'Send reset link',
     signIn: {
       question: 'Remember your password?',
-      label: 'Back to sign in',
+      label: 'Sign in',
       link: '/login',
     },
   },

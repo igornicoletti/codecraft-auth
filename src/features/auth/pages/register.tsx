@@ -65,7 +65,7 @@ export const RegisterPage = () => {
   return (
     <main className='flex min-h-svh w-full items-center justify-center p-4'>
       <div className='w-full max-w-md flex flex-col gap-4 md:gap-6'>
-        <Card className='w-full bg-linear-to-t from-muted/50 to-card'>
+        <Card className='bg-linear-to-b from-secondary/50'>
           <CardHeader>
             <CardTitle>{registerPage.title}</CardTitle>
             <CardDescription>{registerPage.description}</CardDescription>
@@ -96,16 +96,12 @@ export const RegisterPage = () => {
           </CardContent>
 
           <CardFooter>
-            <div className='flex items-baseline gap-1'>
-              <p className='text-sm text-muted-foreground'>
-                {registerPage.signIn.question}
-              </p>
-              <Button asChild size='sm' variant='link'>
-                <Link to={registerPage.signIn.link}>
-                  {registerPage.signIn.label}
-                </Link>
-              </Button>
-            </div>
+            <p className='text-sm text-muted-foreground'>
+              {registerPage.signIn.question}{' '}
+              <Link to={registerPage.signIn.link} className='text-primary underline-offset-4 hover:underline'>
+                {registerPage.signIn.label}
+              </Link>
+            </p>
           </CardFooter>
         </Card>
       </div>

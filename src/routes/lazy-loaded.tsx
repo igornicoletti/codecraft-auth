@@ -17,10 +17,5 @@ export const LazyLoaded = {
   RegisterPage: lazyImport(() => import('@/features/auth/pages/register'), 'RegisterPage'),
   ForgotPasswordPage: lazyImport(() => import('@/features/auth/pages/forgot-password'), 'ForgotPasswordPage'),
   UpdatePasswordPage: lazyImport(() => import('@/features/auth/pages/update-password'), 'UpdatePasswordPage'),
-
   DashboardPage: lazyImport(() => import('@/features/dashboard/pages/dashboard'), 'DashboardPage'),
-
-  NotFoundPage: lazyImport(() => import('@/routes/components/not-found'), 'NotFoundPage'),
-  ProtectedRoute: lazyImport(() => import('@/routes/guards/protected-route'), 'ProtectedRoute'),
-  PublicRoute: lazyImport(() => import('@/routes/guards/public-route'), 'PublicRoute'),
 }

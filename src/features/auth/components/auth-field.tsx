@@ -49,7 +49,7 @@ export const AuthField = <T extends FieldValues>({
                 <InputGroupAddon align='inline-end'>
                   <InputGroupButton
                     type='button'
-                    variant='ghost'
+                    variant='link'
                     onClick={() => setIsVisible(!isVisible)}>
                     {isVisible ? <EyeOff /> : <Eye />}
                   </InputGroupButton>

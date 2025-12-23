@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { AuthForm } from '@/features/auth/components/auth-form'
 import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
@@ -38,7 +37,7 @@ export const ForgotPasswordPage = () => {
   return (
     <main className='flex min-h-svh w-full items-center justify-center p-4'>
       <div className='w-full max-w-md flex flex-col gap-4 md:gap-6'>
-        <Card className='w-full bg-linear-to-t from-muted/50 to-card'>
+        <Card className='bg-linear-to-b from-secondary/50'>
           <CardHeader>
             <CardTitle>{forgotPasswordPage.title}</CardTitle>
             <CardDescription>{forgotPasswordPage.description}</CardDescription>
@@ -54,16 +53,12 @@ export const ForgotPasswordPage = () => {
           </CardContent>
 
           <CardFooter>
-            <div className='flex items-baseline gap-1'>
-              <p className='text-sm text-muted-foreground'>
-                {forgotPasswordPage.signIn.question}
-              </p>
-              <Button asChild size='sm' variant='link'>
-                <Link to={forgotPasswordPage.signIn.link}>
-                  {forgotPasswordPage.signIn.label}
-                </Link>
-              </Button>
-            </div>
+            <p className='text-sm text-muted-foreground'>
+              {forgotPasswordPage.signIn.question}{' '}
+              <Link to={forgotPasswordPage.signIn.link} className='text-primary underline-offset-4 hover:underline'>
+                {forgotPasswordPage.signIn.label}
+              </Link>
+            </p>
           </CardFooter>
         </Card>
       </div>
