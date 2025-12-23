@@ -3,13 +3,13 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 
 import { supabase } from '@/lib/supabase'
 
-interface AuthContextType {
+interface AuthProviderState {
   user: User | null
   session: Session | null
   loading: boolean
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthProviderContext = createContext<AuthProviderState | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
@@ -18,8 +18,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const initializeAuth = async () => {
+      const minimumDelay = new Promise((resolve) => setTimeout(resolve, 800))
+
       try {
-        const { data } = await supabase.auth.getSession()
+        const [{ data }] = await Promise.all([
+          supabase.auth.getSession(),
+          minimumDelay
+        ])
+
         setSession(data.session)
         setUser(data.session?.user ?? null)
       } catch (error) {
@@ -43,14 +49,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, session, loading }}>
+    <AuthProviderContext.Provider value={{ user, session, loading }}>
       {children}
-    </AuthContext.Provider>
+    </AuthProviderContext.Provider>
   )
 }
 
 export const useAuth = () => {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthProviderContext)
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider')
   }

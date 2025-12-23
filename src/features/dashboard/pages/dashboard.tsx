@@ -12,9 +12,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useAuth } from '@/features/auth/contexts/auth.context'
+import { authService } from '@/features/auth/services/auth.service'
 import { useToast } from '@/hooks/use-toast'
-import { useAuth } from '@/providers/auth-provider'
-import { authService } from '@/services/auth.service'
 
 export const DashboardPage = () => {
   const { user } = useAuth()

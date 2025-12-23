@@ -8,7 +8,7 @@ import { AuthForm } from '@/features/auth/components/auth-form'
 import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
 import { useAuthSubmit } from '@/features/auth/hooks/use-auth-submit'
 import { updatePasswordSchema, type UpdatePasswordInput } from '@/features/auth/schemas/auth.schema'
-import { authService } from '@/services/auth.service'
+import { authService } from '@/features/auth/services/auth.service'
 
 export const UpdatePasswordPage = () => {
   const { updatePasswordPage } = AUTH_CONTENT

@@ -4,7 +4,12 @@ const lazyImport = <M extends Record<string, ComponentType<any>>, K extends keyo
   factory: () => Promise<M>,
   name: K
 ): LazyExoticComponent<M[K]> => {
-  return lazy(() => factory().then((module) => ({ default: module[name] })))
+  return lazy(() =>
+    Promise.all([
+      factory(),
+      new Promise((resolve) => setTimeout(resolve, 800))
+    ]).then(([module]) => ({ default: module[name] }))
+  )
 }
 
 export const LazyLoaded = {
@@ -12,8 +17,10 @@ export const LazyLoaded = {
   RegisterPage: lazyImport(() => import('@/features/auth/pages/register'), 'RegisterPage'),
   ForgotPasswordPage: lazyImport(() => import('@/features/auth/pages/forgot-password'), 'ForgotPasswordPage'),
   UpdatePasswordPage: lazyImport(() => import('@/features/auth/pages/update-password'), 'UpdatePasswordPage'),
+
   DashboardPage: lazyImport(() => import('@/features/dashboard/pages/dashboard'), 'DashboardPage'),
+
+  NotFoundPage: lazyImport(() => import('@/routes/components/not-found'), 'NotFoundPage'),
   ProtectedRoute: lazyImport(() => import('@/routes/guards/protected-route'), 'ProtectedRoute'),
   PublicRoute: lazyImport(() => import('@/routes/guards/public-route'), 'PublicRoute'),
-  NotFoundPage: lazyImport(() => import('@/routes/components/not-found'), 'NotFoundPage'),
 }

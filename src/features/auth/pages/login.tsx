@@ -9,7 +9,7 @@ import { AuthForm } from '@/features/auth/components/auth-form'
 import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
 import { useAuthSubmit } from '@/features/auth/hooks/use-auth-submit'
 import { loginSchema, type LoginInput } from '@/features/auth/schemas/auth.schema'
-import { authService } from '@/services/auth.service'
+import { authService } from '@/features/auth/services/auth.service'
 
 export const LoginPage = () => {
   const { loginPage } = AUTH_CONTENT

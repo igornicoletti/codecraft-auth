@@ -1,24 +1,15 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
-import { Spinner } from '@/components/ui/spinner'
-import { useAuth } from '@/providers/auth-provider'
+import { LoaderFour } from '@/components/ui/loader'
+import { useAuth } from '@/features/auth/contexts/auth.context'
 
 export const PublicRoute = () => {
   const { user, loading } = useAuth()
   const location = useLocation()
 
-  if (loading) {
-    return (
-      <main className='grid min-h-svh place-content-center'>
-        <Spinner />
-      </main>
-    )
-  }
+  if (loading) return <LoaderFour text='Authenticating...' />
 
-  if (user) {
-    const from = (location.state as any)?.from?.pathname || '/dashboard'
-    return <Navigate to={from} replace />
-  }
+  if (user) return <Navigate to={(location.state as any)?.from?.pathname || '/dashboard'} replace />
 
   return <Outlet />
 }

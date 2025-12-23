@@ -1,21 +1,17 @@
 import { Suspense } from 'react'
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 
-import { Spinner } from '@/components/ui/spinner'
+import { LoaderFour } from '@/components/ui/loader'
+import { Toaster } from '@/components/ui/sonner'
 import { ErrorBoundary } from '@/routes/components/error-boundary'
 import { LazyLoaded } from '@/routes/lazy-loaded'
 
-const Loading = () => (
-  <main className='grid min-h-svh place-content-center'>
-    <Spinner />
-  </main>
-)
-
 const Root = () => (
   <ErrorBoundary>
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<LoaderFour />}>
       <Outlet />
     </Suspense>
+    <Toaster />
   </ErrorBoundary>
 )
 
