@@ -20,12 +20,10 @@ const Root = () => (
 
 export const router = createBrowserRouter([
   {
-    path: '/',
     element: <Root />,
     errorElement: <ErrorBoundary />,
     children: [
-      { path: '*', element: <NotFoundPage /> },
-      { index: true, element: <Navigate to='/login' replace /> },
+      { path: '/', element: <Navigate to='/login' replace /> },
       {
         element: <PublicRoute />,
         children: [
@@ -41,6 +39,7 @@ export const router = createBrowserRouter([
           { path: 'dashboard', element: <LazyLoaded.DashboardPage /> },
         ],
       },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ])
