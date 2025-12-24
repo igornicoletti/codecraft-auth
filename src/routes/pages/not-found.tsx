@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom'
 
 export const NotFoundPage = () => {
   return (
-    <main className='grid min-h-svh place-content-center p-4'>
-      <div className='flex flex-wrap items-center gap-4 md:gap-6'>
-        <h1 className='text-xl tracking-tight text-nowrap'>Page Not Found</h1>
-        <div className='border-l-2 pl-4 md:pl-6'>
+    <main className='grid min-h-svh place-content-center p-6'>
+      <div className='flex flex-wrap items-center gap-4'>
+        <h1 className='text-nowrap'>Página não encontrada</h1>
+        <div className='border-l-2 pl-4'>
           <p className='text-sm text-muted-foreground'>
-            The page you&apos;re looking for isn&apos;t found, we suggest you{' '}
-            <Link to='/' className='text-primary underline underline-offset-4'>
-              back to home page
+            A página que você está procurando não foi encontrada, sugerimos que você{' '}
+            <Link to='/' className='text-primary underline-offset-4 hover:underline'>
+              voltar para a página inicial.
             </Link>
           </p>
         </div>

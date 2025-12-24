@@ -56,42 +56,44 @@ export const RegisterPage = () => {
   }]
 
   return (
-    <main className='flex min-h-svh w-full items-center justify-center p-4'>
-      <div className='w-full max-w-md flex flex-col gap-4 md:gap-6'>
-        <Card className='bg-linear-to-b from-secondary/50'>
-          <CardHeader>
-            <CardTitle>{registerPage.title}</CardTitle>
-            <CardDescription>{registerPage.description}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button
-              variant='secondary'
-              className='w-full'
-              onClick={handleGoogleLogin}
-              disabled={isSubmitting}>
-              {registerPage.social}
-            </Button>
-            <div className='flex items-center justify-center gap-2 overflow-hidden'>
-              <Separator className='shrink' />
-              <span className='text-sm text-muted-foreground min-w-fit'>ou</span>
-              <Separator className='shrink' />
-            </div>
-            <AuthForm
-              form={form}
-              onSubmit={onSubmit}
-              submitText={registerPage.submitButton}
-              isLoading={isSubmitting}
-              fields={formFields} />
-          </CardContent>
-          <CardFooter>
-            <p className='text-sm text-muted-foreground'>
-              {registerPage.actions.question}{' '}
-              <Link to={registerPage.actions.link} className='text-primary underline-offset-4 hover:underline'>
-                {registerPage.actions.label}
-              </Link>
-            </p>
-          </CardFooter>
-        </Card>
+    <main className='flex min-h-svh flex-col'>
+      <div className='flex flex-1 items-center justify-center py-12'>
+        <div className='w-full max-w-md'>
+          <Card className='bg-transparent border-none md:bg-card md:bg-linear-to-b from-secondary/50'>
+            <CardHeader>
+              <CardTitle>{registerPage.title}</CardTitle>
+              <CardDescription>{registerPage.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                variant='secondary'
+                className='w-full'
+                onClick={handleGoogleLogin}
+                disabled={isSubmitting}>
+                {registerPage.social}
+              </Button>
+              <div className='flex items-center justify-center gap-2 overflow-hidden'>
+                <Separator className='shrink' />
+                <span className='text-sm text-muted-foreground min-w-fit'>ou</span>
+                <Separator className='shrink' />
+              </div>
+              <AuthForm
+                form={form}
+                onSubmit={onSubmit}
+                submitText={registerPage.submitButton}
+                isLoading={isSubmitting}
+                fields={formFields} />
+            </CardContent>
+            <CardFooter>
+              <p className='text-sm text-muted-foreground'>
+                {registerPage.actions.question}{' '}
+                <Link to={registerPage.actions.link} className='text-primary underline-offset-4 hover:underline'>
+                  {registerPage.actions.label}
+                </Link>
+              </p>
+            </CardFooter>
+          </Card>
+        </div>
       </div>
     </main>
   )

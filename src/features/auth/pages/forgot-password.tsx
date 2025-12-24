@@ -39,33 +39,35 @@ export const ForgotPasswordPage = () => {
   }]
 
   return (
-    <main className='flex min-h-svh w-full items-center justify-center p-4'>
-      <div className='w-full max-w-md flex flex-col gap-4 md:gap-6'>
-        <Card className='bg-linear-to-b from-secondary/50'>
-          <CardHeader>
-            <CardTitle>{forgotPasswordPage.title}</CardTitle>
-            <CardDescription>
-              {isEmailSent ? forgotPasswordPage.message : forgotPasswordPage.description}
-            </CardDescription>
-          </CardHeader>
-          {!isEmailSent && (
-            <CardContent>
-              <AuthForm
-                form={form}
-                onSubmit={onSubmit}
-                submitText={forgotPasswordPage.submitButton}
-                isLoading={isSubmitting}
-                fields={formFields} />
-            </CardContent>
-          )}
-          <CardFooter>
-            <Button asChild variant='link'>
-              <Link to={forgotPasswordPage.actions.link}>
-                {forgotPasswordPage.actions.label}
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
+    <main className='flex min-h-svh flex-col'>
+      <div className='flex flex-1 items-center justify-center py-12'>
+        <div className='w-full max-w-md'>
+          <Card className='bg-transparent border-none md:bg-card md:bg-linear-to-b from-secondary/50'>
+            <CardHeader>
+              <CardTitle>{forgotPasswordPage.title}</CardTitle>
+              <CardDescription>
+                {isEmailSent ? forgotPasswordPage.message : forgotPasswordPage.description}
+              </CardDescription>
+            </CardHeader>
+            {!isEmailSent && (
+              <CardContent>
+                <AuthForm
+                  form={form}
+                  onSubmit={onSubmit}
+                  submitText={forgotPasswordPage.submitButton}
+                  isLoading={isSubmitting}
+                  fields={formFields} />
+              </CardContent>
+            )}
+            <CardFooter>
+              <Button asChild variant='link'>
+                <Link to={forgotPasswordPage.actions.link}>
+                  {forgotPasswordPage.actions.label}
+                </Link>
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
       </div>
     </main>
   )

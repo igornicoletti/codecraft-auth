@@ -55,47 +55,49 @@ export const LoginPage = () => {
   }]
 
   return (
-    <main className='flex min-h-svh w-full items-center justify-center p-4'>
-      <div className='w-full max-w-md flex flex-col gap-4 md:gap-6'>
-        <Card className='bg-linear-to-b from-secondary/50'>
-          <CardHeader>
-            <CardTitle>{loginPage.title}</CardTitle>
-            <CardDescription>{loginPage.description}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button
-              variant='secondary'
-              className='w-full'
-              onClick={handleGoogleLogin}
-              disabled={isSubmitting}>
-              {loginPage.social}
-            </Button>
-            <div className='flex items-center justify-center gap-2 overflow-hidden'>
-              <Separator className='shrink' />
-              <span className='text-sm text-muted-foreground min-w-fit'>ou</span>
-              <Separator className='shrink' />
-            </div>
-            <AuthForm
-              form={form}
-              onSubmit={onSubmit}
-              submitText={loginPage.submitButton}
-              isLoading={isSubmitting}
-              fields={formFields} />
-          </CardContent>
-          <CardFooter>
-            <Button asChild variant='link'>
-              <Link to={loginPage.forgotPassword.link}>
-                {loginPage.forgotPassword.question}
-              </Link>
-            </Button>
-            <p className='text-sm text-muted-foreground'>
-              {loginPage.actions.question}{' '}
-              <Link to={loginPage.actions.link} className='text-primary underline-offset-4 hover:underline'>
-                {loginPage.actions.label}
-              </Link>
-            </p>
-          </CardFooter>
-        </Card>
+    <main className='flex min-h-svh flex-col'>
+      <div className='flex flex-1 items-center justify-center py-12'>
+        <div className='w-full max-w-md'>
+          <Card className='bg-transparent border-none md:bg-card md:bg-linear-to-b from-secondary/50'>
+            <CardHeader>
+              <CardTitle>{loginPage.title}</CardTitle>
+              <CardDescription>{loginPage.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                variant='secondary'
+                className='w-full'
+                onClick={handleGoogleLogin}
+                disabled={isSubmitting}>
+                {loginPage.social}
+              </Button>
+              <div className='flex items-center justify-center gap-2 overflow-hidden'>
+                <Separator className='shrink' />
+                <span className='text-sm text-muted-foreground min-w-fit'>ou</span>
+                <Separator className='shrink' />
+              </div>
+              <AuthForm
+                form={form}
+                onSubmit={onSubmit}
+                submitText={loginPage.submitButton}
+                isLoading={isSubmitting}
+                fields={formFields} />
+            </CardContent>
+            <CardFooter>
+              <Button asChild variant='link'>
+                <Link to={loginPage.forgotPassword.link}>
+                  {loginPage.forgotPassword.question}
+                </Link>
+              </Button>
+              <p className='text-sm text-muted-foreground'>
+                {loginPage.actions.question}{' '}
+                <Link to={loginPage.actions.link} className='text-primary underline-offset-4 hover:underline'>
+                  {loginPage.actions.label}
+                </Link>
+              </p>
+            </CardFooter>
+          </Card>
+        </div>
       </div>
     </main>
   )

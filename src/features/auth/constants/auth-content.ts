@@ -50,7 +50,7 @@ export const AUTH_CONTENT = {
     },
     submitButton: 'Enviar e-mail de redefinição de senha',
     actions: {
-      label: 'Voltar para fazer login',
+      label: 'Voltar para login',
       link: '/login',
     },
   },
@@ -58,14 +58,14 @@ export const AUTH_CONTENT = {
     title: 'Alterar senha para',
     description: 'Certifique-se de que é pelo menos 8 caracteres incluindo um número e uma letra minúscula.',
     fields: {
-      passwordLabel: 'Senha',
+      passwordLabel: 'Nova',
       passwordPlaceholder: '••••••••••',
       confirmPasswordLabel: 'Confirmar senha',
       confirmPasswordPlaceholder: '••••••••••',
     },
     submitButton: 'Atualizar senha',
     actions: {
-      label: 'Voltar para fazer login',
+      label: 'Voltar para login',
       link: '/login',
     },
   },
