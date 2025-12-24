@@ -1,5 +1,6 @@
 // src/App.tsx
 import { RouterProvider } from 'react-router-dom'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/contexts/theme.context'
@@ -11,6 +12,7 @@ export const App = () => (
     <AuthProvider>
       <RouterProvider router={router} />
       <Toaster />
+      <SpeedInsights />
     </AuthProvider>
   </ThemeProvider>
 )
