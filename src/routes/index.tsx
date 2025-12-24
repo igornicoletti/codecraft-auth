@@ -35,15 +35,15 @@ const generateRoutes = (configs: AppRouteConfig[]): RouteObject[] => {
 
   return [
     {
-      element: <ProtectedRoute type="guest" />,
+      element: <ProtectedRoute type='guest' />,
       children: guestRoutes.map(mapToRouteObj)
     },
     {
-      element: <ProtectedRoute type="private" />,
+      element: <ProtectedRoute type='private' />,
       children: privateRoutes.map(mapToRouteObj)
     },
     {
-      element: <ProtectedRoute type="public" />,
+      element: <ProtectedRoute type='public' />,
       children: publicRoutes.map(mapToRouteObj)
     }
   ]

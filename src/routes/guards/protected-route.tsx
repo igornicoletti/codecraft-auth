@@ -15,14 +15,14 @@ export const ProtectedRoute = ({ type = 'private' }: ProtectedRouteProps) => {
   const { user, loading } = useAuth()
   const location = useLocation()
 
-  if (loading) return <div className="h-screen flex items-center justify-center"><LoaderFour /></div>
+  if (loading) return <div className='h-screen flex items-center justify-center'><LoaderFour /></div>
 
   // 1. Rota Privada (Dashboard): Se não tiver user -> Login
   if (type === 'private' && !user) {
     return <Navigate to={APP_PATHS.AUTH.LOGIN} state={{ from: location }} replace />
   }
 
-  // 2. Rota "Convidado" (Login/Register): Se tiver user -> Dashboard
+  // 2. Rota 'Convidado' (Login/Register): Se tiver user -> Dashboard
   if (type === 'guest' && user) {
     const from = (location.state as any)?.from?.pathname || APP_PATHS.DASHBOARD.ROOT
     return <Navigate to={from} replace />

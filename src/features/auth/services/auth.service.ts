@@ -2,14 +2,13 @@
 import type { AuthResponse, UserResponse } from '@supabase/supabase-js'
 
 import { supabase } from '@/lib/supabase'
-import { APP_PATHS } from '@/routes/paths'
 
 export const authService = {
   async signInWithGoogle(): Promise<void> {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/${APP_PATHS.DASHBOARD.ROOT}`,
+        redirectTo: `${window.location.origin}/dashboard`,
         queryParams: { access_type: 'offline', prompt: 'consent' },
       },
     })
