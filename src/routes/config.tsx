@@ -1,7 +1,6 @@
-// src/routes/config.tsx
 import type { ComponentType } from 'react'
 
-import { lazyImport } from '@/lib/lazyload'
+import { lazyImport } from '@/routes/helpers/lazy-import'
 import { APP_PATHS } from '@/routes/paths'
 
 export type AppRouteConfig = {
@@ -41,7 +40,7 @@ export const ROUTE_LIST: AppRouteConfig[] = [
 
   // Rotas Protegidas (Private)
   {
-    path: APP_PATHS.AUTH.UPDATE_PASSWORD, // Supabase envia pra cá logado
+    path: APP_PATHS.AUTH.UPDATE_PASSWORD,
     component: Pages.UpdatePass,
     guardType: 'private',
   },

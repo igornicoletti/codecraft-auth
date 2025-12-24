@@ -3,9 +3,9 @@ import { Suspense } from 'react'
 import { createBrowserRouter, Navigate, Outlet, type RouteObject } from 'react-router-dom'
 
 import { LoaderFour } from '@/components/ui/loader'
-import { lazyImport } from '@/lib/lazyload'
 import { ROUTE_LIST, type AppRouteConfig } from '@/routes/config'
 import { ProtectedRoute } from '@/routes/guards/protected-route'
+import { lazyImport } from '@/routes/helpers/lazy-import'
 import { ErrorBoundary } from '@/routes/pages/error-boundary'
 import { APP_PATHS } from '@/routes/paths'
 

@@ -1,4 +1,3 @@
-// src/config/paths.ts
 export const APP_PATHS = {
   HOME: '/',
   AUTH: {
