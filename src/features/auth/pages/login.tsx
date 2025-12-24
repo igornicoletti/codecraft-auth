@@ -1,3 +1,4 @@
+// src/features/auth/pages/login.tsx
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
@@ -10,6 +11,7 @@ import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
 import { useAuthSubmit } from '@/features/auth/hooks/use-auth-submit'
 import { loginSchema, type LoginInput } from '@/features/auth/schemas/auth.schema'
 import { authService } from '@/features/auth/services/auth.service'
+import { APP_PATHS } from '@/routes/paths'
 
 export const LoginPage = () => {
   const { loginPage } = AUTH_CONTENT
@@ -23,7 +25,11 @@ export const LoginPage = () => {
   const { isSubmitting } = form.formState
 
   const onSubmit = async (data: LoginInput) => {
-    await authSubmit((vals) => authService.signIn(vals.email, vals.password), data, 'signIn', '/dashboard')
+    await authSubmit((vals) =>
+      authService.signIn(vals.email, vals.password),
+      data,
+      APP_PATHS.DASHBOARD.ROOT
+    )
   }
 
   const handleGoogleLogin = async () => {
@@ -58,7 +64,6 @@ export const LoginPage = () => {
           </CardHeader>
           <CardContent>
             <Button
-              type='button'
               variant='secondary'
               className='w-full'
               onClick={handleGoogleLogin}

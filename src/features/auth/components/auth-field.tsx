@@ -1,3 +1,4 @@
+// src/features/auth/components/auth-field.tsx
 import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 import type { Control, FieldPath, FieldValues } from 'react-hook-form'
@@ -26,7 +27,6 @@ export const AuthField = <T extends FieldValues>({
   disabled,
 }: AuthFieldProps<T>) => {
   const [isVisible, setIsVisible] = useState(false)
-
   const isPassword = type === 'password'
   const inputType = isPassword && isVisible ? 'text' : type
 
@@ -34,7 +34,7 @@ export const AuthField = <T extends FieldValues>({
     <FormField
       control={control}
       name={name}
-      render={({ field }) => (
+      render={({ field, fieldState }) => (
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
@@ -45,12 +45,14 @@ export const AuthField = <T extends FieldValues>({
                   type={inputType}
                   placeholder={placeholder}
                   autoComplete={autoComplete}
-                  disabled={disabled} />
+                  disabled={disabled}
+                  aria-invalid={!!fieldState.error}
+                />
                 <InputGroupAddon align='inline-end'>
                   <InputGroupButton
                     type='button'
                     variant='ghost'
-                    onClick={() => setIsVisible(!isVisible)}>
+                    onClick={() => setIsVisible((v) => !v)}>
                     {isVisible ? <EyeOff /> : <Eye />}
                   </InputGroupButton>
                 </InputGroupAddon>
@@ -61,11 +63,14 @@ export const AuthField = <T extends FieldValues>({
                 type={inputType}
                 placeholder={placeholder}
                 autoComplete={autoComplete}
-                disabled={disabled} />
+                disabled={disabled}
+                aria-invalid={!!fieldState.error}
+              />
             )}
           </FormControl>
           <FormMessage className='text-xs text-right' />
         </FormItem>
-      )} />
+      )}
+    />
   )
 }

@@ -1,3 +1,4 @@
+// src/routes/components/error-boundary.tsx
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 
 interface Props {
@@ -37,7 +38,7 @@ export class ErrorBoundary extends Component<Props, State> {
         <main className='grid min-h-svh place-content-center p-4'>
           <div className='flex items-center gap-4 md:gap-6'>
             {import.meta.env.DEV && this.state.error && (
-              <pre className='max-w-7xl text-sm text-muted-foreground overflow-auto'>
+              <pre className='max-w-7xl text-sm text-muted-foreground'>
                 <code>{this.state.error.stack}</code>
               </pre>
             )}

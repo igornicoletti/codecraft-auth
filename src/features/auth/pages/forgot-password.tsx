@@ -27,7 +27,7 @@ export const ForgotPasswordPage = () => {
     await authSubmit(async (vals) => {
       await authService.resetPassword(vals.email)
       setIsEmailSent(true)
-    }, data, 'forgotPassword')
+    }, data)
   }
 
   const formFields = [{

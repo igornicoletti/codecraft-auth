@@ -1,64 +1,77 @@
+// src/features/auth/contexts/auth.context.tsx
 import type { Session, User } from '@supabase/supabase-js'
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
 import { supabase } from '@/lib/supabase'
 
-interface AuthProviderState {
+interface AuthContextValue {
   user: User | null
   session: Session | null
   loading: boolean
+  signOut: () => Promise<void>
 }
 
-const AuthProviderContext = createContext<AuthProviderState | undefined>(undefined)
+const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const initializeAuth = async () => {
-      const minimumDelay = new Promise((resolve) => setTimeout(resolve, 800))
+    let mounted = true
 
+    // 1. Inicialização
+    const initAuth = async () => {
       try {
-        const [{ data }] = await Promise.all([
-          supabase.auth.getSession(),
-          minimumDelay
-        ])
-
-        setSession(data.session)
-        setUser(data.session?.user ?? null)
+        const { data: { session: initialSession } } = await supabase.auth.getSession()
+        if (mounted) {
+          setSession(initialSession)
+          setUser(initialSession?.user ?? null)
+        }
       } catch (error) {
-        console.error('Erro ao inicializar auth:', error)
+        console.error('Auth initialization failed', error)
       } finally {
-        setLoading(false)
+        if (mounted) setLoading(false)
       }
     }
 
-    initializeAuth()
+    initAuth()
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
+    // 2. Listener de Eventos (Login, Logout, Token Refreshed)
+    // Isso garante que se o token atualizar ou expirar, a UI reage.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      if (mounted) {
+        setSession(newSession)
+        setUser(newSession?.user ?? null)
+        setLoading(false)
+      }
     })
 
     return () => {
-      listener.subscription.unsubscribe()
+      mounted = false
+      subscription.unsubscribe()
     }
   }, [])
 
-  return (
-    <AuthProviderContext.Provider value={{ user, session, loading }}>
-      {children}
-    </AuthProviderContext.Provider>
-  )
+  // Expor a função signOut no contexto facilita o uso em qualquer lugar da app
+  const signOut = async () => {
+    await supabase.auth.signOut()
+    // O onAuthStateChange cuidará de limpar o estado
+  }
+
+  const value = useMemo(() => ({
+    user,
+    session,
+    loading,
+    signOut
+  }), [user, session, loading])
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => {
-  const context = useContext(AuthProviderContext)
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
+  const context = useContext(AuthContext)
+  if (!context) throw new Error('useAuth must be used within AuthProvider')
   return context
 }

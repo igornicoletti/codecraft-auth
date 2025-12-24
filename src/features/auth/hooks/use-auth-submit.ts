@@ -1,26 +1,19 @@
+// src/features/auth/hooks/use-auth-submit.ts
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
-import { AUTH_ERROR_MAP, AUTH_MESSAGES } from '@/features/auth/constants/auth-messages'
-import { useToast } from '@/hooks/use-toast'
-
-type AuthActionKey = keyof typeof AUTH_MESSAGES.actions
+import { AUTH_ERROR_MAP } from '@/features/auth/constants/auth-messages'
 
 export const useAuthSubmit = <T>() => {
-  const { success, error: errorToast } = useToast()
   const navigate = useNavigate()
 
-  const handleSubmit = async (action: (data: T) => Promise<any>, data: T, actionKey: AuthActionKey, redirectTo?: string) => {
-    const config = AUTH_MESSAGES.actions[actionKey]
-
+  const handleSubmit = async (action: (data: T) => Promise<any>, data: T, redirectTo?: string) => {
     try {
       await action(data)
-      success(AUTH_MESSAGES.titles.success, { description: config.success })
-
       if (redirectTo) navigate(redirectTo)
-    } catch (err: any) {
-      const description = AUTH_ERROR_MAP[err?.message] || err?.message || config.defaultError
-
-      errorToast(AUTH_MESSAGES.titles.error, { description })
+    } catch (err: unknown) {
+      const error = AUTH_ERROR_MAP[(err as Error)?.message] || (err as Error)?.message
+      toast.error(error)
     }
   }
 

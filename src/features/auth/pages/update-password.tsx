@@ -1,3 +1,4 @@
+// src/features/auth/pages/update-password.tsx
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
@@ -26,7 +27,7 @@ export const UpdatePasswordPage = () => {
   const { isSubmitting } = form.formState
 
   const onSubmit = async (data: UpdatePasswordInput) => {
-    await authSubmit((vals) => authService.updatePassword(vals.password), data, 'updatePassword', '/login')
+    await authSubmit((vals) => authService.updatePassword(vals.password), data, '/login')
   }
 
   const formFields = [{

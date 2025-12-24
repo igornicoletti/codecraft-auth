@@ -1,3 +1,4 @@
+// src/features/auth/constants/auth-content.ts
 export const AUTH_CONTENT = {
   loginPage: {
     title: 'Faça login no CodeCraft',

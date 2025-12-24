@@ -1,3 +1,4 @@
+// src/features/auth/pages/register.tsx
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
@@ -23,7 +24,7 @@ export const RegisterPage = () => {
   const { isSubmitting } = form.formState
 
   const onSubmit = async (data: RegisterInput) => {
-    await authSubmit((vals) => authService.signUp(vals.email, vals.password), data, 'signUp', '/login')
+    await authSubmit((vals) => authService.signUp(vals.email, vals.password), data, '/login')
   }
 
   const handleGoogleLogin = async () => {
@@ -64,7 +65,6 @@ export const RegisterPage = () => {
           </CardHeader>
           <CardContent>
             <Button
-              type='button'
               variant='secondary'
               className='w-full'
               onClick={handleGoogleLogin}
