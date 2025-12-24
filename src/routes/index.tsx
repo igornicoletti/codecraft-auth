@@ -4,9 +4,9 @@ import { createBrowserRouter, Navigate, Outlet, type RouteObject } from 'react-r
 
 import { LoaderFour } from '@/components/ui/loader'
 import { lazyImport } from '@/lib/lazyload'
-import { ErrorBoundary } from '@/routes/components/error-boundary'
 import { ROUTE_LIST, type AppRouteConfig } from '@/routes/config'
 import { ProtectedRoute } from '@/routes/guards/protected-route'
+import { ErrorBoundary } from '@/routes/pages/error-boundary'
 import { APP_PATHS } from '@/routes/paths'
 
 // Componente Layout Base
@@ -18,7 +18,7 @@ const RootLayout = () => (
   </ErrorBoundary>
 )
 
-const NotFound = lazyImport(() => import('@/routes/components/not-found'), 'NotFoundPage')
+const NotFound = lazyImport(() => import('@/routes/pages/not-found'), 'NotFoundPage')
 
 // Função recursiva para gerar rotas (suporta aninhamento infinito)
 const generateRoutes = (configs: AppRouteConfig[]): RouteObject[] => {

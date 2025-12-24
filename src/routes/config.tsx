@@ -18,7 +18,7 @@ const Pages = {
   ForgotPass: lazyImport(() => import('@/features/auth/pages/forgot-password'), 'ForgotPasswordPage'),
   UpdatePass: lazyImport(() => import('@/features/auth/pages/update-password'), 'UpdatePasswordPage'),
   Dashboard: lazyImport(() => import('@/features/dashboard/pages/dashboard'), 'DashboardPage'),
-  NotFound: lazyImport(() => import('@/routes/components/not-found'), 'NotFoundPage'),
+  NotFound: lazyImport(() => import('@/routes/pages/not-found'), 'NotFoundPage'),
 }
 
 export const ROUTE_LIST: AppRouteConfig[] = [
