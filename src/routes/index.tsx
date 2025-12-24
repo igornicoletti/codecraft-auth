@@ -24,6 +24,7 @@ export const router = createBrowserRouter([
     element: <Root />,
     errorElement: <ErrorBoundary />,
     children: [
+      { path: '*', element: <NotFoundPage /> },
       { index: true, element: <Navigate to='/login' replace /> },
       {
         element: <PublicRoute />,
@@ -36,11 +37,10 @@ export const router = createBrowserRouter([
       {
         element: <ProtectedRoute />,
         children: [
-          { path: 'dashboard', element: <LazyLoaded.DashboardPage /> },
           { path: 'update-password', element: <LazyLoaded.UpdatePasswordPage /> },
+          { path: 'dashboard', element: <LazyLoaded.DashboardPage /> },
         ],
       },
-      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ])

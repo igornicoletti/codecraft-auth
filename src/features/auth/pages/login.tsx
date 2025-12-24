@@ -17,10 +17,7 @@ export const LoginPage = () => {
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: ''
-    }
+    defaultValues: { email: '', password: '' }
   })
 
   const { isSubmitting } = form.formState
@@ -37,22 +34,19 @@ export const LoginPage = () => {
     }
   }
 
-  const formFields = [
-    {
-      name: 'email' as const,
-      label: loginPage.fields.emailLabel,
-      placeholder: loginPage.fields.emailPlaceholder,
-      type: 'email',
-      autoComplete: 'username',
-    },
-    {
-      name: 'password' as const,
-      label: loginPage.fields.passwordLabel,
-      placeholder: loginPage.fields.passwordPlaceholder,
-      type: 'password',
-      autoComplete: 'current-password',
-    },
-  ]
+  const formFields = [{
+    name: 'email' as const,
+    label: loginPage.fields.emailLabel,
+    placeholder: loginPage.fields.emailPlaceholder,
+    type: 'email',
+    autoComplete: 'username',
+  }, {
+    name: 'password' as const,
+    label: loginPage.fields.passwordLabel,
+    placeholder: loginPage.fields.passwordPlaceholder,
+    type: 'password',
+    autoComplete: 'current-password',
+  }]
 
   return (
     <main className='flex min-h-svh w-full items-center justify-center p-4'>
@@ -62,7 +56,6 @@ export const LoginPage = () => {
             <CardTitle>{loginPage.title}</CardTitle>
             <CardDescription>{loginPage.description}</CardDescription>
           </CardHeader>
-
           <CardContent>
             <Button
               type='button'
@@ -70,15 +63,13 @@ export const LoginPage = () => {
               className='w-full'
               onClick={handleGoogleLogin}
               disabled={isSubmitting}>
-              Continue with Google
+              {loginPage.social}
             </Button>
-
             <div className='flex items-center justify-center gap-2 overflow-hidden'>
               <Separator className='shrink' />
-              <span className='text-sm text-muted-foreground min-w-fit'>or</span>
+              <span className='text-sm text-muted-foreground min-w-fit'>ou</span>
               <Separator className='shrink' />
             </div>
-
             <AuthForm
               form={form}
               onSubmit={onSubmit}
@@ -86,7 +77,6 @@ export const LoginPage = () => {
               isLoading={isSubmitting}
               fields={formFields} />
           </CardContent>
-
           <CardFooter>
             <Button asChild variant='link'>
               <Link to={loginPage.forgotPassword.link}>
@@ -94,9 +84,9 @@ export const LoginPage = () => {
               </Link>
             </Button>
             <p className='text-sm text-muted-foreground'>
-              {loginPage.signUp.question}{' '}
-              <Link to={loginPage.signUp.link} className='text-primary underline-offset-4 hover:underline'>
-                {loginPage.signUp.label}
+              {loginPage.actions.question}{' '}
+              <Link to={loginPage.actions.link} className='text-primary underline-offset-4 hover:underline'>
+                {loginPage.actions.label}
               </Link>
             </p>
           </CardFooter>

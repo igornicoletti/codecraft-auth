@@ -17,11 +17,7 @@ export const RegisterPage = () => {
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-      confirmPassword: '',
-    },
+    defaultValues: { email: '', password: '', confirmPassword: '' }
   })
 
   const { isSubmitting } = form.formState
@@ -38,29 +34,25 @@ export const RegisterPage = () => {
     }
   }
 
-  const formFields = [
-    {
-      name: 'email' as const,
-      label: registerPage.fields.emailLabel,
-      placeholder: registerPage.fields.emailPlaceholder,
-      type: 'email',
-      autoComplete: 'username',
-    },
-    {
-      name: 'password' as const,
-      label: registerPage.fields.passwordLabel,
-      placeholder: registerPage.fields.passwordPlaceholder,
-      type: 'password',
-      autoComplete: 'new-password',
-    },
-    {
-      name: 'confirmPassword' as const,
-      label: registerPage.fields.confirmPasswordLabel,
-      placeholder: registerPage.fields.confirmPasswordPlaceholder,
-      type: 'password',
-      autoComplete: 'new-password',
-    },
-  ]
+  const formFields = [{
+    name: 'email' as const,
+    label: registerPage.fields.emailLabel,
+    placeholder: registerPage.fields.emailPlaceholder,
+    type: 'email',
+    autoComplete: 'username',
+  }, {
+    name: 'password' as const,
+    label: registerPage.fields.passwordLabel,
+    placeholder: registerPage.fields.passwordPlaceholder,
+    type: 'password',
+    autoComplete: 'new-password',
+  }, {
+    name: 'confirmPassword' as const,
+    label: registerPage.fields.confirmPasswordLabel,
+    placeholder: registerPage.fields.confirmPasswordPlaceholder,
+    type: 'password',
+    autoComplete: 'new-password',
+  }]
 
   return (
     <main className='flex min-h-svh w-full items-center justify-center p-4'>
@@ -70,7 +62,6 @@ export const RegisterPage = () => {
             <CardTitle>{registerPage.title}</CardTitle>
             <CardDescription>{registerPage.description}</CardDescription>
           </CardHeader>
-
           <CardContent>
             <Button
               type='button'
@@ -78,15 +69,13 @@ export const RegisterPage = () => {
               className='w-full'
               onClick={handleGoogleLogin}
               disabled={isSubmitting}>
-              Continue with Google
+              {registerPage.social}
             </Button>
-
             <div className='flex items-center justify-center gap-2 overflow-hidden'>
               <Separator className='shrink' />
-              <span className='text-sm text-muted-foreground min-w-fit'>or</span>
+              <span className='text-sm text-muted-foreground min-w-fit'>ou</span>
               <Separator className='shrink' />
             </div>
-
             <AuthForm
               form={form}
               onSubmit={onSubmit}
@@ -94,12 +83,11 @@ export const RegisterPage = () => {
               isLoading={isSubmitting}
               fields={formFields} />
           </CardContent>
-
           <CardFooter>
             <p className='text-sm text-muted-foreground'>
-              {registerPage.signIn.question}{' '}
-              <Link to={registerPage.signIn.link} className='text-primary underline-offset-4 hover:underline'>
-                {registerPage.signIn.label}
+              {registerPage.actions.question}{' '}
+              <Link to={registerPage.actions.link} className='text-primary underline-offset-4 hover:underline'>
+                {registerPage.actions.label}
               </Link>
             </p>
           </CardFooter>
