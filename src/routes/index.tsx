@@ -20,10 +20,11 @@ const Root = () => (
 
 export const router = createBrowserRouter([
   {
+    path: '/',
     element: <Root />,
     errorElement: <ErrorBoundary />,
     children: [
-      { path: '/', element: <Navigate to='/login' replace /> },
+      { index: true, element: <Navigate to='/login' replace /> },
       {
         element: <PublicRoute />,
         children: [
