@@ -87,7 +87,7 @@ export const RegisterPage = () => {
             <CardFooter>
               <p className='text-sm text-muted-foreground'>
                 {registerPage.actions.question}{' '}
-                <Link to={registerPage.actions.link} className='text-primary underline-offset-4 hover:underline'>
+                <Link to={registerPage.actions.link} className='text-primary font-medium underline-offset-4 hover:underline'>
                   {registerPage.actions.label}
                 </Link>
               </p>

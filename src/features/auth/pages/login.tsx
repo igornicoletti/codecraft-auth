@@ -91,7 +91,7 @@ export const LoginPage = () => {
               </Button>
               <p className='text-sm text-muted-foreground'>
                 {loginPage.actions.question}{' '}
-                <Link to={loginPage.actions.link} className='text-primary underline-offset-4 hover:underline'>
+                <Link to={loginPage.actions.link} className='text-primary font-medium underline-offset-4 hover:underline'>
                   {loginPage.actions.label}
                 </Link>
               </p>
