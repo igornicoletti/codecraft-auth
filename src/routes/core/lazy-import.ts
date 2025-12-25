@@ -1,3 +1,4 @@
+// src/routes/core/lazy-import.ts
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
 
 export const lazyImport = <M extends Record<string, ComponentType<any>>, K extends keyof M>(

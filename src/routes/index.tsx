@@ -3,13 +3,10 @@ import { Suspense } from 'react'
 import { createBrowserRouter, Navigate, Outlet, type RouteObject } from 'react-router-dom'
 
 import { LoaderFour } from '@/components/ui/loader'
-import { ROUTE_LIST, type AppRouteConfig } from '@/routes/config'
-import { ProtectedRoute } from '@/routes/guards/protected-route'
-import { lazyImport } from '@/routes/helpers/lazy-import'
-import { ErrorBoundary } from '@/routes/pages/error-boundary'
-import { APP_PATHS } from '@/routes/paths'
+import { ErrorBoundary } from '@/routes/components/error-boundary'
+import { Pages, PATHS, ROUTE_LIST, type RouteConfig } from '@/routes/config'
+import { RouteGuard } from '@/routes/core/route-guard'
 
-// Componente Layout Base
 const RootLayout = () => (
   <ErrorBoundary>
     <Suspense fallback={<LoaderFour />}>
@@ -18,51 +15,35 @@ const RootLayout = () => (
   </ErrorBoundary>
 )
 
-const NotFound = lazyImport(() => import('@/routes/pages/not-found'), 'NotFoundPage')
+const buildRoutes = (configs: RouteConfig[]): RouteObject[] => {
+  const groups = {
+    guest: configs.filter(r => r.guard === 'guest'),
+    private: configs.filter(r => r.guard === 'private'),
+    public: configs.filter(r => r.guard === 'public'),
+  }
 
-// Função recursiva para gerar rotas (suporta aninhamento infinito)
-const generateRoutes = (configs: AppRouteConfig[]): RouteObject[] => {
-  // Agrupa rotas por tipo de Guard para criar os Wrappers corretos
-  const guestRoutes = configs.filter(r => r.guardType === 'guest')
-  const privateRoutes = configs.filter(r => r.guardType === 'private')
-  const publicRoutes = configs.filter(r => r.guardType === 'public')
-
-  const mapToRouteObj = (route: AppRouteConfig): RouteObject => ({
-    path: route.path,
-    element: <route.component />,
-    children: route.children ? generateRoutes(route.children) : undefined
+  const mapToRoute = (r: RouteConfig): RouteObject => ({
+    path: r.path,
+    element: <r.component />,
+    children: r.children ? buildRoutes(r.children) : undefined
   })
 
   return [
-    {
-      element: <ProtectedRoute type='guest' />,
-      children: guestRoutes.map(mapToRouteObj)
-    },
-    {
-      element: <ProtectedRoute type='private' />,
-      children: privateRoutes.map(mapToRouteObj)
-    },
-    {
-      element: <ProtectedRoute type='public' />,
-      children: publicRoutes.map(mapToRouteObj)
-    }
+    { element: <RouteGuard type='guest' />, children: groups.guest.map(mapToRoute) },
+    { element: <RouteGuard type='private' />, children: groups.private.map(mapToRoute) },
+    { element: <RouteGuard type='public' />, children: groups.public.map(mapToRoute) },
   ]
 }
 
 export const router = createBrowserRouter([
   {
-    path: APP_PATHS.HOME,
+    path: PATHS.HOME,
     element: <RootLayout />,
     errorElement: <ErrorBoundary />,
     children: [
-      // Redirecionamento da Raiz
-      { index: true, element: <Navigate to={APP_PATHS.AUTH.LOGIN} replace /> },
-
-      // Injeta todas as rotas geradas dinamicamente
-      ...generateRoutes(ROUTE_LIST),
-
-      // Rota 404
-      { path: APP_PATHS.NOT_FOUND, element: <NotFound /> }
+      { index: true, element: <Navigate to={PATHS.AUTH.LOGIN} replace /> },
+      ...buildRoutes(ROUTE_LIST),
+      { path: PATHS.ANY, element: <Pages.NotFound /> }
     ],
   },
 ])

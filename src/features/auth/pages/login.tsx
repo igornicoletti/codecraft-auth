@@ -11,7 +11,6 @@ import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
 import { useAuthSubmit } from '@/features/auth/hooks/use-auth-submit'
 import { loginSchema, type LoginInput } from '@/features/auth/schemas/auth.schema'
 import { authService } from '@/features/auth/services/auth.service'
-import { APP_PATHS } from '@/routes/paths'
 
 export const LoginPage = () => {
   const { loginPage } = AUTH_CONTENT
@@ -28,7 +27,7 @@ export const LoginPage = () => {
     await authSubmit((vals) =>
       authService.signIn(vals.email, vals.password),
       data,
-      APP_PATHS.DASHBOARD.ROOT
+      '/dashboard'
     )
   }
 
