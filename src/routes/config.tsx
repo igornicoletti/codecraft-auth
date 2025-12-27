@@ -43,17 +43,19 @@ export const ROUTE_LIST: RouteConfig[] = [
       { path: PATHS.AUTH.LOGIN, component: Pages.Login, guard: 'guest' },
       { path: PATHS.AUTH.REGISTER, component: Pages.Register, guard: 'guest' },
       { path: PATHS.AUTH.FORGOT_PASSWORD, component: Pages.ForgotPass, guard: 'guest' },
-    ]
+    ],
   },
   {
     path: '',
     component: AuthLayout,
     guard: 'private',
     children: [
-      { path: PATHS.AUTH.UPDATE_PASSWORD, component: Pages.UpdatePass, guard: 'private' }
-    ]
+      { path: PATHS.AUTH.UPDATE_PASSWORD, component: Pages.UpdatePass, guard: 'private' },
+    ],
   },
   {
-    path: PATHS.DASHBOARD.ROOT, component: Pages.Dashboard, guard: 'private'
-  }
+    path: PATHS.DASHBOARD.ROOT,
+    component: Pages.Dashboard,
+    guard: 'private',
+  },
 ]

@@ -1,9 +1,9 @@
 // src/features/auth/hooks/use-auth-submit.ts
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { AUTH_ERROR_MAP } from '@/features/auth/constants/auth-messages'
-import { useState } from 'react'
 
 export const useAuthSubmit = <T>() => {
   const navigate = useNavigate()
@@ -11,7 +11,6 @@ export const useAuthSubmit = <T>() => {
 
   const handleSubmit = async (action: (data: T) => Promise<any>, data: T, redirectTo?: string) => {
     setIsPending(true)
-
     try {
       await action(data)
       if (redirectTo) navigate(redirectTo)

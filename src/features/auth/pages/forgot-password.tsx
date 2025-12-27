@@ -31,13 +31,15 @@ export const ForgotPasswordPage = () => {
     }, data)
   }
 
-  const formFields = [{
-    name: 'email' as const,
-    label: fields.emailLabel,
-    placeholder: fields.emailPlaceholder,
-    type: 'email',
-    autoComplete: 'email',
-  }]
+  const formFields = [
+    {
+      name: 'email' as const,
+      label: fields.emailLabel,
+      placeholder: fields.emailPlaceholder,
+      type: 'email',
+      autoComplete: 'email',
+    },
+  ]
 
   if (isEmailSent) return null
 
@@ -47,6 +49,7 @@ export const ForgotPasswordPage = () => {
       onSubmit={onSubmit}
       fields={formFields}
       submitText={submitButton}
-      isLoading={isPending} />
+      isLoading={isPending}
+    />
   )
 }

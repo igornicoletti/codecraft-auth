@@ -15,7 +15,9 @@ export const RouteGuard = ({ type = 'private' }: RouteGuardProps) => {
   const { user, loading } = useAuth()
   const location = useLocation()
 
-  if (loading) return <div className='h-screen flex items-center justify-center'><LoaderFour /></div>
+  if (loading) {
+    return <LoaderFour />
+  }
 
   // 1. Rota Privada (Dashboard): Se não tiver user -> Login
   if (type === 'private' && !user) {
@@ -24,10 +26,10 @@ export const RouteGuard = ({ type = 'private' }: RouteGuardProps) => {
 
   // 2. Rota 'Convidado' (Login/Register): Se tiver user -> Dashboard
   if (type === 'guest' && user) {
-    const from = (location.state as any)?.from?.pathname || PATHS.DASHBOARD.ROOT
-    return <Navigate to={from} replace />
+    const fromPath = (location.state as { from?: { pathname?: string } })?.from?.pathname
+    return <Navigate to={fromPath || PATHS.DASHBOARD.ROOT} replace />
   }
 
-  // 3. Rota Pública: Acessível por todos, sem redirecionamento
+  // 3. Rota Pública: Acessível por todos
   return <Outlet />
 }

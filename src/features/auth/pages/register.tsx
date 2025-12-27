@@ -12,19 +12,18 @@ import { authService } from '@/features/auth/services/auth.service'
 
 export const RegisterPage = () => {
   const { handleSubmit, isPending } = useAuthSubmit<RegisterInput>()
-
   const { fields, separator, social, submitButton } = AUTH_CONTENT.register
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { email: '', password: '', confirmPassword: '' }
+    defaultValues: { email: '', password: '', confirmPassword: '' },
   })
 
   const onSubmit = async (data: RegisterInput) => {
-    await handleSubmit((vals) =>
-      authService.signUp(vals.email, vals.password),
+    await handleSubmit(
+      (vals) => authService.signUp(vals.email, vals.password),
       data,
-      '/login'
+      '/login',
     )
   }
 
@@ -36,33 +35,33 @@ export const RegisterPage = () => {
     }
   }
 
-  const formFields = [{
-    name: 'email' as const,
-    label: fields.emailLabel,
-    placeholder: fields.emailPlaceholder,
-    type: 'email',
-    autoComplete: 'username',
-  }, {
-    name: 'password' as const,
-    label: fields.passwordLabel,
-    placeholder: fields.passwordPlaceholder,
-    type: 'password',
-    autoComplete: 'new-password',
-  }, {
-    name: 'confirmPassword' as const,
-    label: fields.confirmPasswordLabel,
-    placeholder: fields.confirmPasswordPlaceholder,
-    type: 'password',
-    autoComplete: 'new-password',
-  }]
+  const formFields = [
+    {
+      name: 'email' as const,
+      label: fields.emailLabel,
+      placeholder: fields.emailPlaceholder,
+      type: 'email',
+      autoComplete: 'username',
+    },
+    {
+      name: 'password' as const,
+      label: fields.passwordLabel,
+      placeholder: fields.passwordPlaceholder,
+      type: 'password',
+      autoComplete: 'new-password',
+    },
+    {
+      name: 'confirmPassword' as const,
+      label: fields.confirmPasswordLabel,
+      placeholder: fields.confirmPasswordPlaceholder,
+      type: 'password',
+      autoComplete: 'new-password',
+    },
+  ]
 
   return (
     <>
-      <Button
-        variant='secondary'
-        className='w-full'
-        onClick={handleGoogleLogin}
-        disabled={isPending}>
+      <Button variant='secondary' className='w-full' onClick={handleGoogleLogin} disabled={isPending}>
         {social}
       </Button>
       <div className='flex items-center justify-center gap-2 overflow-hidden'>
@@ -75,7 +74,8 @@ export const RegisterPage = () => {
         onSubmit={onSubmit}
         submitText={submitButton}
         isLoading={isPending}
-        fields={formFields} />
+        fields={formFields}
+      />
     </>
   )
 }

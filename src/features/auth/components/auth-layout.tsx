@@ -4,6 +4,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom'
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
+import { PATHS } from '@/routes/config'
 
 export interface AuthLayoutContext {
   setTitle: (title: string) => void
@@ -12,17 +13,23 @@ export interface AuthLayoutContext {
 
 export const AuthLayout = () => {
   const location = useLocation()
-
   const [customTitle, setCustomTitle] = useState<string | null>(null)
   const [customDescription, setCustomDescription] = useState<string | null>(null)
 
   const getContentByPath = (path: string) => {
-    const normalized = path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path
-    if (normalized.includes('/login')) return AUTH_CONTENT.login
-    if (normalized.includes('/register')) return AUTH_CONTENT.register
-    if (normalized.includes('/forgot-password')) return AUTH_CONTENT.forgotPassword
-    if (normalized.includes('/update-password')) return AUTH_CONTENT.updatePassword
-    return AUTH_CONTENT.login
+    const normalized = path.replace(/\/$/, '')
+    switch (true) {
+      case normalized.endsWith(PATHS.AUTH.LOGIN):
+        return AUTH_CONTENT.login
+      case normalized.endsWith(PATHS.AUTH.REGISTER):
+        return AUTH_CONTENT.register
+      case normalized.endsWith(PATHS.AUTH.FORGOT_PASSWORD):
+        return AUTH_CONTENT.forgotPassword
+      case normalized.endsWith(PATHS.AUTH.UPDATE_PASSWORD):
+        return AUTH_CONTENT.updatePassword
+      default:
+        return AUTH_CONTENT.login
+    }
   }
 
   const content = getContentByPath(location.pathname)
@@ -38,13 +45,20 @@ export const AuthLayout = () => {
             </CardHeader>
 
             <CardContent>
-              <Outlet context={{ setTitle: setCustomTitle, setDescription: setCustomDescription } satisfies AuthLayoutContext} />
+              <Outlet
+                context={{
+                  setTitle: setCustomTitle,
+                  setDescription: setCustomDescription,
+                } satisfies AuthLayoutContext}
+              />
             </CardContent>
 
             <CardFooter>
               <p className='text-sm text-muted-foreground'>
                 {content.actions?.question}{' '}
-                <Link to={content.actions.link} className='text-primary font-medium underline-offset-4 hover:underline'>
+                <Link
+                  to={content.actions.link}
+                  className='text-primary font-medium underline-offset-4 hover:underline'>
                   {content.actions.label}
                 </Link>
               </p>

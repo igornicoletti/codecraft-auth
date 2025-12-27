@@ -18,43 +18,32 @@ const RootLayout = () => (
 const mapConfigToRoute = (config: RouteConfig): RouteObject => ({
   path: config.path,
   element: <config.component />,
-  children: config.children ? config.children.map(mapConfigToRoute) : undefined
+  children: config.children ? config.children.map(mapConfigToRoute) : undefined,
 })
 
 const buildRoutes = (configs: RouteConfig[]): RouteObject[] => {
-  const groups = {
-    guest: configs.filter((r) => r.guard === 'guest'),
-    private: configs.filter((r) => r.guard === 'private'),
-    public: configs.filter((r) => r.guard === 'public'),
-  }
-
-  return [
-    {
-      element: <RouteGuard type='guest' />,
-      children: groups.guest.map(mapConfigToRoute)
-    },
-    {
-      element: <RouteGuard type='private' />,
-      children: groups.private.map(mapConfigToRoute)
-    },
-    {
-      element: <RouteGuard type='public' />,
-      children: groups.public.map(mapConfigToRoute)
-    }
-  ]
+  const guards: Array<RouteConfig['guard']> = ['guest', 'private', 'public']
+  return guards.map((guard) => ({
+    element: <RouteGuard type={guard} />,
+    children: configs.filter((r) => r.guard === guard).map(mapConfigToRoute),
+  }))
 }
 
-export const router = createBrowserRouter([{
-  path: PATHS.HOME,
-  element: <RootLayout />,
-  errorElement: <ErrorBoundary />,
-  children: [{
-    index: true,
-    element: <Navigate to={PATHS.AUTH.LOGIN} replace />
-  },
-  ...buildRoutes(ROUTE_LIST),
+export const router = createBrowserRouter([
   {
-    path: PATHS.ANY,
-    element: <Pages.NotFound />
-  }],
-}])
+    path: PATHS.HOME,
+    element: <RootLayout />,
+    errorElement: <ErrorBoundary />,
+    children: [
+      {
+        index: true,
+        element: <Navigate to={PATHS.AUTH.LOGIN} replace />,
+      },
+      ...buildRoutes(ROUTE_LIST),
+      {
+        path: PATHS.ANY,
+        element: <Pages.NotFound />,
+      },
+    ],
+  },
+])

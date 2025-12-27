@@ -1,5 +1,6 @@
 // src/features/auth/pages/update-password.tsx
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useOutletContext } from 'react-router-dom'
 
@@ -10,46 +11,50 @@ import { useAuth } from '@/features/auth/contexts/auth.context'
 import { useAuthSubmit } from '@/features/auth/hooks/use-auth-submit'
 import { updatePasswordSchema, type UpdatePasswordInput } from '@/features/auth/schemas/auth.schema'
 import { authService } from '@/features/auth/services/auth.service'
-import { useEffect } from 'react'
 
 export const UpdatePasswordPage = () => {
   const { handleSubmit, isPending } = useAuthSubmit<UpdatePasswordInput>()
   const { setTitle } = useOutletContext<AuthLayoutContext>()
   const { user } = useAuth()
-
   const { title, fields, submitButton } = AUTH_CONTENT.updatePassword
 
   useEffect(() => {
-    const userName = user?.user_metadata?.display_name || user?.email?.split('@')[0] || ''
+    const userName =
+      user?.user_metadata?.display_name ||
+      user?.email?.split('@')[0] ||
+      ''
     setTitle(`${title} @${userName}`)
   }, [user, title, setTitle])
 
   const form = useForm<UpdatePasswordInput>({
     resolver: zodResolver(updatePasswordSchema),
-    defaultValues: { password: '', confirmPassword: '' }
+    defaultValues: { password: '', confirmPassword: '' },
   })
 
   const onSubmit = async (data: UpdatePasswordInput) => {
-    await handleSubmit((vals) =>
-      authService.updatePassword(vals.password),
+    await handleSubmit(
+      (vals) => authService.updatePassword(vals.password),
       data,
-      '/login'
+      '/login',
     )
   }
 
-  const formFields = [{
-    name: 'password' as const,
-    label: fields.passwordLabel,
-    placeholder: fields.passwordPlaceholder,
-    type: 'password',
-    autoComplete: 'new-password',
-  }, {
-    name: 'confirmPassword' as const,
-    label: fields.confirmPasswordLabel,
-    placeholder: fields.confirmPasswordPlaceholder,
-    type: 'password',
-    autoComplete: 'new-password',
-  }]
+  const formFields = [
+    {
+      name: 'password' as const,
+      label: fields.passwordLabel,
+      placeholder: fields.passwordPlaceholder,
+      type: 'password',
+      autoComplete: 'new-password',
+    },
+    {
+      name: 'confirmPassword' as const,
+      label: fields.confirmPasswordLabel,
+      placeholder: fields.confirmPasswordPlaceholder,
+      type: 'password',
+      autoComplete: 'new-password',
+    },
+  ]
 
   return (
     <AuthForm
@@ -57,6 +62,7 @@ export const UpdatePasswordPage = () => {
       onSubmit={onSubmit}
       fields={formFields}
       submitText={submitButton}
-      isLoading={isPending} />
+      isLoading={isPending}
+    />
   )
 }
