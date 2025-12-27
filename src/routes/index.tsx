@@ -15,35 +15,46 @@ const RootLayout = () => (
   </ErrorBoundary>
 )
 
+const mapConfigToRoute = (config: RouteConfig): RouteObject => ({
+  path: config.path,
+  element: <config.component />,
+  children: config.children ? config.children.map(mapConfigToRoute) : undefined
+})
+
 const buildRoutes = (configs: RouteConfig[]): RouteObject[] => {
   const groups = {
-    guest: configs.filter(r => r.guard === 'guest'),
-    private: configs.filter(r => r.guard === 'private'),
-    public: configs.filter(r => r.guard === 'public'),
+    guest: configs.filter((r) => r.guard === 'guest'),
+    private: configs.filter((r) => r.guard === 'private'),
+    public: configs.filter((r) => r.guard === 'public'),
   }
 
-  const mapToRoute = (r: RouteConfig): RouteObject => ({
-    path: r.path,
-    element: <r.component />,
-    children: r.children ? buildRoutes(r.children) : undefined
-  })
-
   return [
-    { element: <RouteGuard type='guest' />, children: groups.guest.map(mapToRoute) },
-    { element: <RouteGuard type='private' />, children: groups.private.map(mapToRoute) },
-    { element: <RouteGuard type='public' />, children: groups.public.map(mapToRoute) },
+    {
+      element: <RouteGuard type='guest' />,
+      children: groups.guest.map(mapConfigToRoute)
+    },
+    {
+      element: <RouteGuard type='private' />,
+      children: groups.private.map(mapConfigToRoute)
+    },
+    {
+      element: <RouteGuard type='public' />,
+      children: groups.public.map(mapConfigToRoute)
+    }
   ]
 }
 
-export const router = createBrowserRouter([
-  {
-    path: PATHS.HOME,
-    element: <RootLayout />,
-    errorElement: <ErrorBoundary />,
-    children: [
-      { index: true, element: <Navigate to={PATHS.AUTH.LOGIN} replace /> },
-      ...buildRoutes(ROUTE_LIST),
-      { path: PATHS.ANY, element: <Pages.NotFound /> }
-    ],
+export const router = createBrowserRouter([{
+  path: PATHS.HOME,
+  element: <RootLayout />,
+  errorElement: <ErrorBoundary />,
+  children: [{
+    index: true,
+    element: <Navigate to={PATHS.AUTH.LOGIN} replace />
   },
-])
+  ...buildRoutes(ROUTE_LIST),
+  {
+    path: PATHS.ANY,
+    element: <Pages.NotFound />
+  }],
+}])

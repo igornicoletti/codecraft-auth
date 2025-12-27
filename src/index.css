@@ -1,6 +1,17 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+@font-face {
+  font-family: 'Satoshi';
+  src: url('@/assets/fonts/Satoshi-Variable.woff2') format('woff2-variations'),
+       url('@/assets/fonts/Satoshi-Variable.woff2') format('woff2'),
+       url('@/assets/fonts/Satoshi-Variable.woff') format('woff'),
+       url('@/assets/fonts/Satoshi-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -145,14 +156,11 @@
   --shadow-2xl: var(--shadow-2xl);
 
   --animate-line-shadow: line-shadow 15s linear infinite;
-  @keyframes line-shadow {
-    0% {
-      background-position: 0 0;
-    }
-    100% {
-      background-position: 100% -100%;
-    }
-  }
+}
+
+@keyframes line-shadow {
+  0% { background-position: 0 0; }
+  100% { background-position: 100% -100%; }
 }
 
 @layer base {
@@ -161,5 +169,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Satoshi', sans-serif;
   }
 }

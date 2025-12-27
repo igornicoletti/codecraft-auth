@@ -1,9 +1,10 @@
 // src/features/auth/constants/auth-content.ts
 export const AUTH_CONTENT = {
-  loginPage: {
+  login: {
     title: 'Faça login no CodeCraft',
     description: 'Aumente sua produtividade e concentre-se no crescimento.',
     social: 'Continue com o Google',
+    separator: 'ou',
     fields: {
       emailLabel: 'E-mail',
       emailPlaceholder: 'seu@email.com',
@@ -21,10 +22,11 @@ export const AUTH_CONTENT = {
       link: '/register',
     },
   },
-  registerPage: {
+  register: {
     title: 'Crie sua conta gratuita',
     description: 'Explore os principais recursos do CodeCraft.',
     social: 'Continue com o Google',
+    separator: 'ou',
     fields: {
       emailLabel: 'E-mail',
       emailPlaceholder: 'seu@email.com',
@@ -40,7 +42,7 @@ export const AUTH_CONTENT = {
       link: '/login',
     },
   },
-  forgotPasswordPage: {
+  forgotPassword: {
     title: 'Redefina sua senha',
     description: 'Digite o endereço de e-mail verificado da sua conta de usuário e lhe enviaremos um link para redefinição de senha.',
     message: 'Verifique seu e-mail em busca de um link para redefinir sua senha. Se não aparecer dentro de alguns minutos, verifique sua pasta de spam.',
@@ -50,11 +52,12 @@ export const AUTH_CONTENT = {
     },
     submitButton: 'Enviar e-mail de redefinição de senha',
     actions: {
+      question: '',
       label: 'Voltar para login',
       link: '/login',
     },
   },
-  updatePasswordPage: {
+  updatePassword: {
     title: 'Alterar senha para',
     description: 'Certifique-se de que é pelo menos 8 caracteres incluindo um número e uma letra minúscula.',
     fields: {
@@ -65,6 +68,7 @@ export const AUTH_CONTENT = {
     },
     submitButton: 'Atualizar senha',
     actions: {
+      question: '',
       label: 'Voltar para login',
       link: '/login',
     },

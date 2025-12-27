@@ -52,6 +52,7 @@ export const AuthField = <T extends FieldValues>({
                   <InputGroupButton
                     type='button'
                     variant='ghost'
+                    disabled={disabled}
                     onClick={() => setIsVisible((v) => !v)}>
                     {isVisible ? <EyeOff /> : <Eye />}
                   </InputGroupButton>

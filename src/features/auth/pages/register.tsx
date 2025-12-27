@@ -1,10 +1,8 @@
 // src/features/auth/pages/register.tsx
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { AuthForm } from '@/features/auth/components/auth-form'
 import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
@@ -13,18 +11,21 @@ import { registerSchema, type RegisterInput } from '@/features/auth/schemas/auth
 import { authService } from '@/features/auth/services/auth.service'
 
 export const RegisterPage = () => {
-  const { registerPage } = AUTH_CONTENT
-  const { handleSubmit: authSubmit } = useAuthSubmit<RegisterInput>()
+  const { handleSubmit, isPending } = useAuthSubmit<RegisterInput>()
+
+  const { fields, separator, social, submitButton } = AUTH_CONTENT.register
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
     defaultValues: { email: '', password: '', confirmPassword: '' }
   })
 
-  const { isSubmitting } = form.formState
-
   const onSubmit = async (data: RegisterInput) => {
-    await authSubmit((vals) => authService.signUp(vals.email, vals.password), data, '/login')
+    await handleSubmit((vals) =>
+      authService.signUp(vals.email, vals.password),
+      data,
+      '/login'
+    )
   }
 
   const handleGoogleLogin = async () => {
@@ -37,64 +38,44 @@ export const RegisterPage = () => {
 
   const formFields = [{
     name: 'email' as const,
-    label: registerPage.fields.emailLabel,
-    placeholder: registerPage.fields.emailPlaceholder,
+    label: fields.emailLabel,
+    placeholder: fields.emailPlaceholder,
     type: 'email',
     autoComplete: 'username',
   }, {
     name: 'password' as const,
-    label: registerPage.fields.passwordLabel,
-    placeholder: registerPage.fields.passwordPlaceholder,
+    label: fields.passwordLabel,
+    placeholder: fields.passwordPlaceholder,
     type: 'password',
     autoComplete: 'new-password',
   }, {
     name: 'confirmPassword' as const,
-    label: registerPage.fields.confirmPasswordLabel,
-    placeholder: registerPage.fields.confirmPasswordPlaceholder,
+    label: fields.confirmPasswordLabel,
+    placeholder: fields.confirmPasswordPlaceholder,
     type: 'password',
     autoComplete: 'new-password',
   }]
 
   return (
-    <main className='flex min-h-svh flex-col'>
-      <div className='flex flex-1 items-center justify-center py-12'>
-        <div className='w-full max-w-md'>
-          <Card className='bg-transparent border-none md:bg-card md:bg-linear-to-b from-secondary/50'>
-            <CardHeader>
-              <CardTitle>{registerPage.title}</CardTitle>
-              <CardDescription>{registerPage.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                variant='secondary'
-                className='w-full'
-                onClick={handleGoogleLogin}
-                disabled={isSubmitting}>
-                {registerPage.social}
-              </Button>
-              <div className='flex items-center justify-center gap-2 overflow-hidden'>
-                <Separator className='shrink' />
-                <span className='text-sm text-muted-foreground min-w-fit'>ou</span>
-                <Separator className='shrink' />
-              </div>
-              <AuthForm
-                form={form}
-                onSubmit={onSubmit}
-                submitText={registerPage.submitButton}
-                isLoading={isSubmitting}
-                fields={formFields} />
-            </CardContent>
-            <CardFooter>
-              <p className='text-sm text-muted-foreground'>
-                {registerPage.actions.question}{' '}
-                <Link to={registerPage.actions.link} className='text-primary font-medium underline-offset-4 hover:underline'>
-                  {registerPage.actions.label}
-                </Link>
-              </p>
-            </CardFooter>
-          </Card>
-        </div>
+    <>
+      <Button
+        variant='secondary'
+        className='w-full'
+        onClick={handleGoogleLogin}
+        disabled={isPending}>
+        {social}
+      </Button>
+      <div className='flex items-center justify-center gap-2 overflow-hidden'>
+        <Separator className='shrink' />
+        <span className='text-sm text-muted-foreground min-w-fit'>{separator}</span>
+        <Separator className='shrink' />
       </div>
-    </main>
+      <AuthForm
+        form={form}
+        onSubmit={onSubmit}
+        submitText={submitButton}
+        isLoading={isPending}
+        fields={formFields} />
+    </>
   )
 }

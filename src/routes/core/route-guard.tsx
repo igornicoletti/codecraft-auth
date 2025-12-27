@@ -28,6 +28,6 @@ export const RouteGuard = ({ type = 'private' }: RouteGuardProps) => {
     return <Navigate to={from} replace />
   }
 
-  // 3. Rota Pública (Sobre/Contato): Acessível por todos, sem redirecionamento
+  // 3. Rota Pública: Acessível por todos, sem redirecionamento
   return <Outlet />
 }

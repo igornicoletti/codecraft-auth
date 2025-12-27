@@ -18,7 +18,7 @@ interface AuthFormProps<T extends FieldValues> {
   form: UseFormReturn<T>
   onSubmit: (data: T) => void | Promise<void>
   fields: AuthFieldConfig<T>[]
-  submitText?: string
+  submitText: string
   isLoading?: boolean
 }
 
@@ -26,14 +26,11 @@ export const AuthForm = <T extends FieldValues>({
   form,
   onSubmit,
   fields,
-  submitText = 'Enviar',
+  submitText,
   isLoading = false,
 }: AuthFormProps<T>) => (
   <Form {...form}>
-    <form
-      noValidate
-      onSubmit={form.handleSubmit(onSubmit)}
-      className='space-y-6'>
+    <form noValidate onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
       {fields.map((field) => (
         <AuthField
           key={field.name}
@@ -43,8 +40,7 @@ export const AuthForm = <T extends FieldValues>({
           type={field.type}
           placeholder={field.placeholder}
           autoComplete={field.autoComplete}
-          disabled={isLoading}
-        />
+          disabled={isLoading} />
       ))}
       <Button disabled={isLoading} type='submit' className='w-full'>
         {isLoading ? <Spinner /> : submitText}
