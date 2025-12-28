@@ -2,6 +2,7 @@
 import type { Session, User } from '@supabase/supabase-js'
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
+import { authService } from '@/features/auth/services/auth.service'
 import { supabase } from '@/lib/supabase'
 
 interface AuthContextValue {
@@ -21,7 +22,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     let mounted = true
 
-    // 1. Inicialização
     const initAuth = async () => {
       try {
         const { data: { session: initialSession } } = await supabase.auth.getSession()
@@ -38,8 +38,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     initAuth()
 
-    // 2. Listener de Eventos (Login, Logout, Token Refreshed)
-    // Isso garante que se o token atualizar ou expirar, a UI reage.
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
       if (mounted) {
         setSession(newSession)
@@ -54,10 +52,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [])
 
-  // Expor a função signOut no contexto facilita o uso em qualquer lugar da app
   const signOut = async () => {
-    await supabase.auth.signOut()
-    // O onAuthStateChange cuidará de limpar o estado
+    try {
+      await authService.signOut()
+      setUser(null)
+      setSession(null)
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
   }
 
   const value = useMemo(() => ({

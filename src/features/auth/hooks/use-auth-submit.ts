@@ -9,14 +9,20 @@ export const useAuthSubmit = <T>() => {
   const navigate = useNavigate()
   const [isPending, setIsPending] = useState(false)
 
-  const handleSubmit = async (action: (data: T) => Promise<any>, data: T, redirectTo?: string) => {
+  const handleSubmit = async (
+    action: (data: T) => Promise<unknown>,
+    data: T,
+    redirectTo?: string
+  ) => {
     setIsPending(true)
     try {
       await action(data)
       if (redirectTo) navigate(redirectTo)
-    } catch (err: unknown) {
-      const error = AUTH_ERROR_MAP[(err as Error)?.message] || (err as Error)?.message
-      toast.error(error)
+    } catch (err: any) {
+      const errorMessage = err?.message || 'Ocorreu um erro inesperado'
+      const friendlyError = AUTH_ERROR_MAP[errorMessage] || errorMessage
+
+      toast.error(friendlyError)
     } finally {
       setIsPending(false)
     }

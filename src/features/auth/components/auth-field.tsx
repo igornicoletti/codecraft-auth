@@ -27,6 +27,7 @@ export const AuthField = <T extends FieldValues>({
   disabled,
 }: AuthFieldProps<T>) => {
   const [isVisible, setIsVisible] = useState(false)
+
   const isPassword = type === 'password'
   const inputType = isPassword && isVisible ? 'text' : type
 
@@ -46,8 +47,7 @@ export const AuthField = <T extends FieldValues>({
                   placeholder={placeholder}
                   autoComplete={autoComplete}
                   disabled={disabled}
-                  aria-invalid={!!fieldState.error}
-                />
+                  aria-invalid={!!fieldState.error} />
                 <InputGroupAddon align='inline-end'>
                   <InputGroupButton
                     type='button'
@@ -65,8 +65,7 @@ export const AuthField = <T extends FieldValues>({
                 placeholder={placeholder}
                 autoComplete={autoComplete}
                 disabled={disabled}
-                aria-invalid={!!fieldState.error}
-              />
+                aria-invalid={!!fieldState.error} />
             )}
           </FormControl>
           <FormMessage className='text-xs text-right' />

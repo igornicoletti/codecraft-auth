@@ -11,8 +11,8 @@ export const AUTH_CONTENT = {
       passwordLabel: 'Senha',
       passwordPlaceholder: '••••••••••',
     },
-    submitButton: 'Entrar',
-    forgotPassword: {
+    submit: 'Entrar',
+    forgot: {
       question: 'Esqueceu a senha?',
       link: '/forgot-password',
     },
@@ -35,7 +35,7 @@ export const AUTH_CONTENT = {
       confirmPasswordLabel: 'Confirmar senha',
       confirmPasswordPlaceholder: '••••••••••',
     },
-    submitButton: 'Criar conta',
+    submit: 'Criar conta',
     actions: {
       question: 'Já tem uma conta?',
       label: 'Entrar',
@@ -50,7 +50,7 @@ export const AUTH_CONTENT = {
       emailLabel: 'E-mail',
       emailPlaceholder: 'seu@email.com',
     },
-    submitButton: 'Enviar e-mail de redefinição de senha',
+    submit: 'Enviar e-mail de redefinição de senha',
     actions: {
       question: '',
       label: 'Voltar para login',
@@ -66,7 +66,7 @@ export const AUTH_CONTENT = {
       confirmPasswordLabel: 'Confirmar senha',
       confirmPasswordPlaceholder: '••••••••••',
     },
-    submitButton: 'Atualizar senha',
+    submit: 'Atualizar senha',
     actions: {
       question: '',
       label: 'Voltar para login',

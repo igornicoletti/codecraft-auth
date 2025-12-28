@@ -5,9 +5,9 @@ import { useForm } from 'react-hook-form'
 import { useOutletContext } from 'react-router-dom'
 
 import { AuthForm } from '@/features/auth/components/auth-form'
-import type { AuthLayoutContext } from '@/features/auth/components/auth-layout'
 import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
 import { useAuthSubmit } from '@/features/auth/hooks/use-auth-submit'
+import type { AuthLayoutContext } from '@/features/auth/layouts/auth-layout'
 import { forgotPasswordSchema, type ForgotPasswordInput } from '@/features/auth/schemas/auth.schema'
 import { authService } from '@/features/auth/services/auth.service'
 
@@ -16,7 +16,7 @@ export const ForgotPasswordPage = () => {
   const { setDescription } = useOutletContext<AuthLayoutContext>()
   const [isEmailSent, setIsEmailSent] = useState(false)
 
-  const { fields, submitButton, message } = AUTH_CONTENT.forgotPassword
+  const { fields, submit, message } = AUTH_CONTENT.forgotPassword
 
   const form = useForm<ForgotPasswordInput>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -48,8 +48,7 @@ export const ForgotPasswordPage = () => {
       form={form}
       onSubmit={onSubmit}
       fields={formFields}
-      submitText={submitButton}
-      isLoading={isPending}
-    />
+      submitText={submit}
+      isLoading={isPending} />
   )
 }

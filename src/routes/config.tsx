@@ -1,7 +1,7 @@
 // src/routes/config.tsx
 import type { ComponentType } from 'react'
 
-import { AuthLayout } from '@/features/auth/components/auth-layout'
+import { AuthLayout } from '@/features/auth/layouts/auth-layout'
 import { lazyImport } from '@/routes/core/lazy-import'
 
 export type RouteConfig = {
