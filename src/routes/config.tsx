@@ -1,6 +1,7 @@
 // src/routes/config.tsx
 import type { ComponentType } from 'react'
 
+import { AppLayout } from '@/features/app/layouts/app-layout'
 import { AuthLayout } from '@/features/auth/layouts/auth-layout'
 import { lazyImport } from '@/routes/core/lazy-import'
 
@@ -19,8 +20,8 @@ export const PATHS = {
     FORGOT_PASSWORD: '/forgot-password',
     UPDATE_PASSWORD: '/update-password',
   },
-  DASHBOARD: {
-    ROOT: '/dashboard',
+  APP: {
+    DASHBOARD: '/dashboard',
   },
   ANY: '*',
 } as const
@@ -30,7 +31,7 @@ export const Pages = {
   Register: lazyImport(() => import('@/features/auth/pages/register'), 'RegisterPage'),
   ForgotPass: lazyImport(() => import('@/features/auth/pages/forgot-password'), 'ForgotPasswordPage'),
   UpdatePass: lazyImport(() => import('@/features/auth/pages/update-password'), 'UpdatePasswordPage'),
-  Dashboard: lazyImport(() => import('@/features/dashboard/pages/dashboard'), 'DashboardPage'),
+  Dashboard: lazyImport(() => import('@/features/app/pages/dashboard'), 'DashboardPage'),
   NotFound: lazyImport(() => import('@/routes/components/not-found'), 'NotFoundPage'),
 }
 
@@ -54,8 +55,11 @@ export const ROUTE_LIST: RouteConfig[] = [
     ],
   },
   {
-    path: PATHS.DASHBOARD.ROOT,
-    component: Pages.Dashboard,
+    path: '',
+    component: AppLayout,
     guard: 'private',
+    children: [
+      { path: PATHS.APP.DASHBOARD, component: Pages.Dashboard, guard: 'private' },
+    ],
   },
 ]

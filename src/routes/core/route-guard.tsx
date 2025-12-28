@@ -27,7 +27,7 @@ export const RouteGuard = ({ type = 'private' }: RouteGuardProps) => {
   // 2. Rota 'Convidado' (Login/Register): Se tiver user -> Dashboard
   if (type === 'guest' && user) {
     const fromPath = (location.state as { from?: { pathname?: string } })?.from?.pathname
-    return <Navigate to={fromPath || PATHS.DASHBOARD.ROOT} replace />
+    return <Navigate to={fromPath || PATHS.APP.DASHBOARD} replace />
   }
 
   // 3. Rota Pública: Acessível por todos

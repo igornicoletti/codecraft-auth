@@ -21,6 +21,7 @@ export const UpdatePasswordPage = () => {
 
   useEffect(() => {
     const userName =
+      user?.user_metadata?.full_name ||
       user?.user_metadata?.display_name ||
       user?.email?.split('@')[0] ||
       ''
