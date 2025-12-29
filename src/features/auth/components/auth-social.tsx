@@ -1,6 +1,7 @@
 // src/features/auth/components/auth-social.tsx
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { GoogleLogoIcon } from '@phosphor-icons/react'
 
 interface AuthSocialProps {
   text: string
@@ -16,6 +17,7 @@ export const AuthSocial = ({ text, separatorText, isPending, onGoogleClick }: Au
       disabled={isPending}
       variant='secondary'
       className='w-full'>
+      <GoogleLogoIcon />
       {text}
     </Button>
     <div className='flex items-center justify-center gap-2 overflow-hidden'>

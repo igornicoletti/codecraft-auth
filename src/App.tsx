@@ -7,7 +7,7 @@ import { AuthProvider } from '@/features/auth/contexts/auth.context'
 import { router } from '@/routes'
 
 export const App = () => (
-  <ThemeProvider>
+  <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
     <AuthProvider>
       <RouterProvider router={router} />
       <Toaster />

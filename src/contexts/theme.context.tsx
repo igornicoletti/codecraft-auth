@@ -44,12 +44,13 @@ export const ThemeProvider = ({
     root.classList.add(theme)
   }, [theme])
 
+
   const value = {
     theme,
     setTheme: (theme: Theme) => {
       localStorage.setItem(storageKey, theme)
       setTheme(theme)
-    }
+    },
   }
 
   return (
