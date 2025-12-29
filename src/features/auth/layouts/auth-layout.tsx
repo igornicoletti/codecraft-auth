@@ -4,7 +4,7 @@ import { Link, matchPath, Outlet, useLocation } from 'react-router-dom'
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { AUTH_CONTENT } from '@/features/auth/constants/auth-content'
-import { PATHS } from '@/routes/config'
+import { PATHS } from '@/routes/constants/paths'
 
 export interface AuthLayoutContext {
   setTitle: (title: string) => void
@@ -24,7 +24,10 @@ export const AuthLayout = () => {
       { path: PATHS.AUTH.UPDATE_PASSWORD, content: AUTH_CONTENT.updatePassword },
     ]
 
-    const active = pathMap.find((item) => matchPath({ path: item.path, end: true }, location.pathname))
+    const active = pathMap.find((item) => matchPath({
+      path: item.path,
+      end: true
+    }, location.pathname))
 
     return active ? active.content : AUTH_CONTENT.login
   }, [location.pathname])
@@ -38,14 +41,12 @@ export const AuthLayout = () => {
               <CardTitle>{customTitle ?? content.title}</CardTitle>
               <CardDescription>{customDescription ?? content.description}</CardDescription>
             </CardHeader>
-
             <CardContent>
               <Outlet context={{
                 setTitle: setCustomTitle,
                 setDescription: setCustomDescription,
               } satisfies AuthLayoutContext} />
             </CardContent>
-
             <CardFooter>
               <p className='text-sm text-muted-foreground'>
                 {content.actions?.question}{' '}

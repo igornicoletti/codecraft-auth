@@ -1,7 +1,7 @@
 // src/routes/components/not-found.tsx
 import { Link } from 'react-router-dom'
 
-export const NotFoundPage = () => {
+export const NotFound = () => {
   return (
     <main className='grid min-h-svh place-content-center p-6'>
       <div className='flex flex-wrap items-center gap-4'>

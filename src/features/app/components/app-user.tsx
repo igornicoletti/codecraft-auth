@@ -1,10 +1,11 @@
 // src/features/app/components/app-user.tsx
-import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from "lucide-react"
+import { ChevronsUpDown } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar"
 import { useAuth } from '@/features/auth/contexts/auth.context'
+import { SignOutIcon, UserGearIcon } from '@phosphor-icons/react'
 
 interface AppUserProps {
   name: string
@@ -63,18 +64,27 @@ export const AppUser = ({ user }: { user: AppUserProps }) => {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <BadgeCheck />
-                Account Settings
+                Configurações
+                <UserGearIcon />
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Tema</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem>
+                      Sistema</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      Claro</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      Escuro</DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={handleLogout}>
-              <LogOut />
-              Log out
+            <DropdownMenuItem variant='destructive' onSelect={handleLogout}>
+              Sair
+              <SignOutIcon className='ml-auto' />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

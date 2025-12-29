@@ -1,30 +1,48 @@
-import { MoonIcon, SunIcon } from '@phosphor-icons/react'
+import { LightningIcon } from '@phosphor-icons/react'
 import { Outlet } from 'react-router-dom'
 
-import { Button } from '@/components/ui/button'
+import { BreadcrumbNavigation } from '@/components/breadcrumb/breadcrumb-navigation'
 import { Separator } from "@/components/ui/separator"
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { useTheme } from '@/contexts/theme.context'
-import { AppSidebar } from '@/features/app/components/app-sidebar'
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarRail, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppUser } from '@/features/app/components/app-user'
+import { useAuth } from '@/features/auth/contexts/auth.context'
 
 export const AppLayout = () => {
-  const { theme, setTheme } = useTheme()
+  const { user } = useAuth()
 
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
+  const userData = {
+    email: user?.email || '',
+    avatar: user?.user_metadata?.avatar_url || user?.user_metadata?.picture || '',
+    name: user?.user_metadata?.full_name || user?.user_metadata?.display_name || user?.email?.split('@')[0] || '',
   }
 
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <Sidebar collapsible="icon">
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" className='hover:bg-transparent!'>
+                <div className="flex aspect-square size-8 items-center justify-center">
+                  <LightningIcon weight='fill' className='size-5 text-primary' />
+                </div>
+                <span className="font-semibold tracking-tight uppercase">CodeCraft</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent />
+        <SidebarFooter>
+          <AppUser user={userData} />
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex flex-1 items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
-            <Button onClick={toggleTheme} size='icon-sm' variant='ghost' className='ml-auto'>
-              {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-            </Button>
+            <BreadcrumbNavigation />
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">

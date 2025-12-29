@@ -10,16 +10,9 @@ export const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
   const { user } = useAuth()
 
   const userData = {
-    name: user?.user_metadata?.full_name ||
-      user?.user_metadata?.display_name ||
-      user?.email?.split('@')[0] ||
-      '',
-
     email: user?.email || '',
-
-    avatar: user?.user_metadata?.avatar_url ||
-      user?.user_metadata?.picture ||
-      '',
+    avatar: user?.user_metadata?.avatar_url || user?.user_metadata?.picture || '',
+    name: user?.user_metadata?.full_name || user?.user_metadata?.display_name || user?.email?.split('@')[0] || '',
   }
 
   return (
@@ -29,9 +22,9 @@ export const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" className='hover:bg-transparent!'>
               <div className="flex aspect-square size-8 items-center justify-center">
-                <LightningIcon weight='fill' className='size-6 text-primary' />
+                <LightningIcon weight='fill' className='size-5 text-primary' />
               </div>
-              <span className="text-lg font-semibold tracking-tight uppercase">CodeCraft</span>
+              <span className="font-semibold tracking-tight uppercase">CodeCraft</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

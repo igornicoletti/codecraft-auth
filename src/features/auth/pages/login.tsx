@@ -66,7 +66,7 @@ export const LoginPage = () => {
         isLoading={isPending}
         fields={formFields} />
 
-      <Button asChild variant='link' className='w-full'>
+      <Button asChild variant='link'>
         <Link to={forgot.link}>{forgot.question}</Link>
       </Button>
     </>

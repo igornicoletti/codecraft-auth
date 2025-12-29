@@ -12,11 +12,7 @@ interface AuthSocialProps {
 
 export const AuthSocial = ({ text, separatorText, isPending, onGoogleClick }: AuthSocialProps) => (
   <>
-    <Button
-      onClick={onGoogleClick}
-      disabled={isPending}
-      variant='secondary'
-      className='w-full'>
+    <Button variant='secondary' onClick={onGoogleClick} disabled={isPending}>
       <GoogleLogoIcon />
       {text}
     </Button>

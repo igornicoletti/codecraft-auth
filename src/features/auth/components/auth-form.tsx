@@ -29,7 +29,7 @@ export const AuthForm = <T extends FieldValues>({
   isLoading = false,
 }: AuthFormProps<T>) => (
   <Form {...form}>
-    <form noValidate onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+    <form noValidate onSubmit={form.handleSubmit(onSubmit)} className='grid gap-6'>
       {fields.map((field) => (
         <AuthField
           key={field.name}
@@ -41,7 +41,7 @@ export const AuthForm = <T extends FieldValues>({
           autoComplete={field.autoComplete}
           disabled={isLoading} />
       ))}
-      <Button disabled={isLoading} type='submit' className='w-full'>
+      <Button disabled={isLoading} type='submit'>
         {isLoading ? <Spinner /> : submitText}
       </Button>
     </form>

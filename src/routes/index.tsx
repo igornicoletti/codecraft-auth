@@ -4,46 +4,47 @@ import { createBrowserRouter, Navigate, Outlet, type RouteObject } from 'react-r
 
 import { LoaderFour } from '@/components/ui/loader'
 import { ErrorBoundary } from '@/routes/components/error-boundary'
-import { Pages, PATHS, ROUTE_LIST, type RouteConfig } from '@/routes/config'
+import { NotFound } from '@/routes/components/not-found'
+import { appRoutes } from '@/routes/config/app.routes'
+import { authRoutes } from '@/routes/config/auth.routes'
+import { PATHS } from '@/routes/constants/paths'
 import { RouteGuard } from '@/routes/core/route-guard'
-
-const RootLayout = () => (
-  <ErrorBoundary>
-    <Suspense fallback={<LoaderFour />}>
-      <Outlet />
-    </Suspense>
-  </ErrorBoundary>
-)
+import type { RouteConfig, RouteGuardType } from '@/routes/types'
 
 const mapConfigToRoute = (config: RouteConfig): RouteObject => ({
   path: config.path,
   element: <config.component />,
-  children: config.children ? config.children.map(mapConfigToRoute) : undefined,
+  handle: config.handle,
+  children: config.children?.map(mapConfigToRoute),
 })
 
-const buildRoutes = (configs: RouteConfig[]): RouteObject[] => {
-  const guards: Array<RouteConfig['guard']> = ['guest', 'private', 'public']
+const buildGuardedRoutes = (configs: RouteConfig[]) => {
+  const guards: RouteGuardType[] = ['guest', 'private', 'public']
+
   return guards.map((guard) => ({
     element: <RouteGuard type={guard} />,
-    children: configs.filter((r) => r.guard === guard).map(mapConfigToRoute),
+    children: configs
+      .filter((route) => route.guard === guard)
+      .map(mapConfigToRoute),
   }))
 }
 
+const ROUTE_LIST = [authRoutes, appRoutes]
+
 export const router = createBrowserRouter([
   {
-    path: PATHS.HOME,
-    element: <RootLayout />,
-    errorElement: <ErrorBoundary />,
+    path: PATHS.ROOT,
+    element: (
+      <ErrorBoundary>
+        <Suspense fallback={<LoaderFour />}>
+          <Outlet />
+        </Suspense>
+      </ErrorBoundary>
+    ),
     children: [
-      {
-        index: true,
-        element: <Navigate to={PATHS.AUTH.LOGIN} replace />,
-      },
-      ...buildRoutes(ROUTE_LIST),
-      {
-        path: PATHS.ANY,
-        element: <Pages.NotFound />,
-      },
+      { index: true, element: <Navigate to={PATHS.AUTH.LOGIN} replace /> },
+      ...buildGuardedRoutes(ROUTE_LIST),
+      { path: PATHS.ANY, element: <NotFound /> },
     ],
   },
 ])
