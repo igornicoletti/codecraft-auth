@@ -12,7 +12,7 @@ pnpm install
 
 ### Create a Supabase Project
 
-1. Go to [supabase.com](https://supabase.com) and sign up/login
+1. Go to [supabase.com](https://supabase.com) and sign up/signIn
 2. Click 'New Project'
 3. Fill in your project details:
    - **Name**: codecraft-auth (or any name)
@@ -53,7 +53,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser!
 
 ### Create Your First User
 
-1. Click 'create a new account' on the login page
+1. Click 'create a new account' on the signIn page
 2. Enter an email and password (minimum 6 characters)
 3. Click 'Create account'
 4. Check your email for the confirmation link
@@ -61,7 +61,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser!
 
 ### Sign In
 
-1. Go back to the login page
+1. Go back to the signIn page
 2. Enter your email and password
 3. Click 'Sign in'
 4. You'll be redirected to the dashboard!

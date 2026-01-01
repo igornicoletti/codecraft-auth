@@ -1,50 +1,25 @@
-// src/routes/index.tsx
-import { Suspense } from 'react'
-import { createBrowserRouter, Navigate, Outlet, type RouteObject } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 
-import { LoaderFour } from '@/components/ui/loader'
-import { ErrorBoundary } from '@/routes/components/error-boundary'
-import { NotFound } from '@/routes/components/not-found'
-import { appRoutes } from '@/routes/config/app.routes'
-import { authRoutes } from '@/routes/config/auth.routes'
-import { PATHS } from '@/routes/constants/paths'
-import { RouteGuard } from '@/routes/core/route-guard'
-import type { RouteConfig, RouteGuardType } from '@/routes/types'
-
-const mapConfigToRoute = (config: RouteConfig): RouteObject => ({
-  path: config.path,
-  element: <config.component />,
-  handle: config.handle,
-  children: config.children?.map(mapConfigToRoute),
-})
-
-const buildGuardedRoutes = (configs: RouteConfig[]) => {
-  const guards: RouteGuardType[] = ['guest', 'private', 'public']
-
-  return guards.map((guard) => ({
-    element: <RouteGuard type={guard} />,
-    children: configs
-      .filter((route) => route.guard === guard)
-      .map(mapConfigToRoute),
-  }))
-}
-
-const ROUTE_LIST = [authRoutes, appRoutes]
+import { ROUTE_CONFIGS } from '@/routes/configs/route-definitions'
+import { ROUTE_PATHS } from '@/routes/configs/route-paths'
+import { buildGuardedRoutes } from '@/routes/core/route-builder'
+import { RouteNotFound } from '@/routes/core/route-not-found'
+import { RouteWrapper } from '@/routes/core/route-wrapper'
 
 export const router = createBrowserRouter([
   {
-    path: PATHS.ROOT,
-    element: (
-      <ErrorBoundary>
-        <Suspense fallback={<LoaderFour />}>
-          <Outlet />
-        </Suspense>
-      </ErrorBoundary>
-    ),
+    path: ROUTE_PATHS.ROOT,
+    element: <RouteWrapper />,
     children: [
-      { index: true, element: <Navigate to={PATHS.AUTH.LOGIN} replace /> },
-      ...buildGuardedRoutes(ROUTE_LIST),
-      { path: PATHS.ANY, element: <NotFound /> },
+      {
+        index: true,
+        element: <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace />
+      },
+      ...buildGuardedRoutes(ROUTE_CONFIGS),
+      {
+        path: ROUTE_PATHS.ANY,
+        element: <RouteNotFound />
+      }
     ],
   },
 ])

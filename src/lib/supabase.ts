@@ -1,4 +1,3 @@
-// src/lib/supabase.ts
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || import.meta.env.SUPABASE_URL
@@ -8,4 +7,4 @@ if (!supabaseUrl || !supabaseKey) {
   throw new Error('Missing Supabase environment variables. Check Vercel Settings.')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+export const supabaseClient = createClient(supabaseUrl, supabaseKey)

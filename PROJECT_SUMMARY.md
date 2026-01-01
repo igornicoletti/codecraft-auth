@@ -24,9 +24,9 @@ A production-ready authentication web application has been created with modern b
 - ✅ Zod validation schemas for all auth forms
 - ✅ Auth context provider with session persistence
 
-### Pages & Routes
-- ✅ Login page with React Hook Form
-- ✅ Register page with password confirmation
+### Route & Route
+- ✅ SignIn page with React Hook Form
+- ✅ SignUp page with password confirmation
 - ✅ Forgot password page
 - ✅ Protected dashboard page
 - ✅ 404 Not Found page
@@ -59,7 +59,7 @@ codecraft-auth/
 │   │   └── router/             # Router configuration
 │   ├── features/
 │   │   └── auth/               # Authentication feature module
-│   │       ├── pages/          # Login, Register, Forgot Password
+│   │       ├── pages/          # SignIn, SignUp, Forgot Password
 │   │       ├── schemas/        # Zod validation schemas
 │   │       └── services/       # Auth API service
 │   ├── lib/
@@ -161,7 +161,7 @@ pnpm lint             # Lint code
 
 ### Developer Friendly
 - Hot Module Replacement
-- Path aliases
+- ROUTE_PATH_MAP aliases
 - ESLint configured
 - Test environment ready
 - Clear folder structure

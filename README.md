@@ -39,9 +39,9 @@ src/
 │       ├── schemas/         # Zod validation schemas
 │       ├── services/        # API services
 │       └── pages/           # Auth pages
-│           ├── login.tsx
-│           ├── register.tsx
-│           └── forgot-password.tsx
+│           ├── signIn.tsx
+│           ├── signUp.tsx
+│           └── reset-password.tsx
 │
 ├── hooks/                   # Global custom hooks
 ├── lib/
@@ -136,7 +136,7 @@ pnpm test:ui
 - ✅ Email/Password Sign Up
 - ✅ Email/Password Sign In
 - ✅ Password Reset
-- ✅ Protected Routes
+- ✅ Protected Route
 - ✅ Session Management
 - ✅ Auto-redirect on auth state change
 
@@ -150,20 +150,20 @@ pnpm test:ui
 
 ### Developer Experience
 - ✅ TypeScript strict mode
-- ✅ Path aliases (`@/`)
+- ✅ ROUTE_PATH_MAP aliases (`@/`)
 - ✅ Feature-based folder structure
 - ✅ Colocated validation schemas
 - ✅ Testing setup with Vitest
 - ✅ ESLint configuration
 
-## 🗺️ Routes
+## 🗺️ Route
 
-### Public Routes
-- `/login` - Sign in page
-- `/register` - Sign up page
-- `/forgot-password` - Password reset page
+### Public Route
+- `/signIn` - Sign in page
+- `/signUp` - Sign up page
+- `/reset-password` - Password reset page
 
-### Protected Routes
+### Protected Route
 - `/dashboard` - User dashboard (requires authentication)
 
 ## 🔐 Authentication Flow

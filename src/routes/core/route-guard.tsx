@@ -1,31 +1,30 @@
-// src/routes/core/route-guard.tsx
+import type { ReactNode } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
 import { LoaderFour } from '@/components/ui/loader'
-import { useAuth } from '@/features/auth/contexts/auth.context'
-import { PATHS } from '@/routes/constants/paths'
-import type { RouteGuardType } from '@/routes/types'
+import { useAuthentication } from '@/modules/authentication/contexts/authentication-context'
+import { ROUTE_PATHS } from '@/routes/configs/route-paths'
+import type { RouteGuardType } from '@/routes/types/route-types'
 
 interface RouteGuardProps {
-  type?: RouteGuardType
+  type: RouteGuardType
+  children?: ReactNode
 }
 
-export const RouteGuard = ({ type = 'private' }: RouteGuardProps) => {
-  const { user, loading } = useAuth()
+export const RouteGuard = ({ type = 'private', children }: RouteGuardProps) => {
+  const { user, isLoading } = useAuthentication()
   const location = useLocation()
 
-  if (loading) {
-    return <LoaderFour />
-  }
+  if (isLoading) return <LoaderFour />
 
   if (type === 'private' && !user) {
-    return <Navigate to={PATHS.AUTH.LOGIN} state={{ from: location }} replace />
+    return <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} state={{ from: location }} replace />
   }
 
   if (type === 'guest' && user) {
     const fromPath = (location.state as { from?: { pathname?: string } })?.from?.pathname
-    return <Navigate to={fromPath || PATHS.APP.DASHBOARD} replace />
+    return <Navigate to={fromPath || ROUTE_PATHS.APP.DASHBOARD} replace />
   }
 
-  return <Outlet />
+  return children ? children : <Outlet />
 }

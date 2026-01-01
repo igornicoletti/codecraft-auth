@@ -1,16 +1,15 @@
-// src/App.tsx
 import { RouterProvider } from 'react-router-dom'
 
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/contexts/theme.context'
-import { AuthProvider } from '@/features/auth/contexts/auth.context'
+import { AuthenticationProvider } from '@/modules/authentication/contexts/authentication-context'
 import { router } from '@/routes'
 
 export const App = () => (
   <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
-    <AuthProvider>
+    <AuthenticationProvider>
       <RouterProvider router={router} />
       <Toaster />
-    </AuthProvider>
+    </AuthenticationProvider>
   </ThemeProvider>
 )
