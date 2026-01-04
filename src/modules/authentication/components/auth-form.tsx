@@ -1,6 +1,7 @@
 import { type FieldValues, type Path, type UseFormReturn } from 'react-hook-form'
 
 import { Button } from '@/components/ui/button'
+import { Form } from '@/components/ui/form'
 import { Spinner } from '@/components/ui/spinner'
 import { AuthInputField } from '@/modules/authentication/components'
 
@@ -26,31 +27,24 @@ export const AuthForm = <T extends FieldValues>({
   fields,
   submitText,
   isLoading = false,
-}: AuthFormProps<T>) => {
-  const { handleSubmit } = form
-
-  return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4"
-      noValidate
-    >
+}: AuthFormProps<T>) => (
+  <Form {...form}>
+    <form noValidate onSubmit={form.handleSubmit(onSubmit)} className='grid gap-6'>
       {fields.map((field) => (
         <AuthInputField
-          key={String(field.name)}
-          form={form}
+          key={field.name}
+          control={form.control}
           name={field.name}
           label={field.label}
-          placeholder={field.placeholder}
           type={field.type}
+          placeholder={field.placeholder}
           autoComplete={field.autoComplete}
-          disabled={isLoading}
-        />
+          disabled={isLoading} />
       ))}
 
-      <Button type="submit" className="w-full" disabled={isLoading}>
+      <Button disabled={isLoading} type='submit'>
         {isLoading ? <Spinner /> : submitText}
       </Button>
     </form>
-  )
-}
+  </Form>
+)

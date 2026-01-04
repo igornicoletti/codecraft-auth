@@ -70,7 +70,7 @@ const AuthSignInPage = () => {
         fields={formFields}
       />
 
-      <Button asChild variant="link">
+      <Button asChild variant='link'>
         <Link to={forgot.link}>{forgot.question}</Link>
       </Button>
     </>

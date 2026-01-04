@@ -44,12 +44,25 @@ export const AUTH_CONTENT_MAP = {
   forgotPassword: {
     title: 'Esqueceu sua senha?',
     description: 'Sem problemas! Insira seu e-mail abaixo e enviaremos um link para redefinir sua senha.',
-    message: 'Se o e-mail existir em nosso sistema, você receberá um link de redefinição de senha em breve. Verifique sua caixa de entrada.',
     fields: {
       emailLabel: 'E-mail',
       emailPlaceholder: 'seu@email.com',
     },
     submit: 'Enviar link de redefinição',
+    actions: {
+      question: 'Lembrou sua senha?',
+      label: 'Faça login',
+      link: '/sign-in',
+    },
+  },
+  verifyEmail: {
+    title: 'Verifique seu e-mail',
+    description: 'Um link de ativação foi enviado para seu endereço de e-mail. Verifique sua caixa de entrada e clique no link para concluir o processo de ativação ou solicite um novo link abaixo.',
+    fields: {
+      emailLabel: 'E-mail',
+      emailPlaceholder: 'seu@email.com',
+    },
+    submit: 'Reenviar e-mail de verificação',
     actions: {
       question: '',
       label: 'Voltar para login',
@@ -57,7 +70,7 @@ export const AUTH_CONTENT_MAP = {
     },
   },
   updatePassword: {
-    title: 'Redefinir senha para,',
+    title: 'Redefinir sua senha',
     description: 'Escolha uma nova senha para sua conta com no mínimo 8 caracteres, incluindo letras e números.',
     fields: {
       passwordLabel: 'Nova senha',
@@ -65,7 +78,7 @@ export const AUTH_CONTENT_MAP = {
       confirmPasswordLabel: 'Confirmar nova senha',
       confirmPasswordPlaceholder: '••••••••',
     },
-    submit: 'Atualizar senha',
+    submit: 'Redefinir senha',
     actions: {
       question: '',
       label: 'Voltar para login',

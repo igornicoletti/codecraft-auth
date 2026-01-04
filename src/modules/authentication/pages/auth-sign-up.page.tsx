@@ -22,7 +22,7 @@ const AuthSignUpPage = () => {
     await handleSubmit(
       (vals) => authenticationService.signUp(vals.email, vals.password),
       data,
-      ROUTE_PATHS.AUTH.SIGN_IN
+      ROUTE_PATHS.AUTH.VERIFY_EMAIL
     )
   }
 

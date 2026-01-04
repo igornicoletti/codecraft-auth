@@ -50,4 +50,15 @@ export const authenticationService = {
     if (error) throw error
     return data
   },
+
+  async resendVerificationEmail(email: string): Promise<void> {
+    const { error } = await supabaseClient.auth.resend({
+      type: 'signup',
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}${ROUTE_PATHS.AUTH.UPDATE_PASSWORD}`,
+      },
+    })
+    if (error) throw error
+  },
 }

@@ -1,49 +1,30 @@
-import { ChartLineUpIcon, UserIcon } from '@phosphor-icons/react'
 import { Outlet } from 'react-router-dom'
 
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { AppHeader } from '@/modules/application/components/app-header'
 import { AppSidebar } from '@/modules/application/components/app-sidebar'
-import type { NavigationSection, UserData } from '@/modules/application/types/application-types'
+import { useAuthentication } from '@/modules/authentication/contexts/authentication-context'
+import { useRouteMetadata } from '@/routes/hooks/useRouteMetadata'
 
-const navigationData: NavigationSection[] = [
-  {
-    label: 'Main',
-    items: [
-      { title: 'Dashboard', url: '/dashboard', icon: ChartLineUpIcon },
-      {
-        title: 'Profile',
-        url: '/profile',
-        icon: UserIcon,
-        items: [
-          { title: 'Overview', url: '/profile/overview' },
-          { title: 'Stats', url: '/profile/stats' },
-        ],
-      },
-    ],
-  },
-]
-
-const currentUser: UserData = {
-  name: "Igor Nicoletti",
-  email: "igor93nicoletti@example.com",
-  avatar: "https://avatars.githubusercontent.com/u/40406316?v=4",
-}
 
 const ApplicationLayout = () => {
+  const { user } = useAuthentication()
+  const { breadcrumbs, navigation } = useRouteMetadata()
+
+  const currentUser = {
+    name: user?.user_metadata?.full_name || user?.email?.split('@')[0] || '',
+    email: user?.email || '',
+    avatar: user?.user_metadata?.avatar_url || '',
+  }
 
   return (
     <SidebarProvider>
-      <AppSidebar
-        navigation={navigationData}
-        user={currentUser} />
-
+      <AppSidebar navigation={navigation} user={currentUser} />
       <SidebarInset>
-        <AppHeader />
-
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <AppHeader breadcrumb={breadcrumbs} />
+        <main className='flex flex-1 flex-col gap-4 p-4'>
           <Outlet />
-        </div>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   )

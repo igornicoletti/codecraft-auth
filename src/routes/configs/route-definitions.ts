@@ -1,8 +1,8 @@
 import { lazy } from 'react'
 
-import { DashboardPage } from '@/features/app/pages/dashboard'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 import type { RouteConfig } from '@/routes/types/route-types'
+import { ChartLineUpIcon } from '@phosphor-icons/react'
 
 const AuthenticationLayout = lazy(() => import('@/modules/authentication/layouts/authentication-layout'))
 const ApplicationLayout = lazy(() => import('@/modules/application/layouts/application-layout'))
@@ -11,13 +11,16 @@ const AuthSignInPage = lazy(() => import('@/modules/authentication/pages/auth-si
 const AuthSignUpPage = lazy(() => import('@/modules/authentication/pages/auth-sign-up.page'))
 const AuthForgotPasswordPage = lazy(() => import('@/modules/authentication/pages/auth-forgot-password.page'))
 const AuthUpdatePasswordPage = lazy(() => import('@/modules/authentication/pages/auth-update-password.page'))
+const AuthVerifyEmailPage = lazy(() => import('@/modules/authentication/pages/auth-verify-email-page'))
+
+const AppDashboardPage = lazy(() => import('@/modules/application/pages/app-dashboard.page'))
 
 export const ROUTE_CONFIGS: RouteConfig[] = [
   {
     path: '',
     component: AuthenticationLayout,
     guard: 'guest',
-    handle: { title: 'Autenticação' },
+    handle: { title: 'Autenticação', hideInSidebar: true },
     children: [
       {
         path: ROUTE_PATHS.AUTH.SIGN_IN,
@@ -34,14 +37,11 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
         component: AuthForgotPasswordPage,
         handle: { title: 'Esqueceu a senha' },
       },
-    ],
-  },
-  {
-    path: '',
-    component: AuthenticationLayout,
-    guard: 'private',
-    handle: { title: 'Autenticação' },
-    children: [
+      {
+        path: ROUTE_PATHS.AUTH.VERIFY_EMAIL,
+        component: AuthVerifyEmailPage,
+        handle: { title: 'Verificar e-mail' },
+      },
       {
         path: ROUTE_PATHS.AUTH.UPDATE_PASSWORD,
         component: AuthUpdatePasswordPage,
@@ -57,8 +57,8 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
     children: [
       {
         path: ROUTE_PATHS.APP.DASHBOARD,
-        component: DashboardPage,
-        handle: { title: 'Dashboard' },
+        component: AppDashboardPage,
+        handle: { title: 'Dashboard', icon: ChartLineUpIcon },
       },
     ],
   },

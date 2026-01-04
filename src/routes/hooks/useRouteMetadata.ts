@@ -1,35 +1,53 @@
-import { useEffect, useMemo } from 'react'
-import { useMatches, type UIMatch } from 'react-router-dom'
+import { useLocation, useMatches } from 'react-router-dom'
 
-import type { RouteHandle } from '@/routes/types/route-types'
+import type { NavigationItem, NavigationSection } from '@/modules/application/types/application-types'
+import { ROUTE_CONFIGS } from '@/routes/configs/route-definitions'
+import type { RouteConfig, RouteHandle } from '@/routes/types/route-types'
 
 export const useRouteMetadata = () => {
-  const matches = useMatches() as UIMatch<unknown, RouteHandle>[]
+  const matches = useMatches()
+  const location = useLocation()
 
-  const activeMeta = useMemo(() => {
-    const lastMatch = matches[matches.length - 1]
-    return lastMatch?.handle ?? {}
-  }, [matches])
+  const resolveTitle = (handle?: RouteHandle, data?: any) => {
+    if (typeof handle?.title === 'function') return handle.title(data)
+    return handle?.title || ''
+  }
 
-  useEffect(() => {
-    if (!activeMeta?.title || typeof document === 'undefined') return
+  const breadcrumbs = matches
+    .filter((match) => {
+      const handle = match.handle as RouteHandle
+      return handle?.title && !handle?.hideInBreadcrumb
+    })
+    .map((match) => ({
+      title: resolveTitle(match.handle as RouteHandle, match.data),
+      url: match.pathname,
+    }))
 
-    const title = typeof activeMeta.title === 'function'
-      ? activeMeta.title(matches[matches.length - 1].loaderData)
-      : activeMeta.title
+  const mapRouteToNav = (route: RouteConfig): NavigationItem => ({
+    title: typeof route.handle?.title === 'string' ? route.handle.title : route.path,
+    url: route.path,
+    icon: route.handle?.icon as any,
+    items: route.children
+      ?.filter(c => c.handle?.title && !c.handle?.hideInSidebar)
+      .map(mapRouteToNav)
+  })
 
-    document.title = title
-  }, [activeMeta])
+  const navigation: NavigationSection[] = ROUTE_CONFIGS
+    .filter(config =>
+      config.guard === 'private' &&
+      config.handle?.title &&
+      !config.handle?.hideInSidebar
+    )
+    .map(section => ({
+      label: typeof section.handle?.title === 'string' ? section.handle.title : undefined,
+      items: section.children
+        ?.filter(route => route.handle?.title && !route.handle?.hideInSidebar)
+        .map(mapRouteToNav) || []
+    }))
 
-  const breadcrumbs = useMemo(() => {
-    return matches
-      .filter((m) => m.handle && !m.handle.hideInBreadcrumb)
-      .map((m) => ({
-        path: m.pathname,
-        label: m.handle?.breadcrumb ??
-          (typeof m.handle?.title === 'string' ? m.handle?.title : ''),
-      }))
-  }, [matches])
-
-  return { activeMeta, breadcrumbs }
+  return {
+    breadcrumbs,
+    navigation,
+    currentPath: location.pathname,
+  }
 }

@@ -1,12 +1,14 @@
-import { Controller, type FieldValues, type Path, type UseFormReturn } from 'react-hook-form'
+import { EyeIcon, EyeSlashIcon } from '@phosphor-icons/react'
+import { useState } from 'react'
+import type { Control, FieldPath, FieldValues } from 'react-hook-form'
 
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils'
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group'
 
-export interface AuthInputFieldProps<T extends FieldValues> {
-  form: UseFormReturn<T>
-  name: Path<T>
+interface AuthFieldProps<T extends FieldValues> {
+  control: Control<T>
+  name: FieldPath<T>
   label: string
   placeholder?: string
   type?: string
@@ -15,42 +17,59 @@ export interface AuthInputFieldProps<T extends FieldValues> {
 }
 
 export const AuthInputField = <T extends FieldValues>({
-  form,
+  control,
   name,
   label,
   placeholder,
   type = 'text',
   autoComplete,
   disabled,
-}: AuthInputFieldProps<T>) => {
-  const {
-    control,
-    formState: { errors },
-  } = form
+}: AuthFieldProps<T>) => {
+  const [isVisible, setIsVisible] = useState(false)
 
-  const errorMessage = errors[name]?.message as string | undefined
+  const isPassword = type === 'password'
+  const inputType = isPassword && isVisible ? 'text' : type
 
   return (
-    <div className="space-y-2">
-      <Label htmlFor={String(name)}>{label}</Label>
-      <Controller
-        control={control}
-        name={name}
-        render={({ field }) => (
-          <Input
-            id={String(name)}
-            type={type}
-            placeholder={placeholder}
-            autoComplete={autoComplete}
-            disabled={disabled}
-            className={cn(errorMessage && 'border-destructive')}
-            {...field}
-          />
-        )}
-      />
-      {errorMessage && (
-        <p className="text-sm text-destructive">{errorMessage}</p>
+    <FormField
+      control={control}
+      name={name}
+      render={({ field, fieldState }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            {isPassword ? (
+              <InputGroup>
+                <InputGroupInput
+                  {...field}
+                  type={inputType}
+                  placeholder={placeholder}
+                  autoComplete={autoComplete}
+                  disabled={disabled}
+                  aria-invalid={!!fieldState.error} />
+                <InputGroupAddon align='inline-end'>
+                  <InputGroupButton
+                    type='button'
+                    variant='ghost'
+                    disabled={disabled}
+                    onClick={() => setIsVisible((v) => !v)}>
+                    {isVisible ? <EyeSlashIcon /> : <EyeIcon />}
+                  </InputGroupButton>
+                </InputGroupAddon>
+              </InputGroup>
+            ) : (
+              <Input
+                {...field}
+                type={inputType}
+                placeholder={placeholder}
+                autoComplete={autoComplete}
+                disabled={disabled}
+                aria-invalid={!!fieldState.error} />
+            )}
+          </FormControl>
+          <FormMessage className='text-xs text-right' />
+        </FormItem>
       )}
-    </div>
+    />
   )
 }

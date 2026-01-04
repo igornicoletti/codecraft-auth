@@ -5,6 +5,7 @@ export const ROUTE_PATHS = {
     SIGN_UP: '/sign-up',
     FORGOT_PASSWORD: '/forgot-password',
     UPDATE_PASSWORD: '/update-password',
+    VERIFY_EMAIL: '/verify-email',
   },
   APP: {
     DASHBOARD: '/dashboard',

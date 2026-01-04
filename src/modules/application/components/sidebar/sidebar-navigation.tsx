@@ -2,38 +2,35 @@ import { CaretRightIcon } from '@phosphor-icons/react'
 import { Link, useLocation } from 'react-router-dom'
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem } from '@/components/ui/sidebar'
+import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from '@/components/ui/sidebar'
 import type { NavigationItem, NavigationSection } from '@/modules/application/types/application-types'
 
 const NavItem = ({ item }: { item: NavigationItem }) => {
   const { pathname } = useLocation()
 
+  const hasActiveChild = (items?: NavigationItem[]): boolean => {
+    return !!items?.some((child) => child.url === pathname || hasActiveChild(child.items))
+  }
+
   const isActive = pathname === item.url
-  const isChildActive = item.items?.some((sub) => sub.url === pathname)
+  const isChildActive = hasActiveChild(item.items)
   const isOpen = isActive || isChildActive
 
   if (item.items?.length) {
     return (
-      <Collapsible asChild defaultOpen={isOpen} className="group/collapsible">
+      <Collapsible asChild defaultOpen={isOpen} className='group/collapsible'>
         <SidebarMenuItem>
           <CollapsibleTrigger asChild>
-            <SidebarMenuButton tooltip={item.title} isActive={isActive || isChildActive}>
+            <SidebarMenuButton isActive={isChildActive} tooltip={item.title}>
               {item.icon && <item.icon />}
               <span>{item.title}</span>
-              <CaretRightIcon className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+              <CaretRightIcon className='ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90' />
             </SidebarMenuButton>
           </CollapsibleTrigger>
           <CollapsibleContent>
             <SidebarMenuSub>
-              {item.items.map((subItem) => (
-                <SidebarMenuSubItem key={subItem.url}>
-                  <SidebarMenuSubButton asChild isActive={pathname === subItem.url}>
-                    <Link to={subItem.url}>
-                      {subItem.icon && <subItem.icon />}
-                      <span>{subItem.title}</span>
-                    </Link>
-                  </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
+              {item.items.map((sub) => (
+                <NavItem key={sub.url} item={sub} />
               ))}
             </SidebarMenuSub>
           </CollapsibleContent>
@@ -55,6 +52,8 @@ const NavItem = ({ item }: { item: NavigationItem }) => {
 }
 
 export const SidebarNavigation = ({ section }: { section: NavigationSection }) => {
+  if (section.items.length === 0) return null
+
   return (
     <SidebarGroup>
       {section.label && <SidebarGroupLabel>{section.label}</SidebarGroupLabel>}

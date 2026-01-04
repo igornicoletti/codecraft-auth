@@ -61,10 +61,9 @@ export const AuthenticationProvider = ({ children }: { children: ReactNode }) =>
     }
   }
 
-  const value = useMemo(
-    () => ({ user, session, isLoading, signOut }),
-    [user, session, isLoading]
-  )
+  const value = useMemo(() => ({
+    user, session, isLoading, signOut
+  }), [user, session, isLoading])
 
   return (
     <AuthenticationContext.Provider value={value}>

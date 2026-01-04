@@ -6,12 +6,11 @@ import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-
 import { useAuthSubmit } from '@/modules/authentication/hooks/use-auth-submit'
 import { forgotPasswordSchema, type ForgotPasswordInput } from '@/modules/authentication/schemas/authentication-schemas'
 import { authenticationService } from '@/modules/authentication/services/authentication-service'
-import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
-const AuthForgotPasswordPage = () => {
+const AuthVerifyEmailPage = () => {
   const { handleSubmit, isPending } = useAuthSubmit<ForgotPasswordInput>()
 
-  const { fields, submit } = AUTH_CONTENT_MAP.forgotPassword
+  const { fields, submit } = AUTH_CONTENT_MAP.verifyEmail
 
   const form = useForm<ForgotPasswordInput>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -20,9 +19,8 @@ const AuthForgotPasswordPage = () => {
 
   const onSubmit = async (data: ForgotPasswordInput) => {
     await handleSubmit(
-      (vals) => authenticationService.sendPasswordReset(vals.email),
+      (vals) => authenticationService.resendVerificationEmail(vals.email),
       data,
-      ROUTE_PATHS.AUTH.VERIFY_EMAIL
     )
   }
 
@@ -47,4 +45,4 @@ const AuthForgotPasswordPage = () => {
   )
 }
 
-export default AuthForgotPasswordPage
+export default AuthVerifyEmailPage

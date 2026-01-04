@@ -1,10 +1,11 @@
-import type { ComponentType, ReactNode } from 'react'
+import type { IconProps } from '@phosphor-icons/react'
+import type { ComponentType, ForwardRefExoticComponent } from 'react'
 
 export type RouteHandle = {
   title?: string | ((data: any) => string)
-  icon?: ReactNode
+  icon?: ForwardRefExoticComponent<IconProps>
+  hideInSidebar?: boolean
   hideInBreadcrumb?: boolean
-  breadcrumb?: string
 }
 
 export type RouteGuardType = 'private' | 'guest' | 'public'

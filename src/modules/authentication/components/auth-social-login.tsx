@@ -17,21 +17,19 @@ export const AuthSocialLogin = ({
   onGoogleClick,
 }: AuthSocialLoginProps) => {
   return (
-    <div className="w-full space-y-6">
+    <div className='grid gap-6'>
       <Button
-        type="button"
-        variant="outline"
-        className="w-full"
+        type='button'
+        variant='secondary'
         disabled={isPending}
-        onClick={onGoogleClick}
-      >
+        onClick={onGoogleClick}>
         <GoogleLogoIcon />
         {text}
       </Button>
 
-      <div className="relative flex items-center justify-center">
-        <Separator className="flex-1" />
-        <span className="absolute px-2 text-sm text-muted-foreground">
+      <div className='relative flex items-center justify-center'>
+        <Separator className='flex-1' />
+        <span className='absolute px-2 text-sm text-muted-foreground'>
           {separatorText}
         </span>
       </div>
