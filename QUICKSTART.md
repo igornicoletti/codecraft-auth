@@ -49,7 +49,7 @@ pnpm dev
 
 Open [http://localhost:5173](http://localhost:5173) in your browser!
 
-## Step 4: Test Authentication
+## Step 4: Test Auth
 
 ### Create Your First User
 
@@ -72,7 +72,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser!
 
 By default, Supabase requires email confirmation. For development, you can disable this:
 
-1. Go to **Authentication** > **Providers** in Supabase dashboard
+1. Go to **Auth** > **Providers** in Supabase dashboard
 2. Click **Email** provider
 3. Toggle off 'Confirm email'
 4. Save changes

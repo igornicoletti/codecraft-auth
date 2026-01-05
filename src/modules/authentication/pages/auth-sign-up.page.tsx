@@ -5,15 +5,19 @@ import { useForm } from 'react-hook-form'
 import { AuthForm, AuthSocialLogin } from '@/modules/authentication/components'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
 import { useAuthSubmit } from '@/modules/authentication/hooks/use-auth-submit'
+import type { AuthLayoutContext } from '@/modules/authentication/layouts/auth.layout'
 import { signUpSchema, type SignUpSchema } from '@/modules/authentication/schemas/auth.schemas'
 import { authService } from '@/modules/authentication/services/auth.service'
-import { ROUTE_PATHS } from '@/routes/configs/route-paths'
+import { useEffect, useState } from 'react'
+import { useOutletContext } from 'react-router-dom'
 
 const AuthSignUpPage = () => {
   const { handleSubmit, isPending } = useAuthSubmit<SignUpSchema, User>()
   const { handleSubmit: handleGoogleSubmit, isPending: isGooglePending } = useAuthSubmit()
+  const { setDescription, setTitle } = useOutletContext<AuthLayoutContext>()
+  const [emailSent, setEmailSent] = useState(false)
 
-  const { fields, separator, social, submit } = AUTH_CONTENT_MAP.signUp
+  const { customDescription, customTitle, fields, separator, social, submit } = AUTH_CONTENT_MAP.signUp
 
   const form = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
@@ -21,8 +25,21 @@ const AuthSignUpPage = () => {
   })
 
   const handleSignUp = async (data: SignUpSchema) => {
-    await handleSubmit((formData) => authService.signUp(formData.email, formData.password), data, ROUTE_PATHS.AUTH.VERIFY_EMAIL)
+    const result = await handleSubmit((formData) => authService.signUp(formData.email, formData.password), data) as { error?: unknown } | undefined
+
+    if (!result?.error) {
+      setEmailSent(true)
+      setTitle(customTitle)
+      setDescription(customDescription)
+    }
   }
+
+  useEffect(() => {
+    return () => {
+      setTitle(null)
+      setDescription(null)
+    }
+  }, [setTitle, setDescription])
 
   const handleSignUpWithGoogle = async () => {
     await handleGoogleSubmit(() => authService.signInWithGoogle(), undefined)
@@ -51,6 +68,8 @@ const AuthSignUpPage = () => {
       autoComplete: 'new-password',
     },
   ]
+
+  if (emailSent) return null
 
   return (
     <>

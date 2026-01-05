@@ -13,7 +13,7 @@ A production-ready authentication web application has been created with modern b
 - ✅ TypeScript path aliases configured (`@/` → `src/`)
 - ✅ Vitest + Testing Library setup with jsdom
 
-### Authentication System
+### Auth System
 - ✅ Supabase client configuration
 - ✅ Auth service with all CRUD operations
   - Sign in
@@ -58,7 +58,7 @@ codecraft-auth/
 │   │   ├── providers/          # Auth & Theme providers
 │   │   └── router/             # Router configuration
 │   ├── features/
-│   │   └── auth/               # Authentication feature module
+│   │   └── auth/               # Auth feature module
 │   │       ├── pages/          # SignIn, SignUp, Forgot Password
 │   │       ├── schemas/        # Zod validation schemas
 │   │       └── services/       # Auth API service

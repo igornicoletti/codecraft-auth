@@ -5,12 +5,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
-export interface AuthenticationLayoutContext {
-  setTitle: (title: string) => void
-  setDescription: (description: string) => void
+export interface AuthLayoutContext {
+  setTitle: (title: string | null) => void
+  setDescription: (description: string | null) => void
 }
 
-export const AuthenticationLayout = () => {
+export const AuthLayout = () => {
   const location = useLocation()
 
   const [customTitle, setCustomTitle] = useState<string | null>(null)
@@ -45,7 +45,7 @@ export const AuthenticationLayout = () => {
               <Outlet context={{
                 setTitle: setCustomTitle,
                 setDescription: setCustomDescription,
-              } satisfies AuthenticationLayoutContext} />
+              } satisfies AuthLayoutContext} />
             </CardContent>
             <CardFooter>
               <p className='text-sm text-muted-foreground'>
@@ -62,4 +62,4 @@ export const AuthenticationLayout = () => {
   )
 }
 
-export default AuthenticationLayout
+export default AuthLayout

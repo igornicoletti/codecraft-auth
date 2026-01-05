@@ -25,7 +25,9 @@ export const AUTH_CONTENT_MAP = {
   },
   signUp: {
     title: 'Inscreva-se na CodeCraft',
+    customTitle: 'Verifique seu e-mail',
     description: 'Explore os principais recursos da nossa plataforma.',
+    customDescription: 'Um e-mail de verificação foi enviado para o endereço fornecido. Verifique sua caixa de entrada e spam.',
     social: 'Inscreva-se com o Google',
     separator: 'ou',
     fields: {

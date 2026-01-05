@@ -6,16 +6,16 @@ import { useOutletContext } from 'react-router-dom'
 import { AuthForm } from '@/modules/authentication/components'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
 import { useAuthSubmit } from '@/modules/authentication/hooks/use-auth-submit'
-import type { AuthenticationLayoutContext } from '@/modules/authentication/layouts/auth.layout'
+import type { AuthLayoutContext } from '@/modules/authentication/layouts/auth.layout'
 import { forgotPasswordSchema, type ForgotPasswordSchema } from '@/modules/authentication/schemas/auth.schemas'
 import { authService } from '@/modules/authentication/services/auth.service'
 
 const AuthForgotPasswordPage = () => {
   const { handleSubmit, isPending } = useAuthSubmit<ForgotPasswordSchema>()
-  const { setDescription, setTitle } = useOutletContext<AuthenticationLayoutContext>()
+  const { setDescription, setTitle } = useOutletContext<AuthLayoutContext>()
   const [emailSent, setEmailSent] = useState(false)
 
-  const { fields, submit, customDescription, customTitle, description, title } = AUTH_CONTENT_MAP.forgotPassword
+  const { customDescription, customTitle, fields, submit } = AUTH_CONTENT_MAP.forgotPassword
 
   const form = useForm<ForgotPasswordSchema>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -34,10 +34,10 @@ const AuthForgotPasswordPage = () => {
 
   useEffect(() => {
     return () => {
-      setTitle(title)
-      setDescription(description)
+      setTitle(null)
+      setDescription(null)
     }
-  }, [setTitle, setDescription, title, description])
+  }, [setTitle, setDescription])
 
   const formFields = [
     {

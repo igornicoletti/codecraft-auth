@@ -33,7 +33,7 @@ src/
 │   └── shared/              # Shared components
 │
 ├── features/
-│   └── auth/                # Authentication feature
+│   └── auth/                # Auth feature
 │       ├── components/
 │       ├── hooks/
 │       ├── schemas/         # Zod validation schemas
@@ -132,7 +132,7 @@ pnpm test:ui
 
 ## 🎨 Features
 
-### Authentication
+### Auth
 - ✅ Email/Password Sign Up
 - ✅ Email/Password Sign In
 - ✅ Password Reset
@@ -166,7 +166,7 @@ pnpm test:ui
 ### Protected Route
 - `/dashboard` - User dashboard (requires authentication)
 
-## 🔐 Authentication Flow
+## 🔐 Auth Flow
 
 1. **Sign Up**: User creates an account with email and password
 2. **Email Verification**: Supabase sends a confirmation email
