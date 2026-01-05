@@ -1,30 +1,43 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useOutletContext } from 'react-router-dom'
 
 import { AuthForm } from '@/modules/authentication/components'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
 import { useAuthSubmit } from '@/modules/authentication/hooks/use-auth-submit'
-import { forgotPasswordSchema, type ForgotPasswordInput } from '@/modules/authentication/schemas/authentication-schemas'
-import { authenticationService } from '@/modules/authentication/services/authentication-service'
-import { ROUTE_PATHS } from '@/routes/configs/route-paths'
+import type { AuthenticationLayoutContext } from '@/modules/authentication/layouts/auth.layout'
+import { forgotPasswordSchema, type ForgotPasswordSchema } from '@/modules/authentication/schemas/auth.schemas'
+import { authService } from '@/modules/authentication/services/auth.service'
 
 const AuthForgotPasswordPage = () => {
-  const { handleSubmit, isPending } = useAuthSubmit<ForgotPasswordInput>()
+  const { handleSubmit, isPending } = useAuthSubmit<ForgotPasswordSchema>()
+  const { setDescription, setTitle } = useOutletContext<AuthenticationLayoutContext>()
+  const [emailSent, setEmailSent] = useState(false)
 
-  const { fields, submit } = AUTH_CONTENT_MAP.forgotPassword
+  const { fields, submit, customDescription, customTitle, description, title } = AUTH_CONTENT_MAP.forgotPassword
 
-  const form = useForm<ForgotPasswordInput>({
+  const form = useForm<ForgotPasswordSchema>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: { email: '' },
   })
 
-  const onSubmit = async (data: ForgotPasswordInput) => {
-    await handleSubmit(
-      (vals) => authenticationService.sendPasswordReset(vals.email),
-      data,
-      ROUTE_PATHS.AUTH.VERIFY_EMAIL
-    )
+  const handleForgotPassword = async (data: ForgotPasswordSchema) => {
+    const result = await handleSubmit((formData) => authService.sendPasswordReset(formData.email), data) as { error?: unknown } | undefined
+
+    if (!result?.error) {
+      setEmailSent(true)
+      setTitle(customTitle)
+      setDescription(customDescription)
+    }
   }
+
+  useEffect(() => {
+    return () => {
+      setTitle(title)
+      setDescription(description)
+    }
+  }, [setTitle, setDescription, title, description])
 
   const formFields = [
     {
@@ -36,14 +49,15 @@ const AuthForgotPasswordPage = () => {
     },
   ]
 
+  if (emailSent) return null
+
   return (
     <AuthForm
       form={form}
-      onSubmit={onSubmit}
+      onSubmit={handleForgotPassword}
       fields={formFields}
       submitText={submit}
-      isLoading={isPending}
-    />
+      isLoading={isPending} />
   )
 }
 

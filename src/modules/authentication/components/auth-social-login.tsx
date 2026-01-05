@@ -10,29 +10,16 @@ export interface AuthSocialLoginProps {
   onGoogleClick?: () => Promise<void>
 }
 
-export const AuthSocialLogin = ({
-  text,
-  separatorText = 'ou',
-  isPending = false,
-  onGoogleClick,
-}: AuthSocialLoginProps) => {
-  return (
-    <div className='grid gap-6'>
-      <Button
-        type='button'
-        variant='secondary'
-        disabled={isPending}
-        onClick={onGoogleClick}>
-        <GoogleLogoIcon />
-        {text}
-      </Button>
-
-      <div className='relative flex items-center justify-center'>
-        <Separator className='flex-1' />
-        <span className='absolute px-2 text-sm text-muted-foreground'>
-          {separatorText}
-        </span>
-      </div>
+export const AuthSocialLogin = ({ text, separatorText, isPending = false, onGoogleClick }: AuthSocialLoginProps) => (
+  <div className='grid gap-6'>
+    <Button type='button' variant='secondary' disabled={isPending} onClick={onGoogleClick}>
+      <GoogleLogoIcon />
+      {text}
+    </Button>
+    <div className='flex items-center gap-4'>
+      <Separator className='flex-1' />
+      <span>{separatorText}</span>
+      <Separator className='flex-1' />
     </div>
-  )
-}
+  </div>
+)

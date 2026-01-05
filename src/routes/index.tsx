@@ -13,7 +13,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace />
+        element: <Navigate to={ROUTE_PATHS.APP.DASHBOARD} replace />
       },
       ...buildGuardedRoutes(ROUTE_CONFIGS),
       {

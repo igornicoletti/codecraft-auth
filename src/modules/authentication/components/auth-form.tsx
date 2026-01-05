@@ -41,9 +41,9 @@ export const AuthForm = <T extends FieldValues>({
           autoComplete={field.autoComplete}
           disabled={isLoading} />
       ))}
-
       <Button disabled={isLoading} type='submit'>
-        {isLoading ? <Spinner /> : submitText}
+        {isLoading && <Spinner />}
+        {submitText}
       </Button>
     </form>
   </Form>

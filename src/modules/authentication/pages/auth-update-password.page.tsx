@@ -4,26 +4,22 @@ import { useForm } from 'react-hook-form'
 import { AuthForm } from '@/modules/authentication/components'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
 import { useAuthSubmit } from '@/modules/authentication/hooks/use-auth-submit'
-import { updatePasswordSchema, type UpdatePasswordInput } from '@/modules/authentication/schemas/authentication-schemas'
-import { authenticationService } from '@/modules/authentication/services/authentication-service'
+import { updatePasswordSchema, type UpdatePasswordSchema } from '@/modules/authentication/schemas/auth.schemas'
+import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthUpdatePasswordPage = () => {
-  const { handleSubmit, isPending } = useAuthSubmit<UpdatePasswordInput>()
+  const { handleSubmit, isPending } = useAuthSubmit<UpdatePasswordSchema>()
 
   const { fields, submit } = AUTH_CONTENT_MAP.updatePassword
 
-  const form = useForm<UpdatePasswordInput>({
+  const form = useForm<UpdatePasswordSchema>({
     resolver: zodResolver(updatePasswordSchema),
     defaultValues: { password: '', confirmPassword: '' },
   })
 
-  const onSubmit = async (data: UpdatePasswordInput) => {
-    await handleSubmit(
-      (vals) => authenticationService.updatePassword(vals.password),
-      data,
-      ROUTE_PATHS.AUTH.SIGN_IN
-    )
+  const handleUpdatePassword = async (data: UpdatePasswordSchema) => {
+    await handleSubmit((formData) => authService.updatePassword(formData.password), data, ROUTE_PATHS.APP.DASHBOARD)
   }
 
   const formFields = [
@@ -46,11 +42,10 @@ const AuthUpdatePasswordPage = () => {
   return (
     <AuthForm
       form={form}
-      onSubmit={onSubmit}
+      onSubmit={handleUpdatePassword}
       fields={formFields}
       submitText={submit}
-      isLoading={isPending}
-    />
+      isLoading={isPending} />
   )
 }
 

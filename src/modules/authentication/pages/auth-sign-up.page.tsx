@@ -1,37 +1,31 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { User } from '@supabase/supabase-js'
 import { useForm } from 'react-hook-form'
 
 import { AuthForm, AuthSocialLogin } from '@/modules/authentication/components'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
 import { useAuthSubmit } from '@/modules/authentication/hooks/use-auth-submit'
-import { registerSchema, type RegisterInput } from '@/modules/authentication/schemas/authentication-schemas'
-import { authenticationService } from '@/modules/authentication/services/authentication-service'
+import { signUpSchema, type SignUpSchema } from '@/modules/authentication/schemas/auth.schemas'
+import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthSignUpPage = () => {
-  const { handleSubmit, isPending } = useAuthSubmit<RegisterInput>()
+  const { handleSubmit, isPending } = useAuthSubmit<SignUpSchema, User>()
+  const { handleSubmit: handleGoogleSubmit, isPending: isGooglePending } = useAuthSubmit()
 
   const { fields, separator, social, submit } = AUTH_CONTENT_MAP.signUp
 
-  const form = useForm<RegisterInput>({
-    resolver: zodResolver(registerSchema),
+  const form = useForm<SignUpSchema>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: { email: '', password: '', confirmPassword: '' },
   })
 
-  const onSubmit = async (data: RegisterInput) => {
-    await handleSubmit(
-      (vals) => authenticationService.signUp(vals.email, vals.password),
-      data,
-      ROUTE_PATHS.AUTH.VERIFY_EMAIL
-    )
+  const handleSignUp = async (data: SignUpSchema) => {
+    await handleSubmit((formData) => authService.signUp(formData.email, formData.password), data, ROUTE_PATHS.AUTH.VERIFY_EMAIL)
   }
 
-  const handleGoogleLogin = async () => {
-    try {
-      await authenticationService.signInWithGoogle()
-    } catch (err) {
-      console.error('Google Auth Error:', err)
-    }
+  const handleSignUpWithGoogle = async () => {
+    await handleGoogleSubmit(() => authService.signInWithGoogle(), undefined)
   }
 
   const formFields = [
@@ -63,17 +57,14 @@ const AuthSignUpPage = () => {
       <AuthSocialLogin
         text={social}
         separatorText={separator}
-        isPending={isPending}
-        onGoogleClick={handleGoogleLogin}
-      />
-
+        isPending={isGooglePending}
+        onGoogleClick={handleSignUpWithGoogle} />
       <AuthForm
         form={form}
-        onSubmit={onSubmit}
+        onSubmit={handleSignUp}
         submitText={submit}
         isLoading={isPending}
-        fields={formFields}
-      />
+        fields={formFields} />
     </>
   )
 }

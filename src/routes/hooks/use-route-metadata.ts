@@ -1,25 +1,27 @@
 import { useLocation, useMatches } from 'react-router-dom'
 
-import type { NavigationItem, NavigationSection } from '@/modules/application/types/application-types'
+import type { NavigationItem, NavigationSection } from '@/modules/application/types/app.types'
 import { ROUTE_CONFIGS } from '@/routes/configs/route-definitions'
-import type { RouteConfig, RouteHandle } from '@/routes/types/route-types'
+import type { RouteConfig, RouteHandle } from '@/routes/types/route.types'
 
 export const useRouteMetadata = () => {
   const matches = useMatches()
   const location = useLocation()
 
   const resolveTitle = (handle?: RouteHandle, data?: any) => {
-    if (typeof handle?.title === 'function') return handle.title(data)
+    if (typeof handle?.title === 'function') {
+      return (handle.title as (data: any) => string)(data)
+    }
     return handle?.title || ''
   }
 
   const breadcrumbs = matches
     .filter((match) => {
       const handle = match.handle as RouteHandle
-      return handle?.title && !handle?.hideInBreadcrumb
+      return handle?.title && !handle?.hideInBreadcrumbs
     })
     .map((match) => ({
-      title: resolveTitle(match.handle as RouteHandle, match.data),
+      title: resolveTitle(match.handle as RouteHandle, match.loaderData),
       url: match.pathname,
     }))
 

@@ -3,12 +3,12 @@ import { Outlet } from 'react-router-dom'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { AppHeader } from '@/modules/application/components/app-header'
 import { AppSidebar } from '@/modules/application/components/app-sidebar'
-import { useAuthentication } from '@/modules/authentication/contexts/authentication-context'
-import { useRouteMetadata } from '@/routes/hooks/useRouteMetadata'
+import { useAuth } from '@/modules/authentication/contexts/auth.context'
+import { useRouteMetadata } from '@/routes/hooks/use-route-metadata'
 
 
 const ApplicationLayout = () => {
-  const { user } = useAuthentication()
+  const { user } = useAuth()
   const { breadcrumbs, navigation } = useRouteMetadata()
 
   const currentUser = {

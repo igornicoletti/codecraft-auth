@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from '@/components/ui/sidebar'
-import type { NavigationItem, NavigationSection } from '@/modules/application/types/application-types'
+import type { NavigationItem, NavigationSection } from '@/modules/application/types/app.types'
 
 const NavItem = ({ item }: { item: NavigationItem }) => {
   const { pathname } = useLocation()

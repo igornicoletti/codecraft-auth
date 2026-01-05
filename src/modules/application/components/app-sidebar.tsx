@@ -4,7 +4,7 @@ import type { ComponentProps } from 'react'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail } from '@/components/ui/sidebar'
 import { SidebarNavigation } from '@/modules/application/components/sidebar/sidebar-navigation'
 import { SidebarUser } from '@/modules/application/components/sidebar/sidebar-user'
-import type { NavigationSection, UserData } from '@/modules/application/types/application-types'
+import type { NavigationSection, UserData } from '@/modules/application/types/app.types'
 
 interface AppSidebarProps extends ComponentProps<typeof Sidebar> {
   navigation: NavigationSection[]

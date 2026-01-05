@@ -25,12 +25,12 @@ const withConfirmPassword = <T extends z.ZodRawShape>(schema: z.ZodObject<T>) =>
     }
   )
 
-export const loginSchema = z.object({
+export const signInSchema = z.object({
   email: emailField,
   password: passwordField,
 })
 
-export const registerSchema = withConfirmPassword(
+export const signUpSchema = withConfirmPassword(
   z.object({
     email: emailField,
     password: passwordField,
@@ -49,7 +49,7 @@ export const updatePasswordSchema = withConfirmPassword(
   })
 )
 
-export type LoginInput = z.infer<typeof loginSchema>
-export type RegisterInput = z.infer<typeof registerSchema>
-export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>
-export type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>
+export type SignInSchema = z.infer<typeof signInSchema>
+export type SignUpSchema = z.infer<typeof signUpSchema>
+export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>
+export type UpdatePasswordSchema = z.infer<typeof updatePasswordSchema>

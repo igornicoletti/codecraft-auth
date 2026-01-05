@@ -3,11 +3,11 @@ import { BellIcon, CaretUpDownIcon, CreditCardIcon, SignOutIcon, SparkleIcon, Us
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
-import { useAuthentication } from '@/modules/authentication/contexts/authentication-context'
+import { useAuth } from '@/modules/authentication/contexts/auth.context'
 
 export const SidebarUser = ({ user }: { user: { name: string; email: string; avatar: string } }) => {
   const { isMobile, setOpenMobile } = useSidebar()
-  const { signOut } = useAuthentication()
+  const { signOut } = useAuth()
 
   const handleLogout = () => {
     if (isMobile) setOpenMobile(false)

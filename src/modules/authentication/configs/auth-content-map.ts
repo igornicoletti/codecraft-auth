@@ -1,6 +1,8 @@
+import { ROUTE_PATHS } from '@/routes/configs/route-paths'
+
 export const AUTH_CONTENT_MAP = {
   signIn: {
-    title: ' Faça login no CodeCraft Auth',
+    title: ' Faça login na CodeCraft',
     description: 'Envie mais rápido e concentre-se no crescimento',
     social: 'Faça login com o Google',
     separator: 'ou',
@@ -10,19 +12,19 @@ export const AUTH_CONTENT_MAP = {
       passwordLabel: 'Senha',
       passwordPlaceholder: '••••••••',
     },
-    submit: 'Faça login no CodeCraft Auth',
+    submit: 'Faça login na CodeCraft',
     forgot: {
       question: 'Esqueceu sua senha?',
-      link: '/forgot-password',
+      link: ROUTE_PATHS.AUTH.FORGOT_PASSWORD,
     },
     actions: {
       question: 'Novo em nossa plataforma?',
       label: 'Inscreva-se',
-      link: '/sign-up',
+      link: ROUTE_PATHS.AUTH.SIGN_UP,
     },
   },
   signUp: {
-    title: 'Inscreva-se no CodeCraft Auth',
+    title: 'Inscreva-se na CodeCraft',
     description: 'Explore os principais recursos da nossa plataforma.',
     social: 'Inscreva-se com o Google',
     separator: 'ou',
@@ -34,16 +36,18 @@ export const AUTH_CONTENT_MAP = {
       confirmPasswordLabel: 'Confirmar senha',
       confirmPasswordPlaceholder: '••••••••',
     },
-    submit: 'Inscreva-se no CodeCraft Auth',
+    submit: 'Inscreva-se na CodeCraft',
     actions: {
       question: 'Já tem uma conta?',
-      label: 'Faça login',
-      link: '/sign-in',
+      label: 'Entrar',
+      link: ROUTE_PATHS.AUTH.SIGN_IN,
     },
   },
   forgotPassword: {
     title: 'Esqueceu sua senha?',
-    description: 'Sem problemas! Insira seu e-mail abaixo e enviaremos um link para redefinir sua senha.',
+    customTitle: 'Verifique seu e-mail',
+    description: 'Sem problemas. Informe seu e-mail abaixo e enviaremos um link para redefinir sua senha.',
+    customDescription: 'Um e-mail de redefinição de senha será enviado se houver uma conta associada ao endereço fornecido. Verifique sua caixa de entrada e spam.',
     fields: {
       emailLabel: 'E-mail',
       emailPlaceholder: 'seu@email.com',
@@ -51,22 +55,8 @@ export const AUTH_CONTENT_MAP = {
     submit: 'Enviar link de redefinição',
     actions: {
       question: 'Lembrou sua senha?',
-      label: 'Faça login',
-      link: '/sign-in',
-    },
-  },
-  verifyEmail: {
-    title: 'Verifique seu e-mail',
-    description: 'Um link de ativação foi enviado para seu endereço de e-mail. Verifique sua caixa de entrada e clique no link para concluir o processo de ativação ou solicite um novo link abaixo.',
-    fields: {
-      emailLabel: 'E-mail',
-      emailPlaceholder: 'seu@email.com',
-    },
-    submit: 'Reenviar e-mail de verificação',
-    actions: {
-      question: '',
-      label: 'Voltar para login',
-      link: '/sign-in',
+      label: 'Entrar',
+      link: ROUTE_PATHS.AUTH.SIGN_IN,
     },
   },
   updatePassword: {
@@ -80,9 +70,9 @@ export const AUTH_CONTENT_MAP = {
     },
     submit: 'Redefinir senha',
     actions: {
-      question: '',
-      label: 'Voltar para login',
-      link: '/sign-in',
+      question: 'Lembrou sua senha?',
+      label: 'Entrar',
+      link: ROUTE_PATHS.AUTH.SIGN_IN,
     },
   },
-} as const
+} satisfies Record<string, any>

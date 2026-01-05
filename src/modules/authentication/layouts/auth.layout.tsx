@@ -1,12 +1,20 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, matchPath, Outlet, useLocation } from 'react-router-dom'
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
+export interface AuthenticationLayoutContext {
+  setTitle: (title: string) => void
+  setDescription: (description: string) => void
+}
+
 export const AuthenticationLayout = () => {
   const location = useLocation()
+
+  const [customTitle, setCustomTitle] = useState<string | null>(null)
+  const [customDescription, setCustomDescription] = useState<string | null>(null)
 
   const content = useMemo(() => {
     const pathMap = [
@@ -14,7 +22,6 @@ export const AuthenticationLayout = () => {
       { path: ROUTE_PATHS.AUTH.SIGN_UP, content: AUTH_CONTENT_MAP.signUp },
       { path: ROUTE_PATHS.AUTH.FORGOT_PASSWORD, content: AUTH_CONTENT_MAP.forgotPassword },
       { path: ROUTE_PATHS.AUTH.UPDATE_PASSWORD, content: AUTH_CONTENT_MAP.updatePassword },
-      { path: ROUTE_PATHS.AUTH.VERIFY_EMAIL, content: AUTH_CONTENT_MAP.verifyEmail },
     ]
 
     const active = pathMap.find((item) => matchPath({
@@ -31,11 +38,14 @@ export const AuthenticationLayout = () => {
         <div className='w-full max-w-md'>
           <Card className='bg-transparent border-none md:bg-card md:bg-linear-to-b from-secondary/50'>
             <CardHeader>
-              <CardTitle>{content.title}</CardTitle>
-              <CardDescription>{content.description}</CardDescription>
+              <CardTitle>{customTitle ?? content.title}</CardTitle>
+              <CardDescription>{customDescription ?? content.description}</CardDescription>
             </CardHeader>
             <CardContent>
-              <Outlet />
+              <Outlet context={{
+                setTitle: setCustomTitle,
+                setDescription: setCustomDescription,
+              } satisfies AuthenticationLayoutContext} />
             </CardContent>
             <CardFooter>
               <p className='text-sm text-muted-foreground'>

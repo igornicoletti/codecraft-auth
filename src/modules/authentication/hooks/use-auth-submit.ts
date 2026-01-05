@@ -3,23 +3,36 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { AUTH_ERROR_MESSAGES } from '@/modules/authentication/configs/auth-error-map'
+import type { AuthServiceResponse } from '@/modules/authentication/services/auth.service'
 
-export const useAuthSubmit = <T extends Record<string, any>>() => {
+type AuthAction<T, R> = (data: T) => Promise<AuthServiceResponse<R>>
+
+export const useAuthSubmit = <T, R = void>() => {
   const navigate = useNavigate()
   const [isPending, setIsPending] = useState(false)
 
   const handleSubmit = async (
-    action: (data: T) => Promise<unknown>,
+    action: AuthAction<T, R>,
     data: T,
     redirectTo?: string
   ): Promise<void> => {
     setIsPending(true)
+
     try {
-      await action(data)
-      if (redirectTo) navigate(redirectTo)
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Ocorreu um erro inesperado'
-      toast.error(AUTH_ERROR_MESSAGES[message] || message)
+      const { error } = await action(data)
+
+      if (error) {
+        const translatedMessage = AUTH_ERROR_MESSAGES[error.message] || error.message
+        toast.error(translatedMessage)
+        return
+      }
+
+      if (redirectTo) {
+        navigate(redirectTo)
+      }
+    } catch (err) {
+      console.error('Unexpected auth error:', err)
+      toast.error('Ocorreu um erro inesperado. Tente novamente.')
     } finally {
       setIsPending(false)
     }
