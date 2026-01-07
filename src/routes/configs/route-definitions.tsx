@@ -21,13 +21,14 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
   {
     path: '/auth',
     component: AuthLayout,
+    guard: 'guest',
     handle: { title: 'Autenticação', hideInSidebar: true },
     children: [
       { path: '', component: RedirectToSignIn },
-      { path: ROUTE_PATHS.AUTH.SIGN_IN, component: AuthSignInPage, guard: 'guest', handle: { title: 'Entrar' } },
-      { path: ROUTE_PATHS.AUTH.SIGN_UP, component: AuthSignUpPage, guard: 'guest', handle: { title: 'Inscrever-se' } },
-      { path: ROUTE_PATHS.AUTH.FORGOT_PASSWORD, component: AuthForgotPasswordPage, guard: 'guest', handle: { title: 'Esqueci minha senha' } },
-      { path: ROUTE_PATHS.AUTH.UPDATE_PASSWORD, component: AuthUpdatePasswordPage, guard: 'public', handle: { title: 'Atualizar senha' } },
+      { path: ROUTE_PATHS.AUTH.SIGN_IN, component: AuthSignInPage, handle: { title: 'Entrar' } },
+      { path: ROUTE_PATHS.AUTH.SIGN_UP, component: AuthSignUpPage, handle: { title: 'Inscrever-se' } },
+      { path: ROUTE_PATHS.AUTH.FORGOT_PASSWORD, component: AuthForgotPasswordPage, handle: { title: 'Esqueci minha senha' } },
+      { path: ROUTE_PATHS.AUTH.UPDATE_PASSWORD, component: AuthUpdatePasswordPage, handle: { title: 'Atualizar senha' } },
     ],
   },
   {

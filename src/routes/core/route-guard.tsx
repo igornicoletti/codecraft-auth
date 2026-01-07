@@ -12,12 +12,8 @@ interface RouteGuardProps {
 }
 
 export const RouteGuard = ({ children, guardType = 'private' }: RouteGuardProps) => {
-  const context = useAuth()
+  const { isAuthenticated, isLoading } = useAuth()
   const location = useLocation()
-
-  if (!context) return null
-
-  const { isAuthenticated, isLoading } = context
 
   if (isLoading) return <LoaderFour />
 
@@ -29,8 +25,10 @@ export const RouteGuard = ({ children, guardType = 'private' }: RouteGuardProps)
 
   if (guardType === 'guest') {
     if (isAuthenticated) {
-      const fromPath = (location.state as { from?: { pathname?: string } })?.from?.pathname
-      return <Navigate to={fromPath || ROUTE_PATHS.APP.DASHBOARD} replace />
+      const state = location.state as { from?: { pathname?: string } } | undefined
+      const fromPath = state?.from?.pathname
+      const validRedirect = fromPath && Object.values(ROUTE_PATHS.APP).includes(fromPath as any)
+      return <Navigate to={validRedirect ? fromPath : ROUTE_PATHS.APP.DASHBOARD} replace />
     }
   }
 

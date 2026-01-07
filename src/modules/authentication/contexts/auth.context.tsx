@@ -21,33 +21,72 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    authService.getSession().then(({ data }) => {
-      setSession(data)
-      setUser(data?.user ?? null)
-      setIsLoading(false)
+    let isMounted = true
+
+    const initSession = async () => {
+      try {
+        const { data, error } = await authService.getSession()
+        if (!isMounted) return
+        if (error) console.error('[AuthContext] getSession error:', error)
+        setSession(data)
+        setUser(data?.user ?? null)
+      } catch (err) {
+        console.error('[AuthContext] Unexpected error:', err)
+      } finally {
+        if (isMounted) setIsLoading(false)
+      }
+    }
+
+    initSession()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+      if (!isMounted) return
+      setSession(currentSession)
+      setUser(currentSession?.user ?? null)
+      if (event === 'USER_UPDATED') {
+        const { data: updatedUser } = await authService.getCurrentUser()
+        if (updatedUser) setUser(updatedUser)
+      }
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, currentSession) => {
-        setSession(currentSession)
-        setUser(currentSession?.user ?? null)
-
-        if (event === 'USER_UPDATED') {
-          const { data: updatedUser } = await authService.getCurrentUser()
-          setUser(updatedUser)
-        }
-
-        setIsLoading(false)
-      }
-    )
-
     return () => {
+      isMounted = false
       subscription.unsubscribe()
     }
   }, [])
 
+  const isEmailVerified = useMemo(() => {
+    if (!user?.email_confirmed_at) return false
+    const confirmedAt = new Date(user.email_confirmed_at)
+    return confirmedAt instanceof Date && !isNaN(confirmedAt.getTime())
+  }, [user])
+
+  const isSessionValid = useMemo(() => {
+    if (!session?.expires_at) return false
+    return Date.now() / 1000 < session.expires_at
+  }, [session])
+
+  useEffect(() => {
+    const refreshIfNeeded = async () => {
+      if (!isSessionValid && session) {
+        const { data, error } = await supabase.auth.refreshSession()
+        if (!error && data?.session) {
+          setSession(data.session)
+          setUser(data.session.user)
+        }
+      }
+    }
+    refreshIfNeeded()
+  }, [isSessionValid, session])
+
   const signOut = async () => {
-    await authService.signOut()
+    try {
+      const { error } = await authService.signOut()
+      if (error) console.error('[signOut] error:', error)
+    } finally {
+      setUser(null)
+      setSession(null)
+    }
   }
 
   const value = useMemo(() => ({
@@ -55,9 +94,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     session,
     isLoading,
     isAuthenticated: !!user,
-    isEmailVerified: !!user?.email_confirmed_at,
+    isEmailVerified,
     signOut,
-  }), [user, session, isLoading])
+  }), [user, session, isLoading, isEmailVerified])
 
   return (
     <AuthContext.Provider value={value}>
