@@ -13,8 +13,8 @@ interface IBreadcrumbData {
 }
 
 export const BreadcrumbCollapsed = ({ breadcrumb }: { breadcrumb: IBreadcrumbData[] }) => {
-  const [open, setOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 768px)')
+  const [open, setOpen] = useState(false)
 
   if (!breadcrumb || breadcrumb.length === 0) return null
 

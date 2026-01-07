@@ -6,7 +6,6 @@ import { AppSidebar } from '@/modules/application/components/app-sidebar'
 import { useAuth } from '@/modules/authentication/contexts/auth.context'
 import { useRouteMetadata } from '@/routes/hooks/use-route-metadata'
 
-
 const AppLayout = () => {
   const { user } = useAuth()
   const { breadcrumbs, navigation } = useRouteMetadata()

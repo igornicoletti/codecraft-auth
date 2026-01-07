@@ -35,7 +35,7 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
     path: '/app',
     component: AppLayout,
     guard: 'private',
-    handle: { title: 'Aplicação' },
+    handle: { title: 'App' },
     children: [
       { path: '', component: RedirectToDashboard },
       { path: ROUTE_PATHS.APP.DASHBOARD, component: AppDashboardPage, handle: { title: 'Dashboard', icon: ChartLineUpIcon } },

@@ -11,30 +11,28 @@ interface AppSidebarProps extends ComponentProps<typeof Sidebar> {
   user: UserData
 }
 
-export const AppSidebar = ({ navigation, user, ...props }: AppSidebarProps) => {
-  return (
-    <Sidebar collapsible='icon' {...props}>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size='lg' className='hover:bg-transparent'>
-              <div className='flex aspect-square size-8 items-center justify-center'>
-                <LightningIcon weight='bold' className='size-5 text-primary' />
-              </div>
-              <span className='font-semibold tracking-tight uppercase'>CodeCraft</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-      <SidebarContent>
-        {navigation.map((section, idx) => (
-          <SidebarNavigation key={idx} section={section} />
-        ))}
-      </SidebarContent>
-      <SidebarFooter>
-        <SidebarUser user={user} />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
-  )
-}
+export const AppSidebar = ({ navigation, user, ...props }: AppSidebarProps) => (
+  <Sidebar collapsible='icon' {...props}>
+    <SidebarHeader>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size='lg' className='hover:bg-transparent'>
+            <div className='flex aspect-square size-8 items-center justify-center'>
+              <LightningIcon weight='bold' className='size-5 text-primary' />
+            </div>
+            <span className='font-semibold tracking-tight uppercase'>CodeCraft</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarHeader>
+    <SidebarContent>
+      {navigation.map((section, idx) => (
+        <SidebarNavigation key={idx} section={section} />
+      ))}
+    </SidebarContent>
+    <SidebarFooter>
+      <SidebarUser user={user} />
+    </SidebarFooter>
+    <SidebarRail />
+  </Sidebar>
+)

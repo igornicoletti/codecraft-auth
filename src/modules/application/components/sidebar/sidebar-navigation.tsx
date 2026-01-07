@@ -16,30 +16,26 @@ const NavItem = ({ item }: { item: NavigationItem }) => {
   const isChildActive = hasActiveChild(item.items)
   const isOpen = isActive || isChildActive
 
-  if (item.items?.length) {
-    return (
-      <Collapsible asChild defaultOpen={isOpen} className='group/collapsible'>
-        <SidebarMenuItem>
-          <CollapsibleTrigger asChild>
-            <SidebarMenuButton isActive={isChildActive} tooltip={item.title}>
-              {item.icon && <item.icon />}
-              <span>{item.title}</span>
-              <CaretRightIcon className='ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90' />
-            </SidebarMenuButton>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <SidebarMenuSub>
-              {item.items.map((sub) => (
-                <NavItem key={sub.url} item={sub} />
-              ))}
-            </SidebarMenuSub>
-          </CollapsibleContent>
-        </SidebarMenuItem>
-      </Collapsible>
-    )
-  }
-
-  return (
+  return item.items?.length ? (
+    <Collapsible asChild defaultOpen={isOpen} className='group/collapsible'>
+      <SidebarMenuItem>
+        <CollapsibleTrigger asChild>
+          <SidebarMenuButton isActive={isChildActive} tooltip={item.title}>
+            {item.icon && <item.icon />}
+            <span>{item.title}</span>
+            <CaretRightIcon className='ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90' />
+          </SidebarMenuButton>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenuSub>
+            {item.items.map((sub) => (
+              <NavItem key={sub.url} item={sub} />
+            ))}
+          </SidebarMenuSub>
+        </CollapsibleContent>
+      </SidebarMenuItem>
+    </Collapsible>
+  ) : (
     <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
         <Link to={item.url}>

@@ -8,11 +8,11 @@ export const useRouteMetadata = () => {
   const matches = useMatches()
   const location = useLocation()
 
-  const resolveTitle = (handle?: RouteHandle, data?: any) => {
+  const resolveTitle = (handle?: RouteHandle, loaderData?: any): string => {
     if (typeof handle?.title === 'function') {
-      return (handle.title as (data: any) => string)(data)
+      return (handle.title as (data: any) => string)(loaderData)
     }
-    return handle?.title || ''
+    return typeof handle?.title === 'string' ? handle.title : ''
   }
 
   const breadcrumbs = matches
@@ -24,18 +24,22 @@ export const useRouteMetadata = () => {
       title: resolveTitle(match.handle as RouteHandle, match.loaderData),
       url: match.pathname,
     }))
+    .slice(1)
 
   const mapRouteToNav = (route: RouteConfig): NavigationItem => ({
-    title: typeof route.handle?.title === 'string' ? route.handle.title : route.path,
-    url: route.path,
-    icon: route.handle?.icon as any,
+    title: typeof route.handle?.title === 'string'
+      ? route.handle.title
+      : route.path || '',
+    url: route.path || '',
+    icon: route.handle?.icon || undefined,
     items: route.children
-      ?.filter(c => c.handle?.title && !c.handle?.hideInSidebar)
-      .map(mapRouteToNav)
-  })
+      ?.filter((c) => c.handle?.title && !c.handle?.hideInSidebar)
+      .map(mapRouteToNav),
+  }) as NavigationItem
+
 
   const navigation: NavigationSection[] = ROUTE_CONFIGS
-    .filter(config =>
+    .filter((config) =>
       config.guard === 'private' &&
       config.handle?.title &&
       !config.handle?.hideInSidebar
@@ -45,7 +49,7 @@ export const useRouteMetadata = () => {
       items: section.children
         ?.filter(route => route.handle?.title && !route.handle?.hideInSidebar)
         .map(mapRouteToNav) || []
-    }))
+    })) as NavigationSection[]
 
   return {
     breadcrumbs,
