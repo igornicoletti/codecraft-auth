@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "preinstall": "pnpm config set ignore-scripts false"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -22,7 +23,7 @@
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-tooltip": "^1.2.8",
-    "@supabase/supabase-js": "^2.87.3",
+    "@supabase/supabase-js": "^2.90.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.561.0",
