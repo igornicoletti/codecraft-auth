@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useOutletContext } from 'react-router-dom'
 
-import { AuthForm } from '@/modules/authentication/components'
+import { AuthForm } from '@/modules/authentication/components/auth-form'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
 import { useAuthSubmit } from '@/modules/authentication/hooks/use-auth-submit'
 import type { AuthLayoutContext } from '@/modules/authentication/layouts/auth.layout'

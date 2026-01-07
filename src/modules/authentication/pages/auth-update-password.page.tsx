@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
-import { AuthForm } from '@/modules/authentication/components'
+import { AuthForm } from '@/modules/authentication/components/auth-form'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
 import { useAuthSubmit } from '@/modules/authentication/hooks/use-auth-submit'
 import { updatePasswordSchema, type UpdatePasswordSchema } from '@/modules/authentication/schemas/auth.schemas'

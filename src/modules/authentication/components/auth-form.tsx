@@ -3,7 +3,7 @@ import { type FieldValues, type Path, type UseFormReturn } from 'react-hook-form
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { Spinner } from '@/components/ui/spinner'
-import { AuthInputField } from '@/modules/authentication/components'
+import { AuthInputField } from '@/modules/authentication/components/auth-input-field'
 
 export interface AuthFormField<T extends FieldValues> {
   name: Path<T>

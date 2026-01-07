@@ -7,7 +7,7 @@ import { useAuth } from '@/modules/authentication/contexts/auth.context'
 import { useRouteMetadata } from '@/routes/hooks/use-route-metadata'
 
 
-const ApplicationLayout = () => {
+const AppLayout = () => {
   const { user } = useAuth()
   const { breadcrumbs, navigation } = useRouteMetadata()
 
@@ -30,4 +30,4 @@ const ApplicationLayout = () => {
   )
 }
 
-export default ApplicationLayout
+export default AppLayout
