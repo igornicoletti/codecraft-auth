@@ -26,9 +26,12 @@ const AuthSignUpPage = () => {
   })
 
   const handleSignUp = async (data: SignUpSchema) => {
-    const result = await handleSubmit((formData) => authService.signUp(formData.email, formData.password), data) as { error?: unknown } | undefined
+    const result = await handleSubmit(
+      () => authService.signUp(data.email, data.password),
+      data
+    )
 
-    if (!result?.error) {
+    if (result.success) {
       setEmailSent(true)
       setTitle(customTitle)
       setDescription(customDescription)

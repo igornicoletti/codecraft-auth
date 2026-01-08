@@ -3,36 +3,64 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { AUTH_ERROR_MESSAGES } from '@/modules/authentication/configs/auth-error-map'
-import type { AuthServiceResponse } from '@/modules/authentication/services/auth.service'
+import type { AuthResult } from '@/modules/authentication/types/auth.types'
 
-type AuthAction<T, R> = (data: T) => Promise<AuthServiceResponse<R>>
+/**
+ * Type for authentication actions that return AuthResult.
+ */
+type AuthAction<TInput, TOutput> = (data: TInput) => Promise<AuthResult<TOutput>>
 
-export const useAuthSubmit = <T, R = void>() => {
+/**
+ * Result type for auth submission with proper type discrimination.
+ */
+export type AuthSubmitResult<T> = 
+  | { success: true; data: T }
+  | { success: false; error: string }
+
+/**
+ * Hook for handling authentication form submissions with proper error handling.
+ * Returns typed results for better type safety in consuming components.
+ * 
+ * @returns Object with handleSubmit function and isPending state
+ */
+export const useAuthSubmit = <TInput = void, TOutput = void>() => {
   const navigate = useNavigate()
   const [isPending, setIsPending] = useState(false)
 
+  /**
+   * Handles auth form submission with error handling and optional redirect.
+   * 
+   * @param action - The authentication action to perform
+   * @param data - The form data to submit
+   * @param redirectTo - Optional path to redirect to on success
+   * @returns Promise with typed result
+   */
   const handleSubmit = async (
-    action: AuthAction<T, R>,
-    data: T,
+    action: AuthAction<TInput, TOutput>,
+    data: TInput,
     redirectTo?: string
-  ): Promise<void> => {
+  ): Promise<AuthSubmitResult<TOutput>> => {
     setIsPending(true)
 
     try {
-      const { error } = await action(data)
+      const result = await action(data)
 
-      if (error) {
-        const translatedMessage = AUTH_ERROR_MESSAGES[error.message] || error.message
+      if (!result.success) {
+        const translatedMessage = AUTH_ERROR_MESSAGES[result.error.message] || result.error.message
         toast.error(translatedMessage)
-        return
+        return { success: false, error: result.error.message }
       }
 
       if (redirectTo) {
         navigate(redirectTo)
       }
+
+      return { success: true, data: result.data }
     } catch (err) {
       console.error('Unexpected auth error:', err)
-      toast.error('Ocorreu um erro inesperado. Tente novamente.')
+      const errorMessage = 'Ocorreu um erro inesperado. Tente novamente.'
+      toast.error(errorMessage)
+      return { success: false, error: errorMessage }
     } finally {
       setIsPending(false)
     }

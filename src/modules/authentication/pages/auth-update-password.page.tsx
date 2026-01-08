@@ -19,7 +19,11 @@ const AuthUpdatePasswordPage = () => {
   })
 
   const handleUpdatePassword = async (data: UpdatePasswordSchema) => {
-    await handleSubmit((formData) => authService.updatePassword(formData.password), data, ROUTE_PATHS.APP.DASHBOARD)
+    await handleSubmit(
+      () => authService.updatePassword(data.password),
+      data,
+      ROUTE_PATHS.APP.DASHBOARD
+    )
   }
 
   const formFields = [

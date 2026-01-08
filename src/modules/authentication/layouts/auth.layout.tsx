@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link, matchPath, Outlet, useLocation } from 'react-router-dom'
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { AuthErrorBoundary } from '@/modules/authentication/components/auth-error-boundary'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
@@ -33,32 +34,34 @@ export const AuthLayout = () => {
   }, [location.pathname])
 
   return (
-    <main className='flex min-h-svh flex-col'>
-      <div className='flex flex-1 items-center justify-center py-12'>
-        <div className='w-full max-w-md'>
-          <Card className='bg-transparent border-none md:bg-card md:bg-linear-to-b from-secondary/50'>
-            <CardHeader>
-              <CardTitle>{customTitle ?? content.title}</CardTitle>
-              <CardDescription>{customDescription ?? content.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Outlet context={{
-                setTitle: setCustomTitle,
-                setDescription: setCustomDescription,
-              } satisfies AuthLayoutContext} />
-            </CardContent>
-            <CardFooter>
-              <p className='text-sm text-muted-foreground'>
-                {content.actions?.question}{' '}
-                <Link to={content.actions.link} className='text-primary font-medium underline-offset-4 hover:underline'>
-                  {content.actions.label}
-                </Link>
-              </p>
-            </CardFooter>
-          </Card>
+    <AuthErrorBoundary>
+      <main className='flex min-h-svh flex-col'>
+        <div className='flex flex-1 items-center justify-center py-12'>
+          <div className='w-full max-w-md'>
+            <Card className='bg-transparent border-none md:bg-card md:bg-linear-to-b from-secondary/50'>
+              <CardHeader>
+                <CardTitle>{customTitle ?? content.title}</CardTitle>
+                <CardDescription>{customDescription ?? content.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Outlet context={{
+                  setTitle: setCustomTitle,
+                  setDescription: setCustomDescription,
+                } satisfies AuthLayoutContext} />
+              </CardContent>
+              <CardFooter>
+                <p className='text-sm text-muted-foreground'>
+                  {content.actions?.question}{' '}
+                  <Link to={content.actions.link} className='text-primary font-medium underline-offset-4 hover:underline'>
+                    {content.actions.label}
+                  </Link>
+                </p>
+              </CardFooter>
+            </Card>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </AuthErrorBoundary>
   )
 }
 

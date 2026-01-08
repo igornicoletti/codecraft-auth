@@ -16,9 +16,18 @@ const confirmPasswordField = z
   .trim()
   .min(1, 'Confirmação de senha é obrigatória.')
 
-const withConfirmPassword = <T extends z.ZodRawShape>(schema: z.ZodObject<T>) =>
+/**
+ * Higher-order function to add password confirmation validation to a schema.
+ * Ensures type safety by using proper generic constraints.
+ *
+ * @param schema - The Zod schema to extend with password confirmation
+ * @returns The schema with password confirmation validation
+ */
+const withConfirmPassword = <T extends z.ZodRawShape & { password: z.ZodString; confirmPassword: z.ZodString }>(
+  schema: z.ZodObject<T>
+) =>
   schema.refine(
-    (data) => (data as any).password === (data as any).confirmPassword,
+    (data): data is z.infer<z.ZodObject<T>> => (data as any).password === (data as any).confirmPassword,
     {
       message: 'As senhas não correspondem.',
       path: ['confirmPassword'],

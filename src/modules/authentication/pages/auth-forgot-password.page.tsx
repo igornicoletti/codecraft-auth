@@ -23,9 +23,12 @@ const AuthForgotPasswordPage = () => {
   })
 
   const handleForgotPassword = async (data: ForgotPasswordSchema) => {
-    const result = await handleSubmit((formData) => authService.sendPasswordReset(formData.email), data) as { error?: unknown } | undefined
+    const result = await handleSubmit(
+      () => authService.sendPasswordReset(data.email),
+      data
+    )
 
-    if (!result?.error) {
+    if (result.success) {
       setEmailSent(true)
       setTitle(customTitle)
       setDescription(customDescription)

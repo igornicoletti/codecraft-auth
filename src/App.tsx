@@ -6,10 +6,10 @@ import { AuthProvider } from '@/modules/authentication/contexts/auth.context'
 import { router } from '@/routes'
 
 export const App = () => (
-  <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
+  <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
     <AuthProvider>
       <RouterProvider router={router} />
-      <Toaster />
+      <Toaster position="top-right" />
     </AuthProvider>
   </ThemeProvider>
 )

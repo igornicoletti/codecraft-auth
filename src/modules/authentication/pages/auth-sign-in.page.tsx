@@ -24,7 +24,11 @@ const AuthSignInPage = () => {
   })
 
   const handleSignIn = async (data: SignInSchema) => {
-    await handleSubmit((formData) => authService.signIn(formData.email, formData.password), data, ROUTE_PATHS.APP.DASHBOARD)
+    await handleSubmit(
+      () => authService.signIn(data.email, data.password),
+      data,
+      ROUTE_PATHS.APP.DASHBOARD
+    )
   }
 
   const handleSignInWithGoogle = async () => {

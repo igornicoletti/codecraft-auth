@@ -1,9 +1,9 @@
-import type { ElementType } from 'react'
+import type { Icon } from '@phosphor-icons/react'
 
 export interface NavigationItem {
   title: string
   url: string
-  icon?: ElementType
+  icon?: Icon
   items?: NavigationItem[]
 }
 

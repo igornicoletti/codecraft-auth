@@ -1,4 +1,6 @@
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Component, type ErrorInfo, type ReactNode } from 'react'
+
 
 interface ErrorProps {
   children?: ReactNode
@@ -16,17 +18,18 @@ export class RouteErrorBoundary extends Component<ErrorProps, ErrorState> {
     this.state = { hasError: false, error: null }
   }
 
-  static getDerivedStateFromError = (error: Error): ErrorState => {
+  static getDerivedStateFromError(error: Error): ErrorState {
     return { hasError: true, error }
   }
 
-  componentDidCatch = (error: Error, errorInfo: ErrorInfo) => {
-    console.error('RouteErrorBoundary caught an error:', error, errorInfo)
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // Integration with error reporting services (e.g., Sentry) goes here
+    console.error('RouteErrorBoundary caught:', error, errorInfo)
   }
 
   handleReload = () => {
     this.setState({ hasError: false, error: null })
-    window.location.href = '/'
+    window.location.reload()
   }
 
   render() {
@@ -34,13 +37,16 @@ export class RouteErrorBoundary extends Component<ErrorProps, ErrorState> {
       if (this.props.fallback) return this.props.fallback
 
       return (
-        <main className='grid min-h-svh place-content-center p-6'>
-          <div className='flex flex-wrap items-center gap-4'>
-            <div className='border-l-2 pl-4'>
+        <main className='flex min-h-svh flex-col p-6'>
+          <div className='flex flex-1 items-center justify-center'>
+            <div className='w-full max-w-7xl'>
               {import.meta.env.DEV && this.state.error && (
-                <pre className='max-w-7xl text-sm text-muted-foreground'>
-                  <code>{this.state.error.stack}</code>
-                </pre>
+                <ScrollArea className='border-l pl-4'>
+                  <pre className='text-sm text-muted-foreground'>
+                    <code>{this.state.error.stack}</code>
+                  </pre>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
               )}
             </div>
           </div>
