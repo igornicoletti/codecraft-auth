@@ -7,7 +7,6 @@ on:
 jobs:
   build-docs:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
     steps:
@@ -17,19 +16,19 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9 
+          version: 9
+          run_install: false 
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Generate Docs
-        run: pnpm exec typedoc --entryPointStrategy expand ./src/modules
+        run: pnpm exec typedoc
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
