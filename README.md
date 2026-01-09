@@ -267,8 +267,6 @@ pnpm dlx shadcn@latest add dialog
 pnpm dlx shadcn@latest add table
 ```
 
-Available components: avatar, breadcrumb, button, card, collapsible, drawer, dropdown-menu, field, form, input, input-group, item, label, loader, separator, sheet, sidebar, skeleton, sonner, spinner, textarea, tooltip
-
 ## 📚 Resources
 
 - [Vite Documentation](https://vitejs.dev/)
