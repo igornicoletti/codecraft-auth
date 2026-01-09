@@ -2,6 +2,8 @@
 
 A modern, production-ready authentication web application built with **Vite + React + TypeScript + Supabase**, following global industry conventions for folder structure, tooling, testing, and scalability.
 
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue?style=for-the-badge&logo=github)](https://igornicoletti.github.io/codecraft-auth/)
+
 ## 🚀 Tech Stack
 
 - **Build Tool:** Vite 7
