@@ -1,6 +1,14 @@
-import { supabase } from '@/lib/supabase'
+import type { AuthError } from '@supabase/supabase-js'
 
-import type { AuthResult, SessionResult, SignInResult, SignUpResult, UserResult, VoidResult } from '@/modules/authentication/types/auth.types'
+import { supabase } from '@/lib/supabase'
+import type {
+  AuthResult,
+  SessionResult,
+  SignInResult,
+  SignUpResult,
+  UserResult,
+  VoidResult
+} from '@/modules/authentication/types/auth.types'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 /**
@@ -82,7 +90,7 @@ async function withRetry<T>(
             message: err instanceof Error ? err.message : 'Unknown error',
             status: 0,
             name: 'NetworkError',
-          } as any,
+          } as AuthError,
         }
       }
       await new Promise(resolve => setTimeout(resolve, getRetryDelay(attempt)))
@@ -269,7 +277,7 @@ export const authService = {
           message: 'No session found',
           status: 401,
           name: 'AuthSessionMissingError',
-        } as any,
+        } as AuthError,
       }
     }
 
@@ -311,7 +319,7 @@ export const authService = {
           message: 'Failed to refresh session',
           status: 401,
           name: 'AuthSessionMissingError',
-        } as any,
+        } as AuthError,
       }
     }
 

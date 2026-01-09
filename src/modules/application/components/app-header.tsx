@@ -2,7 +2,7 @@ import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { BreadcrumbCollapsed } from '@/modules/application/components/breadcrumb/breadcrumb-collapsed'
 
-interface BreadcrumbData {
+export interface BreadcrumbData {
   title: string
   url: string
 }

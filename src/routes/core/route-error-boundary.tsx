@@ -1,13 +1,13 @@
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 
-interface ErrorProps {
+export interface ErrorProps {
   children?: ReactNode
   fallback?: ReactNode
 }
 
-interface ErrorState {
+export interface ErrorState {
   hasError: boolean
   error: Error | null
 }

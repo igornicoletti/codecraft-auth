@@ -8,19 +8,19 @@ import type { AuthResult } from '@/modules/authentication/types/auth.types'
 /**
  * Type for authentication actions that return AuthResult.
  */
-type AuthAction<TInput, TOutput> = (data: TInput) => Promise<AuthResult<TOutput>>
+export type AuthAction<TInput, TOutput> = (data: TInput) => Promise<AuthResult<TOutput>>
 
 /**
  * Result type for auth submission with proper type discrimination.
  */
-export type AuthSubmitResult<T> = 
+export type AuthSubmitResult<T> =
   | { success: true; data: T }
   | { success: false; error: string }
 
 /**
  * Hook for handling authentication form submissions with proper error handling.
  * Returns typed results for better type safety in consuming components.
- * 
+ *
  * @returns Object with handleSubmit function and isPending state
  */
 export const useAuthSubmit = <TInput = void, TOutput = void>() => {
@@ -29,7 +29,7 @@ export const useAuthSubmit = <TInput = void, TOutput = void>() => {
 
   /**
    * Handles auth form submission with error handling and optional redirect.
-   * 
+   *
    * @param action - The authentication action to perform
    * @param data - The form data to submit
    * @param redirectTo - Optional path to redirect to on success

@@ -2,13 +2,13 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 type Theme = 'dark' | 'light' | 'system'
 
-interface ThemeProviderProps {
+export interface ThemeProviderProps {
   children: React.ReactNode
   defaultTheme?: Theme
   storageKey?: string
 }
 
-interface ThemeProviderState {
+export interface ThemeProviderState {
   theme: Theme
   setTheme: (theme: Theme) => void
 }

@@ -6,12 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
-interface AppErrorBoundaryProps {
+export interface AppErrorBoundaryProps {
   children: ReactNode
   fallback?: ReactNode
 }
 
-interface AppErrorBoundaryState {
+export interface AppErrorBoundaryState {
   hasError: boolean
   error: Error | null
 }

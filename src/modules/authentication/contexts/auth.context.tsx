@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { supabase } from '@/lib/supabase'
 import { authService } from '@/modules/authentication/services/auth.service'
 
-interface AuthContextData {
+export interface AuthContextData {
   user: User | null
   session: Session | null
   isLoading: boolean
@@ -15,6 +15,10 @@ interface AuthContextData {
 
 const AuthContext = createContext<AuthContextData | undefined>(undefined)
 
+/**
+ * Provides authentication state and methods to the application.
+ * Synchronizes with Supabase auth events and manages session persistence.
+ */
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
@@ -23,30 +27,44 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     let isMounted = true
 
-    const initSession = async () => {
+    /**
+     * Initializes the session on mount and sets up the auth listener.
+     */
+    const initializeAuth = async () => {
       try {
+        // Initial session check
         const { data, error } = await authService.getSession()
-        if (!isMounted) return
-        if (error) console.error('[AuthContext] getSession error:', error)
-        setSession(data)
-        setUser(data?.user ?? null)
+
+        if (isMounted) {
+          if (error && error.status !== 401) {
+            console.error('[AuthContext] Session initialization error:', error)
+          }
+          setSession(data)
+          setUser(data?.user ?? null)
+        }
       } catch (err) {
-        console.error('[AuthContext] Unexpected error:', err)
+        console.error('[AuthContext] Unexpected initialization error:', err)
       } finally {
         if (isMounted) setIsLoading(false)
       }
     }
 
-    initSession()
+    initializeAuth()
 
+    // Listen for auth changes (sign in, sign out, token refresh, etc.)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       if (!isMounted) return
+
       setSession(currentSession)
       setUser(currentSession?.user ?? null)
+
+      // Refresh user data if profile is updated
       if (event === 'USER_UPDATED') {
         const { data: updatedUser } = await authService.getCurrentUser()
         if (updatedUser) setUser(updatedUser)
       }
+
+      setIsLoading(false)
     })
 
     return () => {
@@ -55,35 +73,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [])
 
-  const isEmailVerified = useMemo(() => {
-    if (!user?.email_confirmed_at) return false
-    const confirmedAt = new Date(user.email_confirmed_at)
-    return confirmedAt instanceof Date && !isNaN(confirmedAt.getTime())
-  }, [user])
+  /**
+   * Computed property to check if the user's email is verified.
+   */
+  const isEmailVerified = useMemo(() => !!user?.email_confirmed_at, [user])
 
-  const isSessionValid = useMemo(() => {
-    if (!session?.expires_at) return false
-    return Date.now() / 1000 < session.expires_at
-  }, [session])
-
-  useEffect(() => {
-    const refreshIfNeeded = async () => {
-      if (!isSessionValid && session) {
-        const { data, error } = await supabase.auth.refreshSession()
-        if (!error && data?.session) {
-          setSession(data.session)
-          setUser(data.session.user)
-        }
-      }
-    }
-    refreshIfNeeded()
-  }, [isSessionValid, session])
-
+  /**
+   * Signs out the user and clears local state.
+   */
   const signOut = async () => {
     try {
-      const { error } = await authService.signOut()
-      if (error) console.error('[signOut] error:', error)
+      await authService.signOut()
+    } catch (error) {
+      console.error('[AuthContext] Sign out error:', error)
     } finally {
+      // Always clear state even if the network request fails
       setUser(null)
       setSession(null)
     }

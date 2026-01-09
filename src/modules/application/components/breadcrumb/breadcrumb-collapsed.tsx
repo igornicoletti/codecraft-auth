@@ -7,7 +7,7 @@ import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerT
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useMediaQuery } from '@/hooks/use-media-query'
 
-interface IBreadcrumbData {
+export interface IBreadcrumbData {
   title: string
   url: string
 }

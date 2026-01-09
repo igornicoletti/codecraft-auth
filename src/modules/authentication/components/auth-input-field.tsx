@@ -6,7 +6,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input'
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group'
 
-interface AuthFieldProps<T extends FieldValues> {
+export interface AuthFieldProps<T extends FieldValues> {
   control: Control<T>
   name: FieldPath<T>
   label: string

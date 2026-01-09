@@ -6,7 +6,7 @@ import { useAuth } from '@/modules/authentication/contexts/auth.context'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 import type { RouteGuardType } from '@/routes/types/route.types'
 
-interface RouteGuardProps {
+export interface RouteGuardProps {
   children?: ReactNode
   guardType?: RouteGuardType
 }

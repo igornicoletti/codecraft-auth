@@ -93,7 +93,7 @@ pnpm install
 3. Configure environment variables:
    - Open the `.env` file in the project root
    - Update with your Supabase credentials:
-```env
+```bash
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```

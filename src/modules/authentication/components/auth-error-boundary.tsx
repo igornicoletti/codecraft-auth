@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
-interface AuthErrorBoundaryProps {
+export interface AuthErrorBoundaryProps {
   children: ReactNode
   fallback?: ReactNode
 }
 
-interface AuthErrorBoundaryState {
+export interface AuthErrorBoundaryState {
   hasError: boolean
   error: Error | null
 }

@@ -1,0 +1,14 @@
+{
+  "entryPoints": [
+    "src/main.tsx"
+  ],
+  "out": "docs",
+  "name": "CodeCraft Auth API Docs",
+  "includeVersion": true,
+  "exclude": [
+    "**/*.test.tsx",
+    "**/node_modules/**"
+  ],
+  "theme": "default",
+  "plugin": []
+}

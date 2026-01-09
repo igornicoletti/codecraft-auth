@@ -22,26 +22,15 @@ const mapConfigToRoute = (config: RouteConfig, parentGuard?: RouteGuardType): Ro
 
   // Wrap the component with RouteGuard if there's an effective guard
   // This ensures proper authentication checks at every level
-  const element = effectiveGuard ? (
+  const element = (
     <RouteGuard guardType={effectiveGuard}>
       <Component />
     </RouteGuard>
-  ) : (
-    <Component />
   )
 
-  const route: RouteObject = index ? {
-    index: true,
-    element,
-    handle,
-  } : {
-    path,
-    element,
-    handle,
-    children: processedChildren,
-  }
-
-  return route
+  return index
+    ? { index: true, element, handle }
+    : { path, element, handle, children: processedChildren }
 }
 
 /**
