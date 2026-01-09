@@ -1,14 +1,20 @@
 {
+  "entryPointStrategy": "expand",
   "entryPoints": [
-    "src/main.tsx"
+    "./src/modules",
+    "./src/routes"
   ],
   "out": "docs",
   "name": "CodeCraft Auth API Docs",
   "includeVersion": true,
   "exclude": [
     "**/*.test.tsx",
-    "**/node_modules/**"
+    "**/*.spec.ts",
+    "**/node_modules/**",
+    "**/ui/**"
   ],
-  "theme": "default",
-  "plugin": []
+  "cleanOutputDir": true,
+  "validation": {
+    "notExported": false
+  }
 }
