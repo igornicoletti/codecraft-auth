@@ -53,7 +53,8 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
               <CardHeader>
                 <CardTitle>Ops! Algo deu errado</CardTitle>
                 <CardDescription>
-                  Ocorreu um erro inesperado. Você pode tentar recarregar a página ou voltar ao dashboard.
+                  Ocorreu um erro inesperado na aplicação.
+                  Tente recarregar a página ou voltar para o dashboard.
                 </CardDescription>
               </CardHeader>
               <CardContent className='flex flex-col gap-4'>

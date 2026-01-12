@@ -4,66 +4,71 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { supabase } from '@/lib/supabase'
 import { authService } from '@/modules/authentication/services/auth.service'
 
+export type AuthStatus =
+  | 'loading'
+  | 'anonymous'
+  | 'email_unverified'
+  | 'password_recovery'
+  | 'authenticated'
+
 export interface AuthContextData {
   user: User | null
   session: Session | null
+  authStatus: AuthStatus
   isLoading: boolean
   isAuthenticated: boolean
   isEmailVerified: boolean
+  isPasswordRecovery: boolean
   signOut: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextData | undefined>(undefined)
 
-/**
- * Provides authentication state and methods to the application.
- * Synchronizes with Supabase auth events and manages session persistence.
- */
+const resolveAuthStatus = (session: Session | null): AuthStatus => {
+  if (!session) return 'anonymous'
+
+  const user = session.user
+
+  if (user?.recovery_sent_at) return 'password_recovery'
+  if (!user?.email_confirmed_at) return 'email_unverified'
+
+  return 'authenticated'
+}
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     let isMounted = true
 
-    /**
-     * Initializes the session on mount and sets up the auth listener.
-     */
-    const initializeAuth = async () => {
+    async function bootstrap() {
       try {
-        // Initial session check
         const { data, error } = await authService.getSession()
 
-        if (isMounted) {
-          if (error && error.status !== 401) {
-            console.error('[AuthContext] Session initialization error:', error)
-          }
-          setSession(data)
-          setUser(data?.user ?? null)
+        if (!isMounted) return
+
+        if (error && error.status !== 401) {
+          console.error('[Auth] Session bootstrap error:', error)
         }
+
+        setSession(data)
+        setUser(data?.user ?? null)
       } catch (err) {
-        console.error('[AuthContext] Unexpected initialization error:', err)
+        console.error('[Auth] Unexpected bootstrap error:', err)
       } finally {
         if (isMounted) setIsLoading(false)
       }
     }
 
-    initializeAuth()
+    bootstrap()
 
-    // Listen for auth changes (sign in, sign out, token refresh, etc.)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, currentSession) => {
       if (!isMounted) return
 
       setSession(currentSession)
       setUser(currentSession?.user ?? null)
-
-      // Refresh user data if profile is updated
-      if (event === 'USER_UPDATED') {
-        const { data: updatedUser } = await authService.getCurrentUser()
-        if (updatedUser) setUser(updatedUser)
-      }
-
       setIsLoading(false)
     })
 
@@ -73,34 +78,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [])
 
-  /**
-   * Computed property to check if the user's email is verified.
-   */
-  const isEmailVerified = useMemo(() => !!user?.email_confirmed_at, [user])
+  const authStatus = useMemo<AuthStatus>(() => {
+    if (isLoading) return 'loading'
+    return resolveAuthStatus(session)
+  }, [isLoading, session])
 
-  /**
-   * Signs out the user and clears local state.
-   */
+  const isAuthenticated = authStatus === 'authenticated'
+  const isEmailVerified = authStatus === 'authenticated'
+  const isPasswordRecovery = authStatus === 'password_recovery'
+
   const signOut = async () => {
     try {
       await authService.signOut()
     } catch (error) {
-      console.error('[AuthContext] Sign out error:', error)
+      console.error('[Auth] Sign out error:', error)
     } finally {
-      // Always clear state even if the network request fails
-      setUser(null)
       setSession(null)
+      setUser(null)
     }
   }
 
-  const value = useMemo(() => ({
+  const value = useMemo<AuthContextData>(() => ({
     user,
     session,
+    authStatus,
     isLoading,
-    isAuthenticated: !!user,
+    isAuthenticated,
     isEmailVerified,
+    isPasswordRecovery,
     signOut,
-  }), [user, session, isLoading, isEmailVerified])
+  }), [user, session, authStatus, isLoading, isAuthenticated, isEmailVerified, isPasswordRecovery])
 
   return (
     <AuthContext.Provider value={value}>
@@ -109,10 +116,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export const useAuth = () => {
+export function useAuth() {
   const context = useContext(AuthContext)
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider')
+    throw new Error('useAuth must be used within an AuthProvider')
   }
   return context
 }

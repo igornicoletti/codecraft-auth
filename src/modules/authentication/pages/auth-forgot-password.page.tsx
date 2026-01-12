@@ -1,66 +1,48 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useOutletContext } from 'react-router-dom'
 
-import { AuthForm } from '@/modules/authentication/components/auth-form'
+import { GenericForm } from '@/components/common/form/form'
+import { useFormSubmit } from '@/hooks/use-form-submit'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
-import { useAuthSubmit } from '@/modules/authentication/hooks/use-auth-submit'
-import type { AuthLayoutContext } from '@/modules/authentication/layouts/auth.layout'
 import { forgotPasswordSchema, type ForgotPasswordSchema } from '@/modules/authentication/schemas/auth.schemas'
 import { authService } from '@/modules/authentication/services/auth.service'
+import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthForgotPasswordPage = () => {
-  const { handleSubmit, isPending } = useAuthSubmit<ForgotPasswordSchema>()
-  const { setDescription, setTitle } = useOutletContext<AuthLayoutContext>()
-  const [emailSent, setEmailSent] = useState(false)
-
-  const { customDescription, customTitle, fields, submit } = AUTH_CONTENT_MAP.forgotPassword
+  const content = AUTH_CONTENT_MAP.forgotPassword
 
   const form = useForm<ForgotPasswordSchema>({
     resolver: zodResolver(forgotPasswordSchema),
-    defaultValues: { email: '' },
+    defaultValues: {
+      email: '',
+    },
   })
 
-  const handleForgotPassword = async (data: ForgotPasswordSchema) => {
-    const result = await handleSubmit(
-      () => authService.sendPasswordReset(data.email),
-      data
-    )
+  const { submit, isPending } = useFormSubmit()
 
-    if (result.success) {
-      setEmailSent(true)
-      setTitle(customTitle)
-      setDescription(customDescription)
-    }
+  async function handleForgotPassword(data: ForgotPasswordSchema) {
+    await submit(() => authService.sendPasswordReset(data.email, ROUTE_PATHS.AUTH.UPDATE_PASSWORD).then((res) => {
+      if (!res.success) { throw res.error }
+    }))
   }
 
-  useEffect(() => {
-    return () => {
-      setTitle(null)
-      setDescription(null)
-    }
-  }, [setTitle, setDescription])
-
-  const formFields = [
-    {
-      name: 'email' as const,
-      label: fields.emailLabel,
-      placeholder: fields.emailPlaceholder,
-      type: 'email',
-      autoComplete: 'email',
-    },
-  ]
-
-  if (emailSent) return null
-
   return (
-    <AuthForm
-      form={form}
-      onSubmit={handleForgotPassword}
-      fields={formFields}
-      submitText={submit}
-      isLoading={isPending} />
+    <>
+      <GenericForm
+        form={form}
+        onSubmit={handleForgotPassword}
+        submitText={content.submit}
+        isLoading={isPending}
+        fields={[
+          {
+            name: 'email',
+            label: content.fields.emailLabel,
+            placeholder: content.fields.emailPlaceholder,
+            type: 'email',
+            autoComplete: 'email',
+          },
+        ]} />
+    </>
   )
 }
 

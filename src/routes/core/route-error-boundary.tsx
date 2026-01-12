@@ -2,46 +2,46 @@ import { Component, type ErrorInfo, type ReactNode } from 'react'
 
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 
-export interface ErrorProps {
-  children?: ReactNode
+export interface RouteErrorBoundaryProps {
+  children: ReactNode
   fallback?: ReactNode
 }
 
-export interface ErrorState {
+export interface RouteErrorBoundaryState {
   hasError: boolean
   error: Error | null
 }
 
-export class RouteErrorBoundary extends Component<ErrorProps, ErrorState> {
-  constructor(props: ErrorProps) {
+export class RouteErrorBoundary extends Component<RouteErrorBoundaryProps, RouteErrorBoundaryState> {
+  constructor(props: RouteErrorBoundaryProps) {
     super(props)
     this.state = { hasError: false, error: null }
   }
 
-  static getDerivedStateFromError(error: Error): ErrorState {
+  static getDerivedStateFromError(error: Error): RouteErrorBoundaryState {
     return { hasError: true, error }
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // Integration with error reporting services (e.g., Sentry) goes here
-    console.error('RouteErrorBoundary caught:', error, errorInfo)
+    console.error('[RouteErrorBoundary] Caught error:', error, errorInfo)
   }
 
-  handleReload = () => {
+  handleReset = () => {
     this.setState({ hasError: false, error: null })
-    window.location.reload()
   }
 
   render() {
     if (this.state.hasError) {
-      if (this.props.fallback) return this.props.fallback
+      if (this.props.fallback) {
+        return this.props.fallback
+      }
 
       return (
         <main className='flex min-h-svh flex-col p-6'>
           <div className='flex flex-1 items-center justify-center'>
             <div className='w-full max-w-7xl'>
               {import.meta.env.DEV && this.state.error && (
-                <ScrollArea className='border-l pl-4'>
+                <ScrollArea>
                   <pre className='text-sm text-muted-foreground'>
                     <code>{this.state.error.stack}</code>
                   </pre>

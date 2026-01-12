@@ -1,4 +1,6 @@
-export const AUTH_ERROR_MESSAGES: Record<string, string> = {
+export type AuthErrorMessageMap = Record<string, string>
+
+export const AUTH_ERROR_MESSAGES: AuthErrorMessageMap = {
   'User already registered': 'Este e-mail já está em uso.',
   'Invalid login credentials': 'Usuário ou senha incorretos.',
   'Email not confirmed': 'Confirme seu e-mail antes de fazer login.',

@@ -1,55 +1,60 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 
-import { AuthForm } from '@/modules/authentication/components/auth-form'
+import { GenericForm } from '@/components/common/form/form'
+import { useFormSubmit } from '@/hooks/use-form-submit'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
-import { useAuthSubmit } from '@/modules/authentication/hooks/use-auth-submit'
 import { updatePasswordSchema, type UpdatePasswordSchema } from '@/modules/authentication/schemas/auth.schemas'
 import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthUpdatePasswordPage = () => {
-  const { handleSubmit, isPending } = useAuthSubmit<UpdatePasswordSchema>()
-
-  const { fields, submit } = AUTH_CONTENT_MAP.updatePassword
+  const navigate = useNavigate()
+  const content = AUTH_CONTENT_MAP.updatePassword
 
   const form = useForm<UpdatePasswordSchema>({
     resolver: zodResolver(updatePasswordSchema),
-    defaultValues: { password: '', confirmPassword: '' },
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    },
   })
 
-  const handleUpdatePassword = async (data: UpdatePasswordSchema) => {
-    await handleSubmit(
-      () => authService.updatePassword(data.password),
-      data,
-      ROUTE_PATHS.APP.DASHBOARD
-    )
+  const { submit, isPending } = useFormSubmit({
+    onSuccess: () => navigate(ROUTE_PATHS.AUTH.SIGN_IN),
+  })
+
+  async function handleUpdatePassword(data: UpdatePasswordSchema) {
+    await submit(() => authService.updatePassword(data.password).then((res) => {
+      if (!res.success) { throw res.error }
+    }))
   }
 
-  const formFields = [
-    {
-      name: 'password' as const,
-      label: fields.passwordLabel,
-      placeholder: fields.passwordPlaceholder,
-      type: 'password',
-      autoComplete: 'new-password',
-    },
-    {
-      name: 'confirmPassword' as const,
-      label: fields.confirmPasswordLabel,
-      placeholder: fields.confirmPasswordPlaceholder,
-      type: 'password',
-      autoComplete: 'new-password',
-    },
-  ]
-
   return (
-    <AuthForm
-      form={form}
-      onSubmit={handleUpdatePassword}
-      fields={formFields}
-      submitText={submit}
-      isLoading={isPending} />
+    <>
+      <GenericForm
+        form={form}
+        onSubmit={handleUpdatePassword}
+        submitText={content.submit}
+        isLoading={isPending}
+        fields={[
+          {
+            name: 'password',
+            label: content.fields.passwordLabel,
+            placeholder: content.fields.passwordPlaceholder,
+            type: 'password',
+            autoComplete: 'new-password',
+          },
+          {
+            name: 'confirmPassword',
+            label: content.fields.confirmPasswordLabel,
+            placeholder: content.fields.confirmPasswordPlaceholder,
+            type: 'password',
+            autoComplete: 'new-password',
+          },
+        ]} />
+    </>
   )
 }
 

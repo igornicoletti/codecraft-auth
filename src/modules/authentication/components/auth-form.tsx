@@ -5,10 +5,10 @@ import { Form } from '@/components/ui/form'
 import { Spinner } from '@/components/ui/spinner'
 import { AuthInputField } from '@/modules/authentication/components/auth-input-field'
 
-export interface AuthFormField<T extends FieldValues> {
+export interface AuthFormFieldConfig<T extends FieldValues> {
   name: Path<T>
   label: string
-  placeholder?: string
+  placeholder: string
   type?: string
   autoComplete?: string
 }
@@ -16,9 +16,9 @@ export interface AuthFormField<T extends FieldValues> {
 export interface AuthFormProps<T extends FieldValues> {
   form: UseFormReturn<T>
   onSubmit: (values: T) => Promise<void>
-  fields: AuthFormField<T>[]
+  fields: AuthFormFieldConfig<T>[]
   submitText: string
-  isLoading?: boolean
+  isLoading: boolean
 }
 
 export const AuthForm = <T extends FieldValues>({
@@ -26,10 +26,14 @@ export const AuthForm = <T extends FieldValues>({
   onSubmit,
   fields,
   submitText,
-  isLoading = false,
+  isLoading,
 }: AuthFormProps<T>) => (
   <Form {...form}>
-    <form noValidate onSubmit={form.handleSubmit(onSubmit)} className='grid gap-6'>
+    <form
+      noValidate
+      onSubmit={form.handleSubmit(onSubmit)}
+      className="grid gap-6"
+    >
       {fields.map((field) => (
         <AuthInputField
           key={field.name}
@@ -39,10 +43,11 @@ export const AuthForm = <T extends FieldValues>({
           type={field.type}
           placeholder={field.placeholder}
           autoComplete={field.autoComplete}
-          disabled={isLoading} />
+          disabled={isLoading}
+        />
       ))}
-      <Button disabled={isLoading} type='submit'>
-        {isLoading && <Spinner />}
+      <Button disabled={isLoading} type="submit" className="w-full">
+        {isLoading ? <Spinner className="mr-2" /> : null}
         {submitText}
       </Button>
     </form>

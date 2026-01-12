@@ -1,10 +1,16 @@
 import { z } from 'zod'
 
-const emailField = z
+/* -------------------------------------------------------------------------- */
+/*                                    Fields                                  */
+/* -------------------------------------------------------------------------- */
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+export const emailField = z
   .string()
   .trim()
   .min(1, 'E-mail é obrigatório.')
-  .email('Digite um e-mail válido.')
+  .refine((value) => emailRegex.test(value), { message: 'Digite um e-mail válido.' })
 
 const passwordField = z
   .string()
@@ -16,23 +22,29 @@ const confirmPasswordField = z
   .trim()
   .min(1, 'Confirmação de senha é obrigatória.')
 
-/**
- * Higher-order function to add password confirmation validation to a schema.
- * Ensures type safety by using proper generic constraints.
- *
- * @param schema - The Zod schema to extend with password confirmation
- * @returns The schema with password confirmation validation
- */
-const withConfirmPassword = <T extends z.ZodRawShape & { password: z.ZodString; confirmPassword: z.ZodString }>(
-  schema: z.ZodObject<T>
+/* -------------------------------------------------------------------------- */
+/*                         Shared schema compositions                          */
+/* -------------------------------------------------------------------------- */
+
+const withConfirmPassword = <
+  T extends z.ZodObject<{
+    password: z.ZodString
+    confirmPassword: z.ZodString
+  }>
+>(
+  schema: T
 ) =>
   schema.refine(
-    (data): data is z.infer<z.ZodObject<T>> => (data as any).password === (data as any).confirmPassword,
+    (data) => data.password === data.confirmPassword,
     {
-      message: 'As senhas não correspondem.',
       path: ['confirmPassword'],
+      message: 'As senhas não correspondem.',
     }
   )
+
+/* -------------------------------------------------------------------------- */
+/*                                   Schemas                                  */
+/* -------------------------------------------------------------------------- */
 
 export const signInSchema = z.object({
   email: emailField,
@@ -57,6 +69,10 @@ export const updatePasswordSchema = withConfirmPassword(
     confirmPassword: confirmPasswordField,
   })
 )
+
+/* -------------------------------------------------------------------------- */
+/*                                    Types                                   */
+/* -------------------------------------------------------------------------- */
 
 export type SignInSchema = z.infer<typeof signInSchema>
 export type SignUpSchema = z.infer<typeof signUpSchema>

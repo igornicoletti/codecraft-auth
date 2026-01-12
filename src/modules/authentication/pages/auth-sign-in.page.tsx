@@ -1,72 +1,78 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Session } from '@supabase/supabase-js'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
+import { GenericForm } from '@/components/common/form/form'
 import { Button } from '@/components/ui/button'
-import { AuthForm } from '@/modules/authentication/components/auth-form'
+import { useFormSubmit } from '@/hooks/use-form-submit'
 import { AuthSocialLogin } from '@/modules/authentication/components/auth-social-login'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
-import { useAuthSubmit } from '@/modules/authentication/hooks/use-auth-submit'
 import { signInSchema, type SignInSchema } from '@/modules/authentication/schemas/auth.schemas'
 import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthSignInPage = () => {
-  const { handleSubmit, isPending } = useAuthSubmit<SignInSchema, Session>()
-  const { handleSubmit: handleGoogleSubmit, isPending: isGooglePending } = useAuthSubmit()
-
-  const { fields, forgot, separator, social, submit } = AUTH_CONTENT_MAP.signIn
+  const navigate = useNavigate()
+  const content = AUTH_CONTENT_MAP.signIn
 
   const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
-    defaultValues: { email: '', password: '' },
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   })
 
-  const handleSignIn = async (data: SignInSchema) => {
-    await handleSubmit(
-      () => authService.signIn(data.email, data.password),
-      data,
-      ROUTE_PATHS.APP.DASHBOARD
-    )
+  const { submit, isPending } = useFormSubmit({
+    onSuccess: () => navigate(ROUTE_PATHS.APP.DASHBOARD)
+  })
+
+  async function handleSignIn(data: SignInSchema) {
+    await submit(() => authService.signIn(data.email, data.password).then((res) => {
+      if (!res.success) { throw res.error }
+    }))
   }
 
-  const handleSignInWithGoogle = async () => {
-    await handleGoogleSubmit(() => authService.signInWithGoogle(), undefined)
+  async function handleGoogleSignIn() {
+    await submit(() => authService.signInWithGoogle(ROUTE_PATHS.APP.DASHBOARD).then((res) => {
+      if (!res.success) { throw res.error }
+    }))
   }
-
-  const formFields = [
-    {
-      name: 'email' as const,
-      label: fields.emailLabel,
-      placeholder: fields.emailPlaceholder,
-      type: 'email',
-      autoComplete: 'username',
-    },
-    {
-      name: 'password' as const,
-      label: fields.passwordLabel,
-      placeholder: fields.passwordPlaceholder,
-      type: 'password',
-      autoComplete: 'current-password',
-    },
-  ]
 
   return (
     <>
       <AuthSocialLogin
-        text={social}
-        separatorText={separator}
-        isPending={isGooglePending}
-        onGoogleClick={handleSignInWithGoogle} />
-      <AuthForm
+        text={content.social}
+        separatorText={content.separator}
+        isPending={isPending}
+        onGoogleClick={handleGoogleSignIn} />
+
+      <GenericForm
         form={form}
         onSubmit={handleSignIn}
-        submitText={submit}
+        submitText={content.submit}
         isLoading={isPending}
-        fields={formFields} />
-      <Button asChild variant='link'>
-        <Link to={forgot.link}>{forgot.question}</Link>
+        fields={[
+          {
+            name: 'email',
+            label: content.fields.emailLabel,
+            placeholder: content.fields.emailPlaceholder,
+            type: 'email',
+            autoComplete: 'email',
+          },
+          {
+            name: 'password',
+            label: content.fields.passwordLabel,
+            placeholder: content.fields.passwordPlaceholder,
+            type: 'password',
+            autoComplete: 'current-password',
+          },
+        ]} />
+
+      <Button asChild variant="link">
+        <Link to={content.forgot.link}>
+          {content.forgot.question}
+        </Link>
       </Button>
     </>
   )

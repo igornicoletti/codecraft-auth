@@ -1,7 +1,3 @@
-/**
- * Centralized registry of all route paths in the application.
- * Using a const assertion to ensure type safety.
- */
 export const ROUTE_PATHS = {
   ROOT: '/',
   AUTH: {

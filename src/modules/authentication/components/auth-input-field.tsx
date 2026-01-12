@@ -10,7 +10,7 @@ export interface AuthFieldProps<T extends FieldValues> {
   control: Control<T>
   name: FieldPath<T>
   label: string
-  placeholder?: string
+  placeholder: string
   type?: string
   autoComplete?: string
   disabled?: boolean
@@ -46,14 +46,16 @@ export const AuthInputField = <T extends FieldValues>({
                   placeholder={placeholder}
                   autoComplete={autoComplete}
                   disabled={disabled}
-                  aria-invalid={!!fieldState.error} />
-                <InputGroupAddon align='inline-end'>
+                  aria-invalid={!!fieldState.error}
+                />
+                <InputGroupAddon align="inline-end">
                   <InputGroupButton
-                    type='button'
-                    variant='ghost'
+                    type="button"
+                    variant="ghost"
                     disabled={disabled}
-                    onClick={() => setIsVisible((v) => !v)}>
-                    {isVisible ? <EyeSlashIcon /> : <EyeIcon />}
+                    onClick={() => setIsVisible((v) => !v)}
+                  >
+                    {isVisible ? <EyeSlashIcon size={18} /> : <EyeIcon size={18} />}
                   </InputGroupButton>
                 </InputGroupAddon>
               </InputGroup>
@@ -64,10 +66,11 @@ export const AuthInputField = <T extends FieldValues>({
                 placeholder={placeholder}
                 autoComplete={autoComplete}
                 disabled={disabled}
-                aria-invalid={!!fieldState.error} />
+                aria-invalid={!!fieldState.error}
+              />
             )}
           </FormControl>
-          <FormMessage className='text-xs text-right' />
+          <FormMessage className="text-xs text-right" />
         </FormItem>
       )}
     />
