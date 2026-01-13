@@ -20,60 +20,55 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
   {
     path: ROUTE_PATHS.AUTH.ROOT,
     component: AuthLayout,
-    handle: {
-      title: 'Autenticação',
-      hideInSidebar: true,
-      hideInBreadcrumbs: true
-    },
+    guard: 'guest',
     children: [
       {
         index: true,
-        guard: 'guest',
         component: RedirectToSignIn,
       },
       {
         path: ROUTE_PATHS.AUTH.SIGN_IN,
         component: AuthSignInPage,
-        guard: 'guest',
         handle: { title: 'Entrar' },
       },
       {
         path: ROUTE_PATHS.AUTH.SIGN_UP,
         component: AuthSignUpPage,
-        guard: 'guest',
         handle: { title: 'Criar conta' },
       },
       {
         path: ROUTE_PATHS.AUTH.FORGOT_PASSWORD,
         component: AuthForgotPasswordPage,
-        guard: 'guest',
         handle: { title: 'Recuperar senha' },
       },
+    ],
+  },
+
+  {
+    path: ROUTE_PATHS.AUTH.UPDATE_PASSWORD,
+    component: AuthLayout,
+    guard: 'recovery',
+    children: [
       {
-        path: ROUTE_PATHS.AUTH.UPDATE_PASSWORD,
+        index: true,
         component: AuthUpdatePasswordPage,
-        guard: 'recovery',
         handle: { title: 'Atualizar senha' },
       },
     ],
   },
+
   {
     path: ROUTE_PATHS.APP.ROOT,
     component: AppLayout,
-    handle: {
-      title: 'Aplicação',
-      hideInBreadcrumbs: true
-    },
+    guard: 'private',
     children: [
       {
         index: true,
-        guard: 'private',
         component: RedirectToDashboard,
       },
       {
         path: ROUTE_PATHS.APP.DASHBOARD,
         component: AppDashboardPage,
-        guard: 'private',
         handle: { title: 'Dashboard', icon: ChartLineUpIcon },
       },
     ],

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link, matchPath, Outlet, useLocation } from 'react-router-dom'
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
@@ -17,15 +17,12 @@ const AuthLayout = () => {
   const [customDescription, setCustomDescription] = useState<string | null>(null)
 
   const content = useMemo(() => {
-    const pathMap: Array<{
-      path: string
-      content: (typeof AUTH_CONTENT_MAP)[keyof typeof AUTH_CONTENT_MAP]
-    }> = [
-        { path: ROUTE_PATHS.AUTH.SIGN_IN, content: AUTH_CONTENT_MAP.signIn },
-        { path: ROUTE_PATHS.AUTH.SIGN_UP, content: AUTH_CONTENT_MAP.signUp },
-        { path: ROUTE_PATHS.AUTH.FORGOT_PASSWORD, content: AUTH_CONTENT_MAP.forgotPassword },
-        { path: ROUTE_PATHS.AUTH.UPDATE_PASSWORD, content: AUTH_CONTENT_MAP.updatePassword },
-      ]
+    const pathMap = [
+      { path: ROUTE_PATHS.AUTH.SIGN_IN, content: AUTH_CONTENT_MAP.signIn },
+      { path: ROUTE_PATHS.AUTH.SIGN_UP, content: AUTH_CONTENT_MAP.signUp },
+      { path: ROUTE_PATHS.AUTH.FORGOT_PASSWORD, content: AUTH_CONTENT_MAP.forgotPassword },
+      { path: ROUTE_PATHS.AUTH.UPDATE_PASSWORD, content: AUTH_CONTENT_MAP.updatePassword },
+    ]
 
     const active = pathMap.find((item) => matchPath({
       path: item.path,
@@ -34,6 +31,8 @@ const AuthLayout = () => {
 
     return active?.content ?? AUTH_CONTENT_MAP.signIn
   }, [location.pathname])
+
+  if (!content) return null
 
   return (
     <main className="flex min-h-svh flex-col">
@@ -44,14 +43,12 @@ const AuthLayout = () => {
               <CardTitle>{customTitle ?? content.title}</CardTitle>
               <CardDescription>{customDescription ?? content.description}</CardDescription>
             </CardHeader>
-
             <CardContent>
               <Outlet context={{
                 setTitle: setCustomTitle,
                 setDescription: setCustomDescription
               } as AuthLayoutContext} />
             </CardContent>
-
             {content.actions && (
               <CardFooter>
                 <p className="text-sm text-muted-foreground">

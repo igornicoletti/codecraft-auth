@@ -33,11 +33,11 @@ export const authService = {
     return { success: true, data: data.session!, error: null }
   },
 
-  async signInWithGoogle(redirectPath?: string): Promise<VoidResult> {
+  async signInWithGoogle(redirectPath: string): Promise<VoidResult> {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: redirectPath ? resolveRedirectUrl(redirectPath) : undefined
+        redirectTo: resolveRedirectUrl(redirectPath)
       }
     })
 

@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useOutletContext } from 'react-router-dom'
 
@@ -11,8 +12,10 @@ import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthForgotPasswordPage = () => {
-  const content = AUTH_CONTENT_MAP.forgotPassword
+  const { submit, isPending, isSuccess } = useFormSubmit()
   const { setTitle, setDescription } = useOutletContext<AuthLayoutContext>()
+
+  const content = AUTH_CONTENT_MAP.forgotPassword
 
   const form = useForm<ForgotPasswordSchema>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -21,16 +24,21 @@ const AuthForgotPasswordPage = () => {
     },
   })
 
-  const { submit, isPending, isSuccess } = useFormSubmit({
-    onSuccess: () => {
-      setTitle(content.customTitle ?? null)
-      setDescription(content.customDescription ?? null)
-    }
-  })
-
-  async function handleForgotPassword(data: ForgotPasswordSchema) {
-    await submit(() => authService.sendPasswordReset(data.email, ROUTE_PATHS.AUTH.UPDATE_PASSWORD))
+  const handleForgotPassword = async (data: ForgotPasswordSchema) => {
+    await submit(() => authService.sendPasswordReset(data.email, ROUTE_PATHS.AUTH.UPDATE_PASSWORD), {
+      onSuccess: () => {
+        setTitle(content.customTitle ?? null)
+        setDescription(content.customDescription ?? null)
+      }
+    })
   }
+
+  useEffect(() => {
+    return () => {
+      setTitle(null)
+      setDescription(null)
+    }
+  }, [setTitle, setDescription])
 
   if (isSuccess) return null
 

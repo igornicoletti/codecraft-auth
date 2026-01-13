@@ -12,6 +12,8 @@ import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthSignInPage = () => {
+  const { submit, isPending } = useFormSubmit()
+
   const content = AUTH_CONTENT_MAP.signIn
 
   const form = useForm<SignInSchema>({
@@ -22,16 +24,13 @@ const AuthSignInPage = () => {
     },
   })
 
-  const { submit, isPending } = useFormSubmit({
-    redirectTo: ROUTE_PATHS.APP.DASHBOARD,
-    successMessage: 'Login realizado com sucesso!',
-  })
-
-  async function handleSignIn(data: SignInSchema) {
-    await submit(() => authService.signIn(data.email, data.password))
+  const handleSignIn = async (data: SignInSchema) => {
+    await submit(() => authService.signIn(data.email, data.password), {
+      redirectTo: ROUTE_PATHS.APP.DASHBOARD
+    })
   }
 
-  async function handleGoogleSignIn() {
+  const handleGoogleSignIn = async () => {
     await submit(() => authService.signInWithGoogle(ROUTE_PATHS.APP.DASHBOARD))
   }
 
@@ -41,8 +40,7 @@ const AuthSignInPage = () => {
         text={content.social}
         separatorText={content.separator}
         isPending={isPending}
-        onGoogleClick={handleGoogleSignIn}
-      />
+        onGoogleClick={handleGoogleSignIn} />
 
       <GenericForm
         form={form}

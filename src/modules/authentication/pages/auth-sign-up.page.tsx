@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useOutletContext } from 'react-router-dom'
 
@@ -12,35 +13,38 @@ import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthSignUpPage = () => {
-  const content = AUTH_CONTENT_MAP.signUp
+  const { submit, isPending, isSuccess } = useFormSubmit()
   const { setTitle, setDescription } = useOutletContext<AuthLayoutContext>()
+
+  const content = AUTH_CONTENT_MAP.signUp
 
   const form = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       email: '',
       password: '',
-      confirmPassword: '',
+      confirmPassword: ''
     },
   })
 
-  const { submit, isPending, isSuccess } = useFormSubmit({
-    onSuccess: () => {
-      setTitle(content.customTitle ?? null)
-      setDescription(content.customDescription ?? null)
-    }
-  })
-
-  const { submit: submitGoogle, isPending: isGooglePending } = useFormSubmit({
-    redirectTo: ROUTE_PATHS.APP.DASHBOARD
-  })
-
-  async function handleSignUp(data: SignUpSchema) {
-    await submit(() => authService.signUp(data.email, data.password))
+  const handleSignUp = async (data: SignUpSchema) => {
+    await submit(() => authService.signUp(data.email, data.password), {
+      onSuccess: () => {
+        setTitle(content.customTitle ?? null)
+        setDescription(content.customDescription ?? null)
+      }
+    })
   }
 
-  async function handleGoogleSignUp() {
-    await submitGoogle(() => authService.signInWithGoogle(ROUTE_PATHS.APP.DASHBOARD))
+  useEffect(() => {
+    return () => {
+      setTitle(null)
+      setDescription(null)
+    }
+  }, [setTitle, setDescription])
+
+  const handleGoogleSignUp = async () => {
+    await submit(() => authService.signInWithGoogle(ROUTE_PATHS.APP.DASHBOARD))
   }
 
   if (isSuccess) return null
@@ -50,9 +54,8 @@ const AuthSignUpPage = () => {
       <AuthSocialLogin
         text={content.social}
         separatorText={content.separator}
-        isPending={isGooglePending || isPending}
-        onGoogleClick={handleGoogleSignUp}
-      />
+        isPending={isPending}
+        onGoogleClick={handleGoogleSignUp} />
 
       <GenericForm
         form={form}

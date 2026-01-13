@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
@@ -8,7 +8,7 @@ export type ServiceResponse<T> =
   | { success: true; data: T; error: null }
   | { success: false; data: null; error: unknown }
 
-interface UseFormSubmitOptions<T> {
+export interface SubmitOptions<T> {
   onSuccess?: (data: T) => void
   onError?: (error: unknown) => void
   redirectTo?: string
@@ -16,32 +16,29 @@ interface UseFormSubmitOptions<T> {
   errorMessage?: string
 }
 
-export const useFormSubmit = <T>(options?: UseFormSubmitOptions<T>) => {
+export const useFormSubmit = <T = unknown>() => {
   const [isPending, setIsPending] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const navigate = useNavigate()
 
-  const submit = async (
-    action: () => Promise<ServiceResponse<T>>
-  ): Promise<ServiceResponse<T> | undefined> => {
+  const submit = useCallback(async (action: () => Promise<ServiceResponse<T>>, options?: SubmitOptions<T>): Promise<ServiceResponse<T> | undefined> => {
     setIsPending(true)
     setIsSuccess(false)
+
+    let shouldResetPending = true
 
     try {
       const result = await action()
 
       if (!result.success) {
-        const errorDescription = options?.errorMessage
-          ? options.errorMessage
-          : getAuthErrorMessage(result.error)
-
-        toast.error(errorDescription)
-
+        const errorDesc = options?.errorMessage ?? getAuthErrorMessage(result.error)
+        toast.error(errorDesc)
         options?.onError?.(result.error)
         return result
       }
 
       setIsSuccess(true)
+
       if (options?.successMessage) {
         toast.success(options.successMessage)
       }
@@ -49,24 +46,22 @@ export const useFormSubmit = <T>(options?: UseFormSubmitOptions<T>) => {
       options?.onSuccess?.(result.data)
 
       if (options?.redirectTo) {
-        navigate(options.redirectTo)
+        shouldResetPending = false
+        navigate(options.redirectTo, { replace: true })
       }
 
       return result
-
     } catch (error) {
       console.error('[FormSubmit] Critical Error:', error)
-      const errorDescription = getAuthErrorMessage(error)
-
-      toast.error(errorDescription)
-
+      toast.error(getAuthErrorMessage(error))
       options?.onError?.(error)
       return { success: false, data: null, error }
-
     } finally {
-      setIsPending(false)
+      if (shouldResetPending) {
+        setIsPending(false)
+      }
     }
-  }
+  }, [navigate])
 
   return { submit, isPending, isSuccess }
 }

@@ -19,25 +19,16 @@ export const RouteGuard = ({ guardType = 'public', children }: RouteGuardProps) 
     return <LoaderFour />
   }
 
-  if (guardType === 'guest') {
-    if (isAuthenticated) {
-      return <Navigate to={ROUTE_PATHS.APP.DASHBOARD} replace />
-    }
-    if (authStatus === 'password_recovery') {
-      return <Navigate to={ROUTE_PATHS.AUTH.UPDATE_PASSWORD} replace />
-    }
+  if (guardType === 'guest' && isAuthenticated) {
+    return <Navigate to={ROUTE_PATHS.APP.DASHBOARD} replace />
   }
 
-  if (guardType === 'private') {
-    if (!isAuthenticated) {
-      return <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} state={{ from: location }} replace />
-    }
+  if (guardType === 'private' && !isAuthenticated) {
+    return <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} state={{ from: location }} replace />
   }
 
-  if (guardType === 'recovery') {
-    if (authStatus !== 'password_recovery') {
-      return <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace />
-    }
+  if (guardType === 'recovery' && authStatus !== 'password_recovery') {
+    return <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace />
   }
 
   return <>{children ?? <Outlet />}</>
