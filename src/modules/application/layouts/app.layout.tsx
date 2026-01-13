@@ -20,7 +20,7 @@ const AppLayout = () => {
     <SidebarProvider>
       <AppSidebar navigation={navigation} user={currentUser} />
       <SidebarInset>
-        <AppHeader breadcrumb={breadcrumbs} />
+        <AppHeader breadcrumb={breadcrumbs.filter((b) => b !== null)} />
         <main className='flex flex-1 flex-col gap-4 p-4'>
           <Outlet />
         </main>
