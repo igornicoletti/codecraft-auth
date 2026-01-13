@@ -11,27 +11,34 @@ export interface RouteGuardProps {
   children?: ReactNode
 }
 
-export function RouteGuard({ guardType = 'public', children }: RouteGuardProps) {
-  const { authStatus } = useAuth()
+export const RouteGuard = ({ guardType = 'public', children }: RouteGuardProps) => {
+  const { authStatus, isAuthenticated } = useAuth()
   const location = useLocation()
 
-  if (authStatus === 'loading') return <LoaderFour />
-  if (guardType === 'public') return <>{children ?? <Outlet />}</>
+  if (authStatus === 'loading') {
+    return <LoaderFour />
+  }
+
   if (guardType === 'guest') {
-    if (authStatus === 'authenticated') return (<Navigate to={ROUTE_PATHS.APP.DASHBOARD} replace />)
-    if (authStatus === 'password_recovery') return (<Navigate to={ROUTE_PATHS.AUTH.UPDATE_PASSWORD} replace />)
-    return <>{children ?? <Outlet />}</>
+    if (isAuthenticated) {
+      return <Navigate to={ROUTE_PATHS.APP.DASHBOARD} replace />
+    }
+    if (authStatus === 'password_recovery') {
+      return <Navigate to={ROUTE_PATHS.AUTH.UPDATE_PASSWORD} replace />
+    }
   }
 
   if (guardType === 'private') {
-    if (authStatus !== 'authenticated') return (<Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} state={{ from: location }} replace />)
-    return <>{children ?? <Outlet />}</>
+    if (!isAuthenticated) {
+      return <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} state={{ from: location }} replace />
+    }
   }
 
   if (guardType === 'recovery') {
-    if (authStatus !== 'password_recovery') return (<Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace />)
-    return <>{children ?? <Outlet />}</>
+    if (authStatus !== 'password_recovery') {
+      return <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace />
+    }
   }
 
-  return <Navigate to={ROUTE_PATHS.ROOT} replace />
+  return <>{children ?? <Outlet />}</>
 }

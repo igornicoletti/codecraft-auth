@@ -13,21 +13,15 @@ export const useRouteMetadata = () => {
   const matches = useMatches()
   const location = useLocation()
 
-  /**
-   * --------------------
-   * Breadcrumbs
-   * --------------------
-   */
   const breadcrumbs = useMemo(() => {
     return matches
       .map((match) => {
-        const handle = match.handle as RouteHandle | undefined
+        const handle = match.handle as RouteHandle
         if (!handle?.title || handle.hideInBreadcrumbs) return null
 
-        const title =
-          typeof handle.title === 'function'
-            ? handle.title(match.loaderData)
-            : handle.title
+        const title = typeof handle.title === 'function'
+          ? handle.title(match.loaderData)
+          : handle.title
 
         return {
           title: title ?? '',
@@ -35,51 +29,39 @@ export const useRouteMetadata = () => {
         }
       })
       .filter(Boolean)
-      .slice(1) // remove root breadcrumb
+      .slice(1)
   }, [matches, location.pathname])
-
-  /**
-   * --------------------
-   * Sidebar / Navigation
-   * --------------------
-   */
 
   const navigation = useMemo<NavigationSection[]>(() => {
     const mapRouteToNavItem = (route: RouteConfig): NavigationItem | null => {
       if (route.handle?.hideInSidebar) return null
       if (!route.handle?.title && !route.children) return null
 
-      const children =
-        route.children
-          ?.map(mapRouteToNavItem)
-          .filter((item): item is NavigationItem => Boolean(item))
+      const children = route.children
+        ?.map(mapRouteToNavItem)
+        .filter((item): item is NavigationItem => Boolean(item))
 
       if (!route.handle?.title) return null
 
       return {
-        title:
-          typeof route.handle.title === 'string'
-            ? route.handle.title
-            : 'Link',
+        title: typeof route.handle.title === 'string'
+          ? route.handle.title
+          : 'Link',
         url: route.path ?? '',
         icon: route.handle.icon,
         items: children && children.length > 0 ? children : undefined,
       }
     }
 
-    const appSections = ROUTE_CONFIGS.filter(
-      (route) => route.guard === 'private'
-    )
+    const appSections = ROUTE_CONFIGS.filter((route) => route.guard === 'private')
 
     return appSections.map((section) => ({
-      label:
-        typeof section.handle?.title === 'string'
-          ? section.handle.title
-          : undefined,
-      items:
-        section.children
-          ?.map(mapRouteToNavItem)
-          .filter((item): item is NavigationItem => Boolean(item)) ?? [],
+      label: typeof section.handle?.title === 'string'
+        ? section.handle.title
+        : undefined,
+      items: section.children
+        ?.map(mapRouteToNavItem)
+        .filter((item): item is NavigationItem => Boolean(item)) ?? [],
     }))
   }, [])
 

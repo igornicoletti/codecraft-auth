@@ -21,7 +21,7 @@ const AuthForgotPasswordPage = () => {
     },
   })
 
-  const { submit, isPending } = useFormSubmit({
+  const { submit, isPending, isSuccess } = useFormSubmit({
     onSuccess: () => {
       setTitle(content.customTitle ?? null)
       setDescription(content.customDescription ?? null)
@@ -31,6 +31,8 @@ const AuthForgotPasswordPage = () => {
   async function handleForgotPassword(data: ForgotPasswordSchema) {
     await submit(() => authService.sendPasswordReset(data.email, ROUTE_PATHS.AUTH.UPDATE_PASSWORD))
   }
+
+  if (isSuccess) return null
 
   return (
     <>

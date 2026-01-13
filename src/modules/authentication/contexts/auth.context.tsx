@@ -45,18 +45,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     async function bootstrap() {
       try {
-        const { data, error } = await authService.getSession()
-
+        const { data } = await authService.getSession()
         if (!isMounted) return
-
-        if (error && error.status !== 401) {
-          console.error('[Auth] Session bootstrap error:', error)
-        }
 
         setSession(data)
         setUser(data?.user ?? null)
       } catch (err) {
-        console.error('[Auth] Unexpected bootstrap error:', err)
+        console.error('[Auth] Bootstrap error:', err)
       } finally {
         if (isMounted) setIsLoading(false)
       }
@@ -64,7 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     bootstrap()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, currentSession) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, currentSession) => {
       if (!isMounted) return
 
       setSession(currentSession)

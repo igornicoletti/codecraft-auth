@@ -18,12 +18,14 @@ interface UseFormSubmitOptions<T> {
 
 export const useFormSubmit = <T>(options?: UseFormSubmitOptions<T>) => {
   const [isPending, setIsPending] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
   const navigate = useNavigate()
 
   const submit = async (
     action: () => Promise<ServiceResponse<T>>
   ): Promise<ServiceResponse<T> | undefined> => {
     setIsPending(true)
+    setIsSuccess(false)
 
     try {
       const result = await action()
@@ -39,6 +41,7 @@ export const useFormSubmit = <T>(options?: UseFormSubmitOptions<T>) => {
         return result
       }
 
+      setIsSuccess(true)
       if (options?.successMessage) {
         toast.success(options.successMessage)
       }
@@ -65,5 +68,5 @@ export const useFormSubmit = <T>(options?: UseFormSubmitOptions<T>) => {
     }
   }
 
-  return { submit, isPending }
+  return { submit, isPending, isSuccess }
 }

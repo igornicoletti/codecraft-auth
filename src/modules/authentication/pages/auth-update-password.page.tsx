@@ -20,7 +20,7 @@ const AuthUpdatePasswordPage = () => {
   })
 
   const { submit, isPending } = useFormSubmit({
-    redirectTo: ROUTE_PATHS.AUTH.SIGN_IN,
+    redirectTo: ROUTE_PATHS.APP.DASHBOARD,
     successMessage: 'Senha atualizada com sucesso.',
   })
 

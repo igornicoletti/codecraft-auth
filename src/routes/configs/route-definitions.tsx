@@ -13,6 +13,9 @@ const AuthUpdatePasswordPage = lazy(() => import('@/modules/authentication/pages
 const AppLayout = lazy(() => import('@/modules/application/layouts/app.layout'))
 const AppDashboardPage = lazy(() => import('@/modules/application/pages/app-dashboard.page'))
 
+const RedirectToSignIn = () => <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace />
+const RedirectToDashboard = () => <Navigate to={ROUTE_PATHS.APP.DASHBOARD} replace />
+
 export const ROUTE_CONFIGS: RouteConfig[] = [
   {
     path: ROUTE_PATHS.AUTH.ROOT,
@@ -25,7 +28,8 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
     children: [
       {
         index: true,
-        component: () => <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace />,
+        guard: 'guest',
+        component: RedirectToSignIn,
       },
       {
         path: ROUTE_PATHS.AUTH.SIGN_IN,
@@ -63,7 +67,8 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
     children: [
       {
         index: true,
-        component: () => <Navigate to={ROUTE_PATHS.APP.DASHBOARD} replace />,
+        guard: 'private',
+        component: RedirectToDashboard,
       },
       {
         path: ROUTE_PATHS.APP.DASHBOARD,

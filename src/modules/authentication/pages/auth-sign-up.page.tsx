@@ -24,7 +24,7 @@ const AuthSignUpPage = () => {
     },
   })
 
-  const { submit, isPending } = useFormSubmit({
+  const { submit, isPending, isSuccess } = useFormSubmit({
     onSuccess: () => {
       setTitle(content.customTitle ?? null)
       setDescription(content.customDescription ?? null)
@@ -42,6 +42,8 @@ const AuthSignUpPage = () => {
   async function handleGoogleSignUp() {
     await submitGoogle(() => authService.signInWithGoogle(ROUTE_PATHS.APP.DASHBOARD))
   }
+
+  if (isSuccess) return null
 
   return (
     <>
