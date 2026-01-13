@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
 
 import { GenericForm } from '@/components/common/form/form'
 import { useFormSubmit } from '@/hooks/use-form-submit'
@@ -10,7 +9,6 @@ import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthUpdatePasswordPage = () => {
-  const navigate = useNavigate()
   const content = AUTH_CONTENT_MAP.updatePassword
 
   const form = useForm<UpdatePasswordSchema>({
@@ -22,13 +20,12 @@ const AuthUpdatePasswordPage = () => {
   })
 
   const { submit, isPending } = useFormSubmit({
-    onSuccess: () => navigate(ROUTE_PATHS.AUTH.SIGN_IN),
+    redirectTo: ROUTE_PATHS.AUTH.SIGN_IN,
+    successMessage: 'Senha atualizada com sucesso.',
   })
 
   async function handleUpdatePassword(data: UpdatePasswordSchema) {
-    await submit(() => authService.updatePassword(data.password).then((res) => {
-      if (!res.success) { throw res.error }
-    }))
+    await submit(() => authService.updatePassword(data.password))
   }
 
   return (
@@ -53,7 +50,8 @@ const AuthUpdatePasswordPage = () => {
             type: 'password',
             autoComplete: 'new-password',
           },
-        ]} />
+        ]}
+      />
     </>
   )
 }

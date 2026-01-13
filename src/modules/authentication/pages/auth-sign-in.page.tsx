@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import { GenericForm } from '@/components/common/form/form'
 import { Button } from '@/components/ui/button'
@@ -12,7 +12,6 @@ import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthSignInPage = () => {
-  const navigate = useNavigate()
   const content = AUTH_CONTENT_MAP.signIn
 
   const form = useForm<SignInSchema>({
@@ -24,19 +23,16 @@ const AuthSignInPage = () => {
   })
 
   const { submit, isPending } = useFormSubmit({
-    onSuccess: () => navigate(ROUTE_PATHS.APP.DASHBOARD)
+    redirectTo: ROUTE_PATHS.APP.DASHBOARD,
+    successMessage: 'Login realizado com sucesso!',
   })
 
   async function handleSignIn(data: SignInSchema) {
-    await submit(() => authService.signIn(data.email, data.password).then((res) => {
-      if (!res.success) { throw res.error }
-    }))
+    await submit(() => authService.signIn(data.email, data.password))
   }
 
   async function handleGoogleSignIn() {
-    await submit(() => authService.signInWithGoogle(ROUTE_PATHS.APP.DASHBOARD).then((res) => {
-      if (!res.success) { throw res.error }
-    }))
+    await submit(() => authService.signInWithGoogle(ROUTE_PATHS.APP.DASHBOARD))
   }
 
   return (
@@ -45,7 +41,8 @@ const AuthSignInPage = () => {
         text={content.social}
         separatorText={content.separator}
         isPending={isPending}
-        onGoogleClick={handleGoogleSignIn} />
+        onGoogleClick={handleGoogleSignIn}
+      />
 
       <GenericForm
         form={form}
@@ -67,7 +64,8 @@ const AuthSignInPage = () => {
             type: 'password',
             autoComplete: 'current-password',
           },
-        ]} />
+        ]}
+      />
 
       <Button asChild variant="link">
         <Link to={content.forgot.link}>
