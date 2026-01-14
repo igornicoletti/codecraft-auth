@@ -1,11 +1,7 @@
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { BreadcrumbCollapsed } from '@/modules/application/components/breadcrumb/breadcrumb-collapsed'
-
-export interface BreadcrumbData {
-  title: string
-  url: string
-}
+import type { BreadcrumbData } from '@/modules/application/types/app.types'
 
 export const AppHeader = ({ breadcrumb }: { breadcrumb: BreadcrumbData[] }) => (
   <header className='flex h-16 shrink-0 items-center gap-2 px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12'>
