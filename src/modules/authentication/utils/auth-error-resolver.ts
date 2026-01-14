@@ -1,13 +1,36 @@
 import { AUTH_ERROR_MESSAGES } from '@/modules/authentication/configs/auth-error-map'
 
-export const getAuthErrorMessage = (error: unknown): string => {
-  let originalMessage = 'Unknown error'
+interface ErrorWithMessage {
+  message: string
+}
 
+const isErrorWithMessage = (error: unknown): error is ErrorWithMessage => {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as Record<string, unknown>).message === 'string'
+  )
+}
+
+const toErrorMessage = (error: unknown): string => {
   if (typeof error === 'string') {
-    originalMessage = error
-  } else if (error && typeof error === 'object' && 'message' in error) {
-    originalMessage = (error as any).message
+    return error
   }
+
+  if (isErrorWithMessage(error)) {
+    return error.message
+  }
+
+  try {
+    return JSON.stringify(error)
+  } catch {
+    return 'Unknown error'
+  }
+}
+
+export const getAuthErrorMessage = (error: unknown): string => {
+  const originalMessage = toErrorMessage(error)
 
   if (AUTH_ERROR_MESSAGES[originalMessage]) {
     return AUTH_ERROR_MESSAGES[originalMessage]
@@ -17,5 +40,13 @@ export const getAuthErrorMessage = (error: unknown): string => {
     originalMessage.toLowerCase().includes(key.toLowerCase())
   )
 
-  return entry ? entry[1] : originalMessage
+  if (entry) {
+    return entry[1]
+  }
+
+  if (import.meta.env.DEV) {
+    return originalMessage
+  }
+
+  return 'Ocorreu um erro. Por favor, tente novamente.'
 }

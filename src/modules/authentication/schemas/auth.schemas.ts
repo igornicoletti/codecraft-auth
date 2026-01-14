@@ -6,16 +6,43 @@ import { z } from 'zod'
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+const commonPasswords = [
+  'password', '12345678', 'qwerty', 'abc123', 'password123',
+  '11111111', '123456789', '1234567890', 'senha123', 'admin123'
+]
+
 export const emailField = z
   .string()
   .trim()
   .min(1, 'E-mail é obrigatório.')
+  .max(254, 'E-mail muito longo.')
   .refine((value) => emailRegex.test(value), { message: 'Digite um e-mail válido.' })
+  .transform((value) => value.toLowerCase())
 
 const passwordField = z
   .string()
   .trim()
-  .min(8, 'A senha deve ter no mínimo 8 caracteres.')
+  .min(12, 'A senha deve ter no mínimo 12 caracteres.')
+  .refine(
+    (value) => /[A-Z]/.test(value),
+    { message: 'A senha deve conter pelo menos uma letra maiúscula.' }
+  )
+  .refine(
+    (value) => /[a-z]/.test(value),
+    { message: 'A senha deve conter pelo menos uma letra minúscula.' }
+  )
+  .refine(
+    (value) => /[0-9]/.test(value),
+    { message: 'A senha deve conter pelo menos um número.' }
+  )
+  .refine(
+    (value) => /[^A-Za-z0-9]/.test(value),
+    { message: 'A senha deve conter pelo menos um caractere especial.' }
+  )
+  .refine(
+    (value) => !commonPasswords.includes(value.toLowerCase()),
+    { message: 'Esta senha é muito comum. Escolha uma senha mais segura.' }
+  )
 
 const confirmPasswordField = z
   .string()

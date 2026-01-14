@@ -1,5 +1,5 @@
 import type { Session, User } from '@supabase/supabase-js'
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
 import { supabase } from '@/lib/supabase'
 import { authService } from '@/modules/authentication/services/auth.service'
@@ -40,55 +40,81 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    let isMounted = true
-
-    const bootstrap = async () => {
-      try {
-        const result = await authService.getSession()
-        if (!isMounted) return
-
-        if (result.success) {
-          setSession(result.data)
-          setUser(result.data?.user ?? null)
-        }
-      } catch (err) {
-        console.error('[Auth] Bootstrap error:', err)
-      } finally {
-        if (isMounted) setIsLoading(false)
-      }
-    }
-
-    bootstrap()
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, currentSession) => {
-      if (!isMounted) return
-
-      setSession(currentSession)
-      setUser(currentSession?.user ?? null)
-      setIsLoading(false)
-    })
-
-    return () => {
-      isMounted = false
-      subscription.unsubscribe()
-    }
-  }, [])
-
-  const authStatus = useMemo<AuthStatus>(() =>
-    isLoading ? 'loading' : resolveAuthStatus(session),
-    [isLoading, session])
-
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     try {
       await authService.signOut()
     } catch (error) {
-      console.error('[Auth] Sign out error:', error)
+      if (import.meta.env.DEV) {
+        console.error('[Auth] Sign out error:', error)
+      }
     } finally {
       setSession(null)
       setUser(null)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    let isMounted = true
+    let subscription: ReturnType<typeof supabase.auth.onAuthStateChange>['data']['subscription'] | null = null
+    let bootstrapCompleted = false
+
+    const setupAuthListener = () => {
+      const { data } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+        if (!isMounted) return
+
+        setSession(currentSession)
+        setUser(currentSession?.user ?? null)
+
+        if (bootstrapCompleted && isLoading) {
+          setIsLoading(false)
+        }
+      })
+
+      subscription = data.subscription
+    }
+
+    const bootstrap = async () => {
+      try {
+        const result = await authService.getSession()
+
+        if (!isMounted) return
+
+        if (result.success && result.data) {
+          setSession(result.data)
+          setUser(result.data.user)
+        } else {
+          setSession(null)
+          setUser(null)
+        }
+      } catch (err) {
+        if (import.meta.env.DEV) {
+          console.error('[Auth] Bootstrap error:', err)
+        }
+
+        if (isMounted) {
+          setSession(null)
+          setUser(null)
+        }
+      } finally {
+        bootstrapCompleted = true
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    setupAuthListener()
+    void bootstrap()
+
+    return () => {
+      isMounted = false
+      subscription?.unsubscribe()
+    }
+  }, [isLoading])
+
+  const authStatus = useMemo<AuthStatus>(() =>
+    isLoading ? 'loading' : resolveAuthStatus(session),
+    [isLoading, session])
 
   const value = useMemo<AuthContextData>(() => ({
     user,
@@ -99,7 +125,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     isEmailVerified: authStatus === 'authenticated',
     isPasswordRecovery: authStatus === 'password_recovery',
     signOut,
-  }), [user, session, authStatus, isLoading])
+  }), [user, session, authStatus, isLoading, signOut])
 
   return (
     <AuthContext.Provider value={value}>
