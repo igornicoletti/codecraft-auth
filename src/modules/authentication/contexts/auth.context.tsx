@@ -27,7 +27,7 @@ const AuthContext = createContext<AuthContextData | undefined>(undefined)
 const resolveAuthStatus = (session: Session | null): AuthStatus => {
   if (!session) return 'anonymous'
 
-  const user = session.user
+  const { user } = session
 
   if (user?.recovery_sent_at) return 'password_recovery'
   if (!user?.email_confirmed_at) return 'email_unverified'
@@ -43,13 +43,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     let isMounted = true
 
-    async function bootstrap() {
+    const bootstrap = async () => {
       try {
-        const { data } = await authService.getSession()
+        const result = await authService.getSession()
         if (!isMounted) return
 
-        setSession(data)
-        setUser(data?.user ?? null)
+        if (result.success) {
+          setSession(result.data)
+          setUser(result.data?.user ?? null)
+        }
       } catch (err) {
         console.error('[Auth] Bootstrap error:', err)
       } finally {
@@ -73,14 +75,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [])
 
-  const authStatus = useMemo<AuthStatus>(() => {
-    if (isLoading) return 'loading'
-    return resolveAuthStatus(session)
-  }, [isLoading, session])
-
-  const isAuthenticated = authStatus === 'authenticated'
-  const isEmailVerified = authStatus === 'authenticated'
-  const isPasswordRecovery = authStatus === 'password_recovery'
+  const authStatus = useMemo<AuthStatus>(() =>
+    isLoading ? 'loading' : resolveAuthStatus(session),
+    [isLoading, session])
 
   const signOut = async () => {
     try {
@@ -98,11 +95,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     session,
     authStatus,
     isLoading,
-    isAuthenticated,
-    isEmailVerified,
-    isPasswordRecovery,
+    isAuthenticated: authStatus === 'authenticated',
+    isEmailVerified: authStatus === 'authenticated',
+    isPasswordRecovery: authStatus === 'password_recovery',
     signOut,
-  }), [user, session, authStatus, isLoading, isAuthenticated, isEmailVerified, isPasswordRecovery])
+  }), [user, session, authStatus, isLoading])
 
   return (
     <AuthContext.Provider value={value}>
@@ -111,7 +108,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export function useAuth() {
+export const useAuth = () => {
   const context = useContext(AuthContext)
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider')

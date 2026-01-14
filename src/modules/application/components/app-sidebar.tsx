@@ -16,20 +16,27 @@ export const AppSidebar = ({ navigation, user, ...props }: AppSidebarProps) => (
     <SidebarHeader>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton size='lg' className='hover:bg-transparent'>
-            <div className='flex aspect-square size-8 items-center justify-center'>
-              <LightningIcon weight='bold' className='size-5 text-primary' />
+          <SidebarMenuButton size='lg' className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'>
+            <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground'>
+              <LightningIcon weight='bold' className='size-5' />
             </div>
-            <span className='font-semibold tracking-tight uppercase'>CodeCraft</span>
+            <div className='grid flex-1 text-left text-sm leading-tight'>
+              <span className='truncate font-semibold tracking-tight uppercase'>CodeCraft</span>
+              <span className='truncate text-xs'>Enterprise</span>
+            </div>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarHeader>
+
     <SidebarContent>
-      {navigation.map((section, idx) => (
-        <SidebarNavigation key={idx} section={section} />
+      {navigation.map((section) => (
+        <SidebarNavigation
+          key={section.label ?? JSON.stringify(section.items[0]?.url)}
+          section={section} />
       ))}
     </SidebarContent>
+
     <SidebarFooter>
       <SidebarUser user={user} />
     </SidebarFooter>

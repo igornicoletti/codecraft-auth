@@ -5,11 +5,17 @@ export interface NavigationItem {
   url: string
   icon?: Icon
   items?: NavigationItem[]
+  matchExact?: boolean
 }
 
 export interface NavigationSection {
   label?: string
   items: NavigationItem[]
+}
+
+export interface BreadcrumbData {
+  title: string
+  url: string
 }
 
 export interface UserData {

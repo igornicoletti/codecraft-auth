@@ -43,7 +43,6 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
       },
     ],
   },
-
   {
     path: ROUTE_PATHS.AUTH.UPDATE_PASSWORD,
     component: AuthLayout,
@@ -56,7 +55,6 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
       },
     ],
   },
-
   {
     path: ROUTE_PATHS.APP.ROOT,
     component: AppLayout,

@@ -1,6 +1,6 @@
 import { AUTH_ERROR_MESSAGES } from '@/modules/authentication/configs/auth-error-map'
 
-export function getAuthErrorMessage(error: unknown): string {
+export const getAuthErrorMessage = (error: unknown): string => {
   let originalMessage = 'Unknown error'
 
   if (typeof error === 'string') {
@@ -13,11 +13,9 @@ export function getAuthErrorMessage(error: unknown): string {
     return AUTH_ERROR_MESSAGES[originalMessage]
   }
 
-  for (const key in AUTH_ERROR_MESSAGES) {
-    if (originalMessage.toLowerCase().includes(key.toLowerCase())) {
-      return AUTH_ERROR_MESSAGES[key]
-    }
-  }
+  const entry = Object.entries(AUTH_ERROR_MESSAGES).find(([key]) =>
+    originalMessage.toLowerCase().includes(key.toLowerCase())
+  )
 
-  return originalMessage
+  return entry ? entry[1] : originalMessage
 }

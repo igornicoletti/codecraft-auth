@@ -65,7 +65,7 @@ const AuthSignInPage = () => {
         ]}
       />
 
-      <Button asChild variant="link">
+      <Button asChild variant='link'>
         <Link to={content.forgot.link}>
           {content.forgot.question}
         </Link>

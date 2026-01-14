@@ -212,7 +212,7 @@ pnpm test:ui
 5. **Protected Access**: Dashboard and app routes require authentication
 
 ### Google OAuth Flow
-1. **OAuth Initiation**: User clicks "Sign in with Google"
+1. **OAuth Initiation**: User clicks 'Sign in with Google'
 2. **Google Authentication**: User authenticates with Google
 3. **Redirect**: User is redirected back to app with session
 4. **Auto Sign-In**: User is automatically signed in and redirected to dashboard

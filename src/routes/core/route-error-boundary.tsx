@@ -45,7 +45,7 @@ export class RouteErrorBoundary extends Component<RouteErrorBoundaryProps, Route
                   <pre className='text-sm text-muted-foreground'>
                     <code>{this.state.error.stack}</code>
                   </pre>
-                  <ScrollBar orientation="horizontal" />
+                  <ScrollBar orientation='horizontal' />
                 </ScrollArea>
               )}
             </div>

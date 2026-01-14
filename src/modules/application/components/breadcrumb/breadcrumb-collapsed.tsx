@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
@@ -6,29 +6,56 @@ import { Button } from '@/components/ui/button'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useMediaQuery } from '@/hooks/use-media-query'
+import type { BreadcrumbData } from '@/modules/application/types/app.types'
 
-export interface IBreadcrumbData {
-  title: string
-  url: string
-}
+const ITEMS_TO_SHOW = 3
 
-export const BreadcrumbCollapsed = ({ breadcrumb }: { breadcrumb: IBreadcrumbData[] }) => {
+export const BreadcrumbCollapsed = ({ breadcrumb }: { breadcrumb: BreadcrumbData[] }) => {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const [open, setOpen] = useState(false)
 
-  if (!breadcrumb || breadcrumb.length === 0) return null
+  if (!breadcrumb?.length) return null
 
-  const first = breadcrumb[0]
+  const shouldCollapse = breadcrumb.length > ITEMS_TO_SHOW
+
+  if (!shouldCollapse) {
+    return (
+      <Breadcrumb>
+        <BreadcrumbList>
+          {breadcrumb.map((item, index) => {
+            const isLast = index === breadcrumb.length - 1
+            return (
+              <Fragment key={item.url}>
+                <BreadcrumbItem>
+                  {isLast ? (
+                    <BreadcrumbPage>{item.title}</BreadcrumbPage>
+                  ) : (
+                    <BreadcrumbLink asChild>
+                      <Link to={item.url}>{item.title}</Link>
+                    </BreadcrumbLink>
+                  )}
+                </BreadcrumbItem>
+                {!isLast && <BreadcrumbSeparator />}
+              </Fragment>
+            )
+          })}
+        </BreadcrumbList>
+      </Breadcrumb>
+    )
+  }
+
+  const firstItem = breadcrumb[0]
+  const hiddenItems = breadcrumb.slice(1, -2)
   const visibleTail = breadcrumb.slice(-2)
-  const hiddenItems = breadcrumb.length > 3 ? breadcrumb.slice(1, -2) : []
-  const showCollapsed = hiddenItems.length > 0
 
-  const CollapsedMenu = (
-    <BreadcrumbItem>
-      {isDesktop ? (
+  const CollapsedTriggerIcon = <BreadcrumbEllipsis />
+
+  const renderCollapsedMenu = () => {
+    if (isDesktop) {
+      return (
         <DropdownMenu open={open} onOpenChange={setOpen}>
-          <DropdownMenuTrigger className='flex items-center outline-none'>
-            <BreadcrumbEllipsis />
+          <DropdownMenuTrigger className='flex items-center outline-none hover:text-foreground'>
+            {CollapsedTriggerIcon}
           </DropdownMenuTrigger>
           <DropdownMenuContent align='start'>
             {hiddenItems.map((item) => (
@@ -38,61 +65,58 @@ export const BreadcrumbCollapsed = ({ breadcrumb }: { breadcrumb: IBreadcrumbDat
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-      ) : (
-        <Drawer open={open} onOpenChange={setOpen}>
-          <DrawerTrigger className='flex items-center outline-none'>
-            <BreadcrumbEllipsis />
-          </DrawerTrigger>
-          <DrawerContent>
-            <DrawerHeader className='text-left'>
-              <DrawerTitle>Ir para</DrawerTitle>
-            </DrawerHeader>
-            <div className='grid gap-1 px-4 pb-4'>
-              {hiddenItems.map((item) => (
-                <Link
-                  key={item.url}
-                  to={item.url}
-                  onClick={() => setOpen(false)}
-                  className='py-2 text-sm'>
-                  {item.title}
-                </Link>
-              ))}
-            </div>
-            <DrawerFooter>
-              <DrawerClose asChild>
-                <Button variant='outline'>Fechar</Button>
-              </DrawerClose>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
-      )}
-    </BreadcrumbItem>
-  )
+      )
+    }
+
+    return (
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger className='flex items-center outline-none hover:text-foreground'>
+          {CollapsedTriggerIcon}
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader className='text-left'>
+            <DrawerTitle>Navegar para</DrawerTitle>
+          </DrawerHeader>
+          <div className='grid gap-1 px-4 pb-4'>
+            {hiddenItems.map((item) => (
+              <Link
+                key={item.url}
+                to={item.url}
+                onClick={() => setOpen(false)}
+                className='block py-2 text-sm font-medium hover:underline'>
+                {item.title}
+              </Link>
+            ))}
+          </div>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant='outline'>Fechar</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    )
+  }
 
   return (
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link to={first.url}>{first.title}</Link>
+            <Link to={firstItem.url}>{firstItem.title}</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
+        <BreadcrumbSeparator />
 
-        {breadcrumb.length > 1 && <BreadcrumbSeparator />}
-
-        {showCollapsed && (
-          <React.Fragment>
-            {CollapsedMenu}
-            <BreadcrumbSeparator />
-          </React.Fragment>
-        )}
+        <BreadcrumbItem>
+          {renderCollapsedMenu()}
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
 
         {visibleTail.map((item, index) => {
           const isLast = index === visibleTail.length - 1
-          if (breadcrumb.length <= 2 && index === 0) return null
-
           return (
-            <React.Fragment key={item.url}>
+            <Fragment key={item.url}>
               <BreadcrumbItem>
                 {isLast ? (
                   <BreadcrumbPage className='max-w-20 truncate md:max-w-none'>
@@ -105,7 +129,7 @@ export const BreadcrumbCollapsed = ({ breadcrumb }: { breadcrumb: IBreadcrumbDat
                 )}
               </BreadcrumbItem>
               {!isLast && <BreadcrumbSeparator />}
-            </React.Fragment>
+            </Fragment>
           )
         })}
       </BreadcrumbList>

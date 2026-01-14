@@ -3,7 +3,7 @@ import type { RouteObject } from 'react-router-dom'
 import { RouteGuard } from '@/routes/core/route-guard'
 import type { RouteConfig, RouteGuardType } from '@/routes/types/route.types'
 
-function mapConfigToRoute(config: RouteConfig, parentGuard?: RouteGuardType): RouteObject {
+const mapConfigToRoute = (config: RouteConfig, parentGuard?: RouteGuardType): RouteObject => {
   const { path, index, component: Component, guard, handle, children } = config
   const effectiveGuard = guard ?? parentGuard
 

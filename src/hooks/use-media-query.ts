@@ -4,7 +4,7 @@ export const useMediaQuery = (query: string) => {
   const [value, setValue] = useState(false)
 
   useEffect(() => {
-    function onChange(event: MediaQueryListEvent) {
+    const onChange = (event: MediaQueryListEvent) => {
       setValue(event.matches)
     }
 

@@ -9,7 +9,7 @@ const resolveRedirectUrl = (path: string) => {
 }
 
 export const authService = {
-  async signUp(email: string, password: string, fullName?: string, redirectPath?: string): Promise<SignUpResult> {
+  signUp: async (email: string, password: string, fullName?: string, redirectPath?: string): Promise<SignUpResult> => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -23,7 +23,7 @@ export const authService = {
     return { success: true, data: data.user!, error: null }
   },
 
-  async signIn(email: string, password: string): Promise<SignInResult> {
+  signIn: async (email: string, password: string): Promise<SignInResult> => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -33,7 +33,7 @@ export const authService = {
     return { success: true, data: data.session!, error: null }
   },
 
-  async signInWithGoogle(redirectPath: string): Promise<VoidResult> {
+  signInWithGoogle: async (redirectPath: string): Promise<VoidResult> => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -45,14 +45,14 @@ export const authService = {
     return { success: true, data: undefined, error: null }
   },
 
-  async signOut(): Promise<VoidResult> {
+  signOut: async (): Promise<VoidResult> => {
     const { error } = await supabase.auth.signOut()
 
     if (error) return { success: false, data: null, error }
     return { success: true, data: undefined, error: null }
   },
 
-  async sendPasswordReset(email: string, redirectPath: string): Promise<VoidResult> {
+  sendPasswordReset: async (email: string, redirectPath: string): Promise<VoidResult> => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: resolveRedirectUrl(redirectPath)
     })
@@ -61,7 +61,7 @@ export const authService = {
     return { success: true, data: undefined, error: null }
   },
 
-  async updatePassword(newPassword: string): Promise<VoidResult> {
+  updatePassword: async (newPassword: string): Promise<VoidResult> => {
     const { error } = await supabase.auth.updateUser({
       password: newPassword
     })
@@ -70,7 +70,7 @@ export const authService = {
     return { success: true, data: undefined, error: null }
   },
 
-  async getSession(): Promise<SessionResult> {
+  getSession: async (): Promise<SessionResult> => {
     const { data, error } = await supabase.auth.getSession()
 
     if (error) return { success: false, data: null, error }
@@ -90,14 +90,14 @@ export const authService = {
     return { success: true, data: data.session, error: null }
   },
 
-  async getCurrentUser(): Promise<UserResult> {
+  getCurrentUser: async (): Promise<UserResult> => {
     const { data, error } = await supabase.auth.getUser()
 
     if (error) return { success: false, data: null, error }
     return { success: true, data: data.user, error: null }
   },
 
-  async refreshSession(): Promise<SessionResult> {
+  refreshSession: async (): Promise<SessionResult> => {
     const { data, error } = await supabase.auth.refreshSession()
 
     if (error) return { success: false, data: null, error }
