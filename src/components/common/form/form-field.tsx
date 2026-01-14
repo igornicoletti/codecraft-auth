@@ -15,6 +15,7 @@ interface Props<T extends FieldValues> {
 
 export const GenericFormField = <T extends FieldValues>({ control, config }: Props<T>) => {
   const [isVisible, setIsVisible] = useState(false)
+  const fieldId = String(config.name)
 
   const renderInput = (field: ControllerRenderProps<T>) => {
     switch (config.type) {
@@ -22,8 +23,10 @@ export const GenericFormField = <T extends FieldValues>({ control, config }: Pro
         return (
           <Textarea
             {...field}
+            id={fieldId}
             placeholder={config.placeholder}
             disabled={config.disabled}
+            autoComplete={config.autoComplete}
             className='resize-none' />
         )
 
@@ -32,9 +35,11 @@ export const GenericFormField = <T extends FieldValues>({ control, config }: Pro
           <InputGroup>
             <InputGroupInput
               {...field}
+              id={fieldId}
               type={isVisible ? 'text' : 'password'}
               placeholder={config.placeholder}
-              disabled={config.disabled} />
+              disabled={config.disabled}
+              autoComplete={config.autoComplete} />
             <InputGroupAddon align='inline-end'>
               <InputGroupButton
                 type='button'
@@ -51,9 +56,11 @@ export const GenericFormField = <T extends FieldValues>({ control, config }: Pro
         return (
           <Input
             {...field}
+            id={fieldId}
             type={config.type ?? 'text'}
             placeholder={config.placeholder}
-            disabled={config.disabled} />
+            disabled={config.disabled}
+            autoComplete={config.autoComplete} />
         )
     }
   }
@@ -64,7 +71,7 @@ export const GenericFormField = <T extends FieldValues>({ control, config }: Pro
       name={config.name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{config.label}</FormLabel>
+          <FormLabel htmlFor={fieldId}>{config.label}</FormLabel>
           <FormControl>{renderInput(field)}</FormControl>
           {config.description && (
             <FormDescription>{config.description}</FormDescription>
