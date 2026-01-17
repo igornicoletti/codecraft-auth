@@ -2,35 +2,36 @@ import { CaretRightIcon } from '@phosphor-icons/react'
 import { Link, matchPath, useLocation } from 'react-router-dom'
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from '@/components/ui/sidebar'
+import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuAction, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from '@/components/ui/sidebar'
 import type { NavigationItem, NavigationSection } from '@/modules/application/types/app.types'
 
 const NavItem = ({ item }: { item: NavigationItem }) => {
   const { pathname } = useLocation()
 
-  const isUrlActive = (url: string, exact = false) => {
-    return !!matchPath({ path: url, end: exact }, pathname)
-  }
+  const isUrlActive = (url: string, exact = false) =>
+    !!matchPath({ path: url, end: exact }, pathname)
 
-  const hasActiveChild = (items?: NavigationItem[]): boolean => {
-    return !!items?.some((child) => isUrlActive(child.url) || hasActiveChild(child.items))
-  }
+  const hasActiveChild = (items?: NavigationItem[]): boolean =>
+    !!items?.some((child) => isUrlActive(child.url) || hasActiveChild(child.items))
 
-  const isChildActive = hasActiveChild(item.items)
-  const isSelfActive = isUrlActive(item.url, item.items ? false : true)
-  const isActive = isSelfActive
-  const isOpen = isActive || isChildActive
+  const isSelfActive = isUrlActive(item.url, true)
+  const isOpen = isSelfActive || hasActiveChild(item.items)
 
   if (item.items?.length) {
     return (
-      <Collapsible asChild defaultOpen={isOpen} className='group/collapsible'>
+      <Collapsible asChild defaultOpen={isOpen} className="group/collapsible">
         <SidebarMenuItem>
-          <CollapsibleTrigger asChild>
-            <SidebarMenuButton tooltip={item.title} isActive={isActive}>
+          <SidebarMenuButton asChild tooltip={item.title} isActive={isSelfActive}>
+            <Link to={item.url}>
               {item.icon && <item.icon />}
               <span>{item.title}</span>
-              <CaretRightIcon className='ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90' />
-            </SidebarMenuButton>
+            </Link>
+          </SidebarMenuButton>
+          <CollapsibleTrigger asChild>
+            <SidebarMenuAction className="data-[state=open]:rotate-90">
+              <CaretRightIcon />
+              <span className="sr-only">Alternar</span>
+            </SidebarMenuAction>
           </CollapsibleTrigger>
           <CollapsibleContent>
             <SidebarMenuSub>
@@ -46,7 +47,7 @@ const NavItem = ({ item }: { item: NavigationItem }) => {
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
+      <SidebarMenuButton asChild isActive={isSelfActive} tooltip={item.title}>
         <Link to={item.url}>
           {item.icon && <item.icon />}
           <span>{item.title}</span>

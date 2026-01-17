@@ -53,7 +53,7 @@ const AuthSignUpPage = () => {
     <>
       <AuthSocialLogin
         text={content.social}
-        separatorText={content.separator}
+        separator={content.separator}
         isPending={isPending}
         onGoogleClick={handleGoogleSignUp} />
 

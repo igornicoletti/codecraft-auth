@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom'
 import { Separator } from '@/components/ui/separator'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/modules/application/components/app-sidebar'
-import { BreadcrumbCollapsed } from '@/modules/application/components/breadcrumb/breadcrumb-collapsed'
+import { BreadcrumbCollapsed } from '@/modules/application/components/navbar/breadcrumb-collapsed'
 import { useAuth } from '@/modules/authentication/contexts/auth.context'
 import { useRouteMetadata } from '@/routes/hooks/use-route-metadata'
 

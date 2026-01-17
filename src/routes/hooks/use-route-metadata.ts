@@ -9,67 +9,52 @@ export const useRouteMetadata = () => {
   const matches = useMatches()
   const location = useLocation()
 
-  const breadcrumbs = useMemo<BreadcrumbData[]>(() => {
-    if (!matches.length) return []
-
-    return matches
-      .map((match) => {
+  const breadcrumbs = useMemo<BreadcrumbData[]>(() =>
+    matches
+      .filter((match) => {
         const handle = match.handle as RouteHandle
-
-        if (!handle?.title || handle.hideInBreadcrumbs) return null
-
-        const title = typeof handle.title === 'function'
-          ? handle.title(match.loaderData)
-          : handle.title
-
-        return {
-          title: title ?? 'Sem título',
-          url: match.pathname,
-        }
+        return handle?.title && !handle.hideInBreadcrumbs
       })
-      .filter((item): item is BreadcrumbData => Boolean(item))
-  }, [matches])
+      .map((match) => ({
+        title: typeof (match.handle as RouteHandle).title === 'function'
+          ? ((match.handle as RouteHandle).title as (data: unknown) => string)(match.loaderData)
+          : ((match.handle as RouteHandle).title as string ?? ''),
+        url: match.pathname,
+      })),
+    [matches])
 
   const navigation = useMemo<NavigationSection[]>(() => {
-    const mapRouteToNavItem = (route: RouteConfig, parentPath?: string): NavigationItem | null => {
-      // Regras de exclusão
-      if (route.handle?.hideInSidebar) return null
+    const mapRouteToNavItem = (route: RouteConfig, basePath = ''): NavigationItem | null => {
+      if (route.handle?.hideInSidebar || !route.handle?.title) return null
 
-      const hasTitle = Boolean(route.handle?.title)
-      const hasChildren = route.children && route.children.length > 0
+      const rawPath = route.path?.startsWith('/')
+        ? route.path
+        : `${basePath}/${route.path ?? ''}`
 
-      if (!hasTitle && !hasChildren) return null
-      const path = route.path || parentPath || ''
+      const currentPath = rawPath.replace(/\/+/g, '/')
 
       const children = route.children
-        ?.map(child => mapRouteToNavItem(child, path))
-        .filter((item): item is NavigationItem => Boolean(item))
-
-      if (!route.handle?.title) {
-        return null
-      }
+        ?.map((child) => mapRouteToNavItem(child, currentPath))
+        .filter((item): item is NavigationItem => !!item)
 
       return {
         title: typeof route.handle.title === 'string' ? route.handle.title : 'Menu',
-        url: path,
+        url: currentPath,
         icon: route.handle.icon,
-        items: children && children.length > 0 ? children : undefined,
+        items: children?.length ? children : undefined,
       }
     }
 
-    const appSections = ROUTE_CONFIGS.filter((route) => route.guard === 'private')
-
-    return appSections.map((section) => ({
-      label: typeof section.handle?.title === 'string' ? section.handle.title : undefined,
-      items: section.children
-        ?.map(child => mapRouteToNavItem(child, section.path))
-        .filter((item): item is NavigationItem => Boolean(item)) ?? [],
-    })).filter(section => section.items.length > 0)
+    return ROUTE_CONFIGS
+      .filter((route) => route.guard === 'private')
+      .map((section) => ({
+        label: typeof section.handle?.title === 'string' ? section.handle.title : undefined,
+        items: section.children
+          ?.map((child) => mapRouteToNavItem(child, section.path ?? ''))
+          .filter((item): item is NavigationItem => !!item) ?? [],
+      }))
+      .filter((section) => section.items.length > 0)
   }, [])
 
-  return {
-    breadcrumbs,
-    navigation,
-    currentPath: location.pathname,
-  }
+  return { breadcrumbs, navigation, currentPath: location.pathname }
 }

@@ -1,9 +1,5 @@
 import { z } from 'zod'
 
-/* -------------------------------------------------------------------------- */
-/*                                    Fields                                  */
-/* -------------------------------------------------------------------------- */
-
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const commonPasswords = [
@@ -49,10 +45,6 @@ const confirmPasswordField = z
   .trim()
   .min(1, 'Confirmação de senha é obrigatória.')
 
-/* -------------------------------------------------------------------------- */
-/*                         Shared schema compositions                          */
-/* -------------------------------------------------------------------------- */
-
 const withConfirmPassword = <
   T extends z.ZodObject<{
     password: z.ZodString
@@ -68,10 +60,6 @@ const withConfirmPassword = <
       message: 'As senhas não correspondem.',
     }
   )
-
-/* -------------------------------------------------------------------------- */
-/*                                   Schemas                                  */
-/* -------------------------------------------------------------------------- */
 
 export const signInSchema = z.object({
   email: emailField,
@@ -96,10 +84,6 @@ export const updatePasswordSchema = withConfirmPassword(
     confirmPassword: confirmPasswordField,
   })
 )
-
-/* -------------------------------------------------------------------------- */
-/*                                    Types                                   */
-/* -------------------------------------------------------------------------- */
 
 export type SignInSchema = z.infer<typeof signInSchema>
 export type SignUpSchema = z.infer<typeof signUpSchema>

@@ -1,6 +1,6 @@
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
-import { BreadcrumbCollapsed } from '@/modules/application/components/breadcrumb/breadcrumb-collapsed'
+import { BreadcrumbCollapsed } from '@/modules/application/components/navbar/breadcrumb-collapsed'
 import type { BreadcrumbData } from '@/modules/application/types/app.types'
 
 export const AppHeader = ({ breadcrumb }: { breadcrumb: BreadcrumbData[] }) => (

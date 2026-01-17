@@ -28,15 +28,11 @@ export const AppSidebar = ({ navigation, user, ...props }: AppSidebarProps) => (
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarHeader>
-
     <SidebarContent>
-      {navigation.map((section) => (
-        <SidebarNavigation
-          key={section.label ?? JSON.stringify(section.items[0]?.url)}
-          section={section} />
+      {navigation.map((section, idx) => (
+        <SidebarNavigation key={section.label ?? `section-${idx}`} section={section} />
       ))}
     </SidebarContent>
-
     <SidebarFooter>
       <SidebarUser user={user} />
     </SidebarFooter>

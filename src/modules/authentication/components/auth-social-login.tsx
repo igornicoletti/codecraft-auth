@@ -5,12 +5,12 @@ import { Separator } from '@/components/ui/separator'
 
 export interface AuthSocialLoginProps {
   text?: string
-  separatorText?: string
+  separator?: string
   isPending?: boolean
   onGoogleClick?: () => Promise<void>
 }
 
-export const AuthSocialLogin = ({ text, separatorText, isPending = false, onGoogleClick }: AuthSocialLoginProps) => (
+export const AuthSocialLogin = ({ text, separator, isPending = false, onGoogleClick }: AuthSocialLoginProps) => (
   <div className='grid gap-6'>
     <Button
       type='button'
@@ -23,7 +23,7 @@ export const AuthSocialLogin = ({ text, separatorText, isPending = false, onGoog
     </Button>
     <div className='flex items-center gap-4'>
       <Separator className='flex-1' />
-      <span className='text-sm text-muted-foreground'>{separatorText}</span>
+      <span className='text-sm text-muted-foreground'>{separator}</span>
       <Separator className='flex-1' />
     </div>
   </div>

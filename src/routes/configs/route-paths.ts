@@ -10,6 +10,11 @@ export const ROUTE_PATHS = {
   APP: {
     ROOT: '/app',
     DASHBOARD: '/app/dashboard',
+    // Novos caminhos para teste
+    SETTINGS: '/app/settings',
+    PROFILE: '/app/settings/profile',
+    SECURITY: '/app/settings/profile/security',
+    SESSIONS: '/app/settings/profile/security/sessions',
   },
   ANY: '*',
 } as const
