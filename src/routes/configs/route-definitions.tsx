@@ -1,4 +1,4 @@
-import { ChartLineUpIcon, GearIcon } from '@phosphor-icons/react'
+import { ChartLineUpIcon } from '@phosphor-icons/react'
 import { lazy } from 'react'
 import { Navigate } from 'react-router-dom'
 
@@ -13,18 +13,13 @@ const AuthUpdatePasswordPage = lazy(() => import('@/modules/authentication/pages
 const AppLayout = lazy(() => import('@/modules/application/layouts/app.layout'))
 const AppDashboardPage = lazy(() => import('@/modules/application/pages/app-dashboard.page'))
 
-const DummyPage = () => <div className="p-8">Conteúdo da Página Mock</div>
-
-const RedirectToSignIn = () => <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace />
-const RedirectToDashboard = () => <Navigate to={ROUTE_PATHS.APP.DASHBOARD} replace />
-
 export const ROUTE_CONFIGS: RouteConfig[] = [
   {
     path: ROUTE_PATHS.AUTH.ROOT,
     component: AuthLayout,
     guard: 'guest',
     children: [
-      { index: true, component: RedirectToSignIn },
+      { index: true, component: () => <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace /> },
       { path: ROUTE_PATHS.AUTH.SIGN_IN, component: AuthSignInPage, handle: { title: 'Entrar' } },
       { path: ROUTE_PATHS.AUTH.SIGN_UP, component: AuthSignUpPage, handle: { title: 'Criar conta' } },
       { path: ROUTE_PATHS.AUTH.FORGOT_PASSWORD, component: AuthForgotPasswordPage, handle: { title: 'Recuperar senha' } },
@@ -43,34 +38,8 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
     component: AppLayout,
     guard: 'private',
     children: [
-      { index: true, component: RedirectToDashboard },
+      { index: true, component: () => <Navigate to={ROUTE_PATHS.APP.DASHBOARD} replace /> },
       { path: ROUTE_PATHS.APP.DASHBOARD, component: AppDashboardPage, handle: { title: 'Dashboard', icon: ChartLineUpIcon } },
-      {
-        path: ROUTE_PATHS.APP.SETTINGS,
-        component: DummyPage,
-        handle: { title: 'Configurações', icon: GearIcon },
-        children: [
-          {
-            path: ROUTE_PATHS.APP.PROFILE,
-            component: DummyPage,
-            handle: { title: 'Usuário' },
-            children: [
-              {
-                path: ROUTE_PATHS.APP.SECURITY,
-                component: DummyPage,
-                handle: { title: 'Segurança' },
-                children: [
-                  {
-                    path: ROUTE_PATHS.APP.SESSIONS,
-                    component: DummyPage,
-                    handle: { title: 'Sessões' },
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
     ],
   },
 ]

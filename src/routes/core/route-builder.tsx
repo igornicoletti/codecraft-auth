@@ -5,6 +5,7 @@ import type { RouteConfig, RouteGuardType } from '@/routes/types/route.types'
 
 const mapConfigToRoute = (config: RouteConfig, parentGuard?: RouteGuardType): RouteObject => {
   const { path, index, component: Component, guard, handle, children } = config
+
   const effectiveGuard = guard ?? parentGuard
 
   const element = effectiveGuard
@@ -13,7 +14,13 @@ const mapConfigToRoute = (config: RouteConfig, parentGuard?: RouteGuardType): Ro
 
   const mappedChildren = children?.map((child) => mapConfigToRoute(child, effectiveGuard))
 
-  if (index) return { index: true, element, handle }
+  if (index) {
+    return {
+      index: true,
+      element, handle
+    }
+  }
+
   return { path, element, handle, children: mappedChildren }
 }
 

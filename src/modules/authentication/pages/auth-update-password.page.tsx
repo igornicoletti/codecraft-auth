@@ -24,7 +24,6 @@ const AuthUpdatePasswordPage = () => {
   const handleUpdatePassword = async (data: UpdatePasswordSchema) => {
     await submit(() => authService.updatePassword(data.password), {
       redirectTo: ROUTE_PATHS.APP.DASHBOARD,
-      successMessage: 'Atualização de senha concluída com sucesso!',
     })
   }
 

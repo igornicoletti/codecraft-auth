@@ -12,7 +12,6 @@ export interface AuthLayoutContext {
 
 const AuthLayout = () => {
   const location = useLocation()
-
   const [customTitle, setCustomTitle] = useState<string | null>(null)
   const [customDescription, setCustomDescription] = useState<string | null>(null)
 
