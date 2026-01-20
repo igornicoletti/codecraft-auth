@@ -7,13 +7,14 @@ import { useAuth } from '@/modules/authentication/contexts/auth.context'
 
 export const SidebarUser = ({ user }: { user: { name: string; email: string; avatar: string } }) => {
   const { isMobile, setOpenMobile } = useSidebar()
-  const { signOut } = useAuth()
+  const authContext = useAuth()
+  const { signOut } = authContext || {}
 
   const handleLogout = () => {
     if (isMobile) setOpenMobile(false)
 
     setTimeout(() => {
-      void signOut()
+      if (signOut) void signOut()
     }, 300)
   }
 
