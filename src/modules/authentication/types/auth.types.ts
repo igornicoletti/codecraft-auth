@@ -1,5 +1,23 @@
 import type { AuthError, Session, User } from '@supabase/supabase-js'
 
+export type AuthStatus =
+  | 'loading'
+  | 'anonymous'
+  | 'email_unverified'
+  | 'password_recovery'
+  | 'authenticated'
+
+export interface AuthContextData {
+  user: User | null
+  session: Session | null
+  authStatus: AuthStatus
+  isLoading: boolean
+  isAuthenticated: boolean
+  isEmailVerified: boolean
+  isPasswordRecovery: boolean
+  signOut: () => Promise<void>
+}
+
 export type AuthSuccess<T> = {
   success: true
   data: T

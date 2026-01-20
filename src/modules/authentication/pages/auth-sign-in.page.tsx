@@ -2,10 +2,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 
-import { GenericForm } from '@/components/common/form/form'
 import { Button } from '@/components/ui/button'
 import { useFormSubmit } from '@/hooks/use-form-submit'
 import { AuthSocialLogin } from '@/modules/authentication/components/auth-social-login'
+import { AuthForm } from '@/modules/authentication/components/form/auth-form'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
 import { signInSchema, type SignInSchema } from '@/modules/authentication/schemas/auth.schemas'
 import { authService } from '@/modules/authentication/services/auth.service'
@@ -42,7 +42,7 @@ const AuthSignInPage = () => {
         isPending={isPending}
         onGoogleClick={handleGoogleSignIn} />
 
-      <GenericForm
+      <AuthForm
         form={form}
         onSubmit={handleSignIn}
         submitText={content.submit}

@@ -3,9 +3,9 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { GenericForm } from '@/components/common/form/form'
 import { Button } from '@/components/ui/button'
 import { useFormSubmit } from '@/hooks/use-form-submit'
+import { AuthForm } from '@/modules/authentication/components/form/auth-form'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
 import { verifyEmailSchema, type VerifyEmailSchema } from '@/modules/authentication/schemas/auth.schemas'
 import { authService } from '@/modules/authentication/services/auth.service'
@@ -51,7 +51,7 @@ const AuthVerifyEmailPage = () => {
 
   return (
     <>
-      <GenericForm
+      <AuthForm
         form={form}
         onSubmit={handleVerify}
         submitText={content.submit}
@@ -70,7 +70,7 @@ const AuthVerifyEmailPage = () => {
         variant='link'
         onClick={handleResendCode}
         disabled={isPending}>
-        Não recebeu o código? Reenviar
+        {content.resend}
       </Button>
     </>
   )

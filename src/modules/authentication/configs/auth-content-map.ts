@@ -44,6 +44,20 @@ export const AUTH_CONTENT_MAP: AuthContentMap = {
       link: ROUTE_PATHS.AUTH.SIGN_IN,
     },
   },
+  verifyEmail: {
+    title: 'Autenticação de dois fatores',
+    description: 'Enviamos um código de verificação para o seu e-mail. Digite o código do e-mail no campo abaixo.',
+    submit: 'Faça login na CodeCraft',
+    fields: {
+      otpLabel: 'Código',
+    },
+    resend: 'Reenviar código de verificação',
+    actions: {
+      question: 'E-mail incorreto?',
+      label: 'Inscreva-se',
+      link: ROUTE_PATHS.AUTH.SIGN_UP,
+    },
+  },
   forgotPassword: {
     title: 'Esqueceu sua senha?',
     description: 'Informe seu e-mail abaixo e enviaremos um link para redefinir sua senha.',
@@ -61,9 +75,9 @@ export const AUTH_CONTENT_MAP: AuthContentMap = {
     },
   },
   updatePassword: {
-    title: 'Redefinir sua senha',
+    title: 'Redefinição de senha',
     description: 'Informe sua nova senha abaixo para redefinir o acesso à sua conta.',
-    submit: 'Redefinir senha',
+    submit: 'Faça login na CodeCraft',
     fields: {
       passwordLabel: 'Nova senha',
       passwordPlaceholder: '••••••••',
@@ -74,19 +88,6 @@ export const AUTH_CONTENT_MAP: AuthContentMap = {
       question: 'Lembrou sua senha?',
       label: 'Entrar',
       link: ROUTE_PATHS.AUTH.SIGN_IN,
-    },
-  },
-  verifyEmail: {
-    title: 'Verifique seu e-mail',
-    description: 'Enviamos um código de verificação para o seu e-mail. Insira os 6 dígitos abaixo.',
-    submit: 'Verificar código',
-    fields: {
-      otpLabel: 'Código de verificação',
-    },
-    actions: {
-      question: 'E-mail incorreto?',
-      label: 'Voltar para cadastro',
-      link: ROUTE_PATHS.AUTH.SIGN_UP,
     },
   },
 }

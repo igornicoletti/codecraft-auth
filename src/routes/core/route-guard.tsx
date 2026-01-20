@@ -12,8 +12,14 @@ export interface RouteGuardProps {
 }
 
 export const RouteGuard = ({ guardType = 'public', children }: RouteGuardProps) => {
-  const { authStatus, isAuthenticated } = useAuth()
+  const context = useAuth()
   const location = useLocation()
+
+  if (!context) {
+    return <LoaderFour />
+  }
+
+  const { authStatus, isAuthenticated } = context
 
   if (authStatus === 'loading') {
     return <LoaderFour />

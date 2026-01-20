@@ -3,8 +3,8 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useOutletContext } from 'react-router-dom'
 
-import { GenericForm } from '@/components/common/form/form'
 import { useFormSubmit } from '@/hooks/use-form-submit'
+import { AuthForm } from '@/modules/authentication/components/form/auth-form'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
 import type { AuthLayoutContext } from '@/modules/authentication/layouts/auth.layout'
 import { forgotPasswordSchema, type ForgotPasswordSchema } from '@/modules/authentication/schemas/auth.schemas'
@@ -44,7 +44,7 @@ const AuthForgotPasswordPage = () => {
 
   return (
     <>
-      <GenericForm
+      <AuthForm
         form={form}
         onSubmit={handleForgotPassword}
         submitText={content.submit}

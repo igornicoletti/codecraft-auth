@@ -3,19 +3,19 @@ import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 import type { Control, ControllerRenderProps, FieldValues } from 'react-hook-form'
 
-import type { FormFieldConfig } from '@/components/common/form/types'
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 import { Textarea } from '@/components/ui/textarea'
+import type { FormFieldConfig } from '@/modules/authentication/types/auth-form.types'
 
 interface Props<T extends FieldValues> {
   control: Control<T>
   config: FormFieldConfig<T>
 }
 
-export const GenericFormField = <T extends FieldValues>({ control, config }: Props<T>) => {
+export const AuthFormField = <T extends FieldValues>({ control, config }: Props<T>) => {
   const [isVisible, setIsVisible] = useState(false)
   const fieldId = String(config.name)
 

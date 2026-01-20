@@ -21,11 +21,30 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
     component: AuthLayout,
     guard: 'guest',
     children: [
-      { index: true, component: () => <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace /> },
-      { path: ROUTE_PATHS.AUTH.SIGN_IN, component: AuthSignInPage, handle: { title: 'Entrar' } },
-      { path: ROUTE_PATHS.AUTH.SIGN_UP, component: AuthSignUpPage, handle: { title: 'Criar conta' } },
-      { path: ROUTE_PATHS.AUTH.VERIFY_EMAIL, component: AuthVerifyEmailPage, handle: { title: 'Verificar email' } },
-      { path: ROUTE_PATHS.AUTH.FORGOT_PASSWORD, component: AuthForgotPasswordPage, handle: { title: 'Recuperar senha' } },
+      {
+        index: true,
+        component: () => <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace />
+      },
+      {
+        path: ROUTE_PATHS.AUTH.SIGN_IN,
+        component: AuthSignInPage,
+        handle: { title: 'Entrar' }
+      },
+      {
+        path: ROUTE_PATHS.AUTH.SIGN_UP,
+        component: AuthSignUpPage,
+        handle: { title: 'Criar conta' }
+      },
+      {
+        path: ROUTE_PATHS.AUTH.VERIFY_EMAIL,
+        component: AuthVerifyEmailPage,
+        handle: { title: 'Verificar email' }
+      },
+      {
+        path: ROUTE_PATHS.AUTH.FORGOT_PASSWORD,
+        component: AuthForgotPasswordPage,
+        handle: { title: 'Recuperar senha' }
+      },
     ],
   },
   {
@@ -33,7 +52,11 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
     component: AuthLayout,
     guard: 'recovery',
     children: [
-      { index: true, component: AuthUpdatePasswordPage, handle: { title: 'Atualizar senha' } },
+      {
+        index: true,
+        component: AuthUpdatePasswordPage,
+        handle: { title: 'Atualizar senha' }
+      },
     ],
   },
   {
@@ -41,8 +64,18 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
     component: AppLayout,
     guard: 'private',
     children: [
-      { index: true, component: () => <Navigate to={ROUTE_PATHS.APP.DASHBOARD} replace /> },
-      { path: ROUTE_PATHS.APP.DASHBOARD, component: AppDashboardPage, handle: { title: 'Dashboard', icon: ChartLineUpIcon } },
+      {
+        index: true,
+        component: () => <Navigate to={ROUTE_PATHS.APP.DASHBOARD} replace />
+      },
+      {
+        path: ROUTE_PATHS.APP.DASHBOARD,
+        component: AppDashboardPage,
+        handle: {
+          title: 'Dashboard',
+          icon: ChartLineUpIcon
+        }
+      },
     ],
   },
 ]
