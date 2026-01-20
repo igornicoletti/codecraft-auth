@@ -1,3 +1,4 @@
+import { REGEXP_ONLY_DIGITS } from 'input-otp'
 import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 import type { Control, ControllerRenderProps, FieldValues } from 'react-hook-form'
@@ -6,6 +7,7 @@ import type { FormFieldConfig } from '@/components/common/form/types'
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group'
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 import { Textarea } from '@/components/ui/textarea'
 
 interface Props<T extends FieldValues> {
@@ -19,6 +21,25 @@ export const GenericFormField = <T extends FieldValues>({ control, config }: Pro
 
   const renderInput = (field: ControllerRenderProps<T>) => {
     switch (config.type) {
+      case 'otp':
+        return (
+          <InputOTP
+            {...field}
+            id={fieldId}
+            maxLength={6}
+            pattern={REGEXP_ONLY_DIGITS}
+            disabled={config.disabled}>
+            <InputOTPGroup className="justify-center flex-1 w-full">
+              <InputOTPSlot index={0} className="flex-1" />
+              <InputOTPSlot index={1} className="flex-1" />
+              <InputOTPSlot index={2} className="flex-1" />
+              <InputOTPSlot index={3} className="flex-1" />
+              <InputOTPSlot index={4} className="flex-1" />
+              <InputOTPSlot index={5} className="flex-1" />
+            </InputOTPGroup>
+          </InputOTP>
+        )
+
       case 'textarea':
         return (
           <Textarea

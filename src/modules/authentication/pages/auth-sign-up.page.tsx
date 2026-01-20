@@ -1,20 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { useOutletContext } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { GenericForm } from '@/components/common/form/form'
 import { useFormSubmit } from '@/hooks/use-form-submit'
 import { AuthSocialLogin } from '@/modules/authentication/components/auth-social-login'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
-import type { AuthLayoutContext } from '@/modules/authentication/layouts/auth.layout'
 import { signUpSchema, type SignUpSchema } from '@/modules/authentication/schemas/auth.schemas'
 import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthSignUpPage = () => {
-  const { submit, isPending, isSuccess } = useFormSubmit()
-  const { setTitle, setDescription } = useOutletContext<AuthLayoutContext>()
+  const { submit, isPending } = useFormSubmit()
+  const navigate = useNavigate()
 
   const content = AUTH_CONTENT_MAP.signUp
 
@@ -30,24 +28,16 @@ const AuthSignUpPage = () => {
   const handleSignUp = async (data: SignUpSchema) => {
     await submit(() => authService.signUp(data.email, data.password), {
       onSuccess: () => {
-        setTitle(content.customTitle ?? null)
-        setDescription(content.customDescription ?? null)
+        navigate(ROUTE_PATHS.AUTH.VERIFY_EMAIL, {
+          state: { email: data.email }
+        })
       }
     })
   }
 
-  useEffect(() => {
-    return () => {
-      setTitle(null)
-      setDescription(null)
-    }
-  }, [setTitle, setDescription])
-
   const handleGoogleSignUp = async () => {
     await submit(() => authService.signInWithGoogle(ROUTE_PATHS.APP.DASHBOARD))
   }
-
-  if (isSuccess) return null
 
   return (
     <>

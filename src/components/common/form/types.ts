@@ -7,6 +7,7 @@ export type FieldType =
   | 'number'
   | 'textarea'
   | 'date'
+  | 'otp'
 
 export interface FormFieldConfig<T extends FieldValues> {
   name: Path<T>

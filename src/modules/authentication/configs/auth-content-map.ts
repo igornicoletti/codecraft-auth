@@ -27,8 +27,6 @@ export const AUTH_CONTENT_MAP: AuthContentMap = {
   signUp: {
     title: 'Inscreva-se na CodeCraft',
     description: 'Explore os principais recursos da nossa plataforma.',
-    customTitle: 'Verifique seu e-mail',
-    customDescription: 'Um e-mail de verificação foi enviado para o endereço fornecido.',
     social: 'Inscreva-se com o Google',
     submit: 'Inscreva-se na CodeCraft',
     separator: 'ou',
@@ -76,6 +74,19 @@ export const AUTH_CONTENT_MAP: AuthContentMap = {
       question: 'Lembrou sua senha?',
       label: 'Entrar',
       link: ROUTE_PATHS.AUTH.SIGN_IN,
+    },
+  },
+  verifyEmail: {
+    title: 'Verifique seu e-mail',
+    description: 'Enviamos um código de verificação para o seu e-mail. Insira os 6 dígitos abaixo.',
+    submit: 'Verificar código',
+    fields: {
+      otpLabel: 'Código de verificação',
+    },
+    actions: {
+      question: 'E-mail incorreto?',
+      label: 'Voltar para cadastro',
+      link: ROUTE_PATHS.AUTH.SIGN_UP,
     },
   },
 }

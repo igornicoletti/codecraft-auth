@@ -1,7 +1,7 @@
 export interface AuthBaseContent {
   title: string
   description: string
-  submit: string
+  submit?: string
   customTitle?: string
   customDescription?: string
   actions?: {
@@ -39,6 +39,12 @@ export interface SignUpContent extends AuthBaseContent {
   }
 }
 
+export interface VerifyEmailContent extends AuthBaseContent {
+  fields: {
+    otpLabel: string
+  }
+}
+
 export interface ForgotPasswordContent extends AuthBaseContent {
   fields: {
     emailLabel: string
@@ -58,6 +64,7 @@ export interface UpdatePasswordContent extends AuthBaseContent {
 export interface AuthContentMap {
   signIn: SignInContent
   signUp: SignUpContent
+  verifyEmail: VerifyEmailContent
   forgotPassword: ForgotPasswordContent
   updatePassword: UpdatePasswordContent
 }

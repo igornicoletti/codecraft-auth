@@ -19,6 +19,7 @@ const AuthLayout = () => {
     const pathMap = [
       { path: ROUTE_PATHS.AUTH.SIGN_IN, content: AUTH_CONTENT_MAP.signIn },
       { path: ROUTE_PATHS.AUTH.SIGN_UP, content: AUTH_CONTENT_MAP.signUp },
+      { path: ROUTE_PATHS.AUTH.VERIFY_EMAIL, content: AUTH_CONTENT_MAP.verifyEmail },
       { path: ROUTE_PATHS.AUTH.FORGOT_PASSWORD, content: AUTH_CONTENT_MAP.forgotPassword },
       { path: ROUTE_PATHS.AUTH.UPDATE_PASSWORD, content: AUTH_CONTENT_MAP.updatePassword },
     ]

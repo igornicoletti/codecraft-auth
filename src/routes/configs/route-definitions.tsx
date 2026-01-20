@@ -8,8 +8,10 @@ import type { RouteConfig } from '@/routes/types/route.types'
 const AuthLayout = lazy(() => import('@/modules/authentication/layouts/auth.layout'))
 const AuthSignInPage = lazy(() => import('@/modules/authentication/pages/auth-sign-in.page'))
 const AuthSignUpPage = lazy(() => import('@/modules/authentication/pages/auth-sign-up.page'))
+const AuthVerifyEmailPage = lazy(() => import('@/modules/authentication/pages/auth-verify-email.page'))
 const AuthForgotPasswordPage = lazy(() => import('@/modules/authentication/pages/auth-forgot-password.page'))
 const AuthUpdatePasswordPage = lazy(() => import('@/modules/authentication/pages/auth-update-password.page'))
+
 const AppLayout = lazy(() => import('@/modules/application/layouts/app.layout'))
 const AppDashboardPage = lazy(() => import('@/modules/application/pages/app-dashboard.page'))
 
@@ -22,6 +24,7 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
       { index: true, component: () => <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace /> },
       { path: ROUTE_PATHS.AUTH.SIGN_IN, component: AuthSignInPage, handle: { title: 'Entrar' } },
       { path: ROUTE_PATHS.AUTH.SIGN_UP, component: AuthSignUpPage, handle: { title: 'Criar conta' } },
+      { path: ROUTE_PATHS.AUTH.VERIFY_EMAIL, component: AuthVerifyEmailPage, handle: { title: 'Verificar email' } },
       { path: ROUTE_PATHS.AUTH.FORGOT_PASSWORD, component: AuthForgotPasswordPage, handle: { title: 'Recuperar senha' } },
     ],
   },

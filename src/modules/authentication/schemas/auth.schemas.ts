@@ -44,6 +44,10 @@ const withConfirmPassword = <
   message: 'As senhas não correspondem.',
 })
 
+export const verifyEmailSchema = z.object({
+  token: z.string().min(6, 'O código deve ter 6 dígitos.').max(6),
+})
+
 export const signInSchema = z.object({
   email: emailField,
   password: passwordField,
@@ -66,5 +70,6 @@ export const updatePasswordSchema = withConfirmPassword(z.object({
 
 export type SignInSchema = z.infer<typeof signInSchema>
 export type SignUpSchema = z.infer<typeof signUpSchema>
+export type VerifyEmailSchema = z.infer<typeof verifyEmailSchema>
 export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>
 export type UpdatePasswordSchema = z.infer<typeof updatePasswordSchema>

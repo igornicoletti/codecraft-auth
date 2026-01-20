@@ -1,4 +1,4 @@
-import type { AuthError } from '@supabase/supabase-js'
+import type { AuthError, EmailOtpType } from '@supabase/supabase-js'
 
 import { supabase } from '@/lib/supabase'
 import type { SessionResult, SignInResult, SignUpResult, UserResult, VoidResult } from '@/modules/authentication/types/auth.types'
@@ -180,5 +180,80 @@ export const authService = {
     }
 
     return { success: true, data: data.session, error: null }
+  },
+
+  verifyOtp: async (email: string, token: string, type: EmailOtpType = 'signup'): Promise<SessionResult> => {
+    if (!email) {
+      return {
+        success: false,
+        data: null,
+        error: {
+          name: 'ValidationError',
+          message: 'Email is required for verification..',
+          status: 400
+        } as AuthError
+      }
+    }
+
+    const sanitizedEmail = sanitizeEmail(email)
+    const sanitizedToken = token?.trim() ?? ''
+
+    const { data, error } = await supabase.auth.verifyOtp({
+      email: sanitizedEmail,
+      token: sanitizedToken,
+      type,
+    })
+
+    if (error) return { success: false, data: null, error }
+
+    if (data.session) {
+      return { success: true, data: data.session, error: null }
+    }
+
+    const { data: sessionData } = await supabase.auth.getSession()
+
+    if (sessionData.session) {
+      return { success: true, data: sessionData.session, error: null }
+    }
+
+    return {
+      success: false,
+      data: null,
+      error: {
+        name: 'VerificationError',
+        message: 'Verification successful but session not established',
+        status: 200,
+      } as AuthError,
+    }
+  },
+
+  resendOtp: async (email: string, type: 'signup' | 'recovery' = 'signup'): Promise<VoidResult> => {
+    if (!email) {
+      return {
+        success: false,
+        data: null,
+        error: {
+          name: 'ValidationError',
+          message: 'Email not provided.',
+          status: 400
+        } as AuthError
+      }
+    }
+
+    const sanitizedEmail = sanitizeEmail(email)
+
+    if (type === 'recovery') {
+      const { error } = await supabase.auth.resetPasswordForEmail(sanitizedEmail)
+      if (error) return { success: false, data: null, error }
+      return { success: true, data: undefined, error: null }
+    }
+
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: sanitizedEmail,
+    })
+
+    if (error) return { success: false, data: null, error }
+    return { success: true, data: undefined, error: null }
   },
 }
