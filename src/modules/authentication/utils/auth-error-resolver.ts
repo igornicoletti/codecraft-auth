@@ -25,7 +25,7 @@ const toErrorMessage = (error: unknown): string => {
   try {
     return JSON.stringify(error)
   } catch {
-    return 'Unknown error'
+    return 'Erro desconhecido'
   }
 }
 
