@@ -9,8 +9,7 @@ import { useRouteMetadata } from '@/routes/hooks/use-route-metadata'
 
 const AppLayout = () => {
   const { breadcrumbs, navigation } = useRouteMetadata()
-  const authContext = useAuth()
-  const user = authContext?.user
+  const { user } = useAuth()
 
   const userData = {
     name: user?.user_metadata?.full_name ||
