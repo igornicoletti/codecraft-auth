@@ -10,48 +10,43 @@ import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthUpdatePasswordPage = () => {
   const { submit, isPending } = useFormSubmit()
-
   const content = AUTH_CONTENT_MAP.updatePassword
 
   const form = useForm<UpdatePasswordSchema>({
     resolver: zodResolver(updatePasswordSchema),
-    defaultValues: {
-      password: '',
-      confirmPassword: '',
-    },
+    defaultValues: { password: '', confirmPassword: '' },
   })
 
   const handleUpdatePassword = async (data: UpdatePasswordSchema) => {
     await submit(() => authService.updatePassword(data.password), {
       redirectTo: ROUTE_PATHS.APP.DASHBOARD,
+      successMessage: 'Senha atualizada com sucesso!'
     })
   }
 
   return (
-    <>
-      <AuthForm
-        form={form}
-        onSubmit={handleUpdatePassword}
-        submitText={content.submit}
-        isLoading={isPending}
-        fields={[
-          {
-            name: 'password',
-            label: content.fields.passwordLabel,
-            placeholder: content.fields.passwordPlaceholder,
-            type: 'password',
-            autoComplete: 'new-password',
-          },
-          {
-            name: 'confirmPassword',
-            label: content.fields.confirmPasswordLabel,
-            placeholder: content.fields.confirmPasswordPlaceholder,
-            type: 'password',
-            autoComplete: 'new-password',
-          },
-        ]}
-      />
-    </>
+    <AuthForm
+      form={form}
+      onSubmit={handleUpdatePassword}
+      submitText={content.submit}
+      isLoading={isPending}
+      fields={[
+        {
+          name: 'password',
+          label: content.fields.passwordLabel,
+          placeholder: content.fields.passwordPlaceholder,
+          type: 'password',
+          autoComplete: 'new-password',
+        },
+        {
+          name: 'confirmPassword',
+          label: content.fields.confirmPasswordLabel,
+          placeholder: content.fields.confirmPasswordPlaceholder,
+          type: 'password',
+          autoComplete: 'new-password',
+        },
+      ]}
+    />
   )
 }
 

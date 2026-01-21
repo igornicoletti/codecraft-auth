@@ -13,15 +13,11 @@ import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthSignInPage = () => {
   const { submit, isPending } = useFormSubmit()
-
   const content = AUTH_CONTENT_MAP.signIn
 
   const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    defaultValues: { email: '', password: '' },
   })
 
   const handleSignIn = async (data: SignInSchema) => {
@@ -40,7 +36,8 @@ const AuthSignInPage = () => {
         text={content.social}
         separator={content.separator}
         isPending={isPending}
-        onGoogleClick={handleGoogleSignIn} />
+        onGoogleClick={handleGoogleSignIn}
+      />
 
       <AuthForm
         form={form}
@@ -67,7 +64,7 @@ const AuthSignInPage = () => {
 
       <Button asChild variant='link'>
         <Link to={content.forgot.link}>
-          {content.forgot.question}
+          {content.forgot.text}
         </Link>
       </Button>
     </>

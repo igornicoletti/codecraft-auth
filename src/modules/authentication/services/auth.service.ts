@@ -1,38 +1,27 @@
 import { AuthError, type EmailOtpType } from '@supabase/supabase-js'
 
 import { supabase } from '@/lib/supabase'
-import type { SessionResult, SignInResult, SignUpResult, UserResult, VoidResult } from '@/modules/authentication/types/auth.types'
+import type { SessionResult, SignInResult, SignUpResult, VoidResult } from '@/modules/authentication/types/auth.types'
 
 const makeAuthError = (
   name: string,
   message: string,
-  status = 400,
-  code = 'custom_error'
+  status = 400
 ): AuthError => {
-  const error = new AuthError(message, status, code)
+  const error = new AuthError(message, status)
   error.name = name
   return error
 }
 
-const sanitizeEmail = (email: string): string => {
-  return email.trim().toLowerCase().replace(/[<>'"]/g, '')
-}
+const sanitizeEmail = (email: string): string => email.trim().toLowerCase()
 
-const sanitizeName = (name: string): string => {
-  return name.trim().replace(/[<>'"]/g, '')
-}
-
-const resolveRedirectUrl = (path: string): string | undefined => {
+const getRedirectUrl = (path: string): string | undefined => {
   if (typeof window === 'undefined') return undefined
   try {
     const url = new URL(path, window.location.origin)
-    if (url.origin !== window.location.origin) {
-      if (import.meta.env.DEV) console.warn('[Auth] Redirect URL origin mismatch')
-      return undefined
-    }
     return url.toString()
   } catch {
-    if (import.meta.env.DEV) console.error('[Auth] Invalid redirect URL')
+    if (import.meta.env.DEV) console.warn('[Auth] URL de redirecionamento inválida')
     return undefined
   }
 }
@@ -44,45 +33,29 @@ export const authService = {
     fullName?: string,
     redirectPath?: string
   ): Promise<SignUpResult> => {
-    const sanitizedEmail = sanitizeEmail(email)
-    const sanitizedName = fullName ? sanitizeName(fullName) : undefined
-
     const { data, error } = await supabase.auth.signUp({
-      email: sanitizedEmail,
+      email: sanitizeEmail(email),
       password,
       options: {
-        data: sanitizedName ? { full_name: sanitizedName } : undefined,
-        emailRedirectTo: redirectPath ? resolveRedirectUrl(redirectPath) : undefined,
+        data: fullName ? { full_name: fullName.trim() } : undefined,
+        emailRedirectTo: redirectPath ? getRedirectUrl(redirectPath) : undefined,
       },
     })
 
     if (error) return { success: false, data: null, error }
-    if (!data.user) {
-      return {
-        success: false,
-        data: null,
-        error: makeAuthError('SignUpError', 'User creation failed', 500),
-      }
-    }
+    if (!data.user) return { success: false, data: null, error: makeAuthError('SignUpError', 'Falha ao criar usuário', 500) }
 
     return { success: true, data: data.user, error: null }
   },
 
   signIn: async (email: string, password: string): Promise<SignInResult> => {
-    const sanitizedEmail = sanitizeEmail(email)
     const { data, error } = await supabase.auth.signInWithPassword({
-      email: sanitizedEmail,
+      email: sanitizeEmail(email),
       password,
     })
 
     if (error) return { success: false, data: null, error }
-    if (!data.session) {
-      return {
-        success: false,
-        data: null,
-        error: makeAuthError('SignInError', 'Session creation failed', 500),
-      }
-    }
+    if (!data.session) return { success: false, data: null, error: makeAuthError('SignInError', 'Sessão não criada', 500) }
 
     return { success: true, data: data.session, error: null }
   },
@@ -90,7 +63,7 @@ export const authService = {
   signInWithGoogle: async (redirectPath: string): Promise<VoidResult> => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: resolveRedirectUrl(redirectPath) },
+      options: { redirectTo: getRedirectUrl(redirectPath) },
     })
 
     if (error) return { success: false, data: null, error }
@@ -103,22 +76,11 @@ export const authService = {
     return { success: true, data: undefined, error: null }
   },
 
-  sendPasswordReset: async (
-    email: string,
-    redirectPath: string
-  ): Promise<VoidResult> => {
-    const sanitizedEmail = sanitizeEmail(email)
-    const redirectUrl = resolveRedirectUrl(redirectPath)
+  sendPasswordReset: async (email: string, redirectPath: string): Promise<VoidResult> => {
+    const redirectUrl = getRedirectUrl(redirectPath)
+    if (!redirectUrl) return { success: false, data: null, error: makeAuthError('InvalidRedirect', 'URL inválida', 400) }
 
-    if (!redirectUrl) {
-      return {
-        success: false,
-        data: null,
-        error: makeAuthError('InvalidRedirectError', 'Invalid redirect URL', 400),
-      }
-    }
-
-    const { error } = await supabase.auth.resetPasswordForEmail(sanitizedEmail, {
+    const { error } = await supabase.auth.resetPasswordForEmail(sanitizeEmail(email), {
       redirectTo: redirectUrl,
     })
 
@@ -135,70 +97,28 @@ export const authService = {
   getSession: async (): Promise<SessionResult> => {
     const { data, error } = await supabase.auth.getSession()
     if (error) return { success: false, data: null, error }
-
-    if (!data.session) {
-      return {
-        success: false,
-        data: null,
-        error: makeAuthError('AuthSessionMissingError', 'No active session', 401),
-      }
-    }
+    if (!data.session) return { success: false, data: null, error: makeAuthError('NoSession', 'Sem sessão ativa', 401) }
 
     return { success: true, data: data.session, error: null }
   },
 
-  verifyOtp: async (
-    email: string,
-    token: string,
-    type: EmailOtpType = 'signup'
-  ): Promise<SessionResult> => {
-    if (!email) {
-      return {
-        success: false,
-        data: null,
-        error: makeAuthError('ValidationError', 'Email is required for verification.', 400),
-      }
-    }
-
-    const sanitizedEmail = sanitizeEmail(email)
-    const sanitizedToken = token?.trim() ?? ''
+  verifyOtp: async (email: string, token: string, type: EmailOtpType = 'signup'): Promise<SessionResult> => {
     const { data, error } = await supabase.auth.verifyOtp({
-      email: sanitizedEmail,
-      token: sanitizedToken,
+      email: sanitizeEmail(email),
+      token: token.trim(),
       type,
     })
 
     if (error) return { success: false, data: null, error }
-
     if (data.session) return { success: true, data: data.session, error: null }
 
-    const { data: sessionData } = await supabase.auth.getSession()
-    if (sessionData.session)
-      return { success: true, data: sessionData.session, error: null }
+    const sessionCheck = await supabase.auth.getSession()
+    if (sessionCheck.data.session) return { success: true, data: sessionCheck.data.session, error: null }
 
-    return {
-      success: false,
-      data: null,
-      error: makeAuthError(
-        'VerificationError',
-        'Verification successful but session not established',
-        200
-      ),
-    }
+    return { success: false, data: null, error: makeAuthError('VerifyError', 'Verificação falhou', 400) }
   },
 
-  resendOtp: async (
-    email: string,
-    type: 'signup' | 'recovery' = 'signup'
-  ): Promise<VoidResult> => {
-    if (!email) {
-      return {
-        success: false,
-        data: null,
-        error: makeAuthError('ValidationError', 'Email not provided.', 400),
-      }
-    }
-
+  resendOtp: async (email: string, type: 'signup' | 'recovery' = 'signup'): Promise<VoidResult> => {
     const sanitizedEmail = sanitizeEmail(email)
 
     if (type === 'recovery') {
@@ -210,30 +130,5 @@ export const authService = {
     const { error } = await supabase.auth.resend({ type: 'signup', email: sanitizedEmail })
     if (error) return { success: false, data: null, error }
     return { success: true, data: undefined, error: null }
-  },
-
-  getCurrentUser: async (): Promise<UserResult> => {
-    const { data, error } = await supabase.auth.getUser()
-    if (error) return { success: false, data: null, error }
-    return { success: true, data: data.user, error: null }
-  },
-
-  refreshSession: async (): Promise<SessionResult> => {
-    const { data, error } = await supabase.auth.refreshSession()
-    if (error) return { success: false, data: null, error }
-
-    if (!data.session) {
-      return {
-        success: false,
-        data: null,
-        error: makeAuthError(
-          'AuthSessionRefreshError',
-          'Failed to refresh session',
-          401
-        ),
-      }
-    }
-
-    return { success: true, data: data.session, error: null }
   },
 }

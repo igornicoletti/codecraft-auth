@@ -1,65 +1,52 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { useOutletContext } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { useFormSubmit } from '@/hooks/use-form-submit'
 import { AuthForm } from '@/modules/authentication/components/form/auth-form'
 import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-map'
-import type { AuthLayoutContext } from '@/modules/authentication/layouts/auth.layout'
 import { forgotPasswordSchema, type ForgotPasswordSchema } from '@/modules/authentication/schemas/auth.schemas'
 import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthForgotPasswordPage = () => {
-  const { submit, isPending, isSuccess } = useFormSubmit()
-  const { setTitle, setDescription } = useOutletContext<AuthLayoutContext>()
-
+  const { submit, isPending } = useFormSubmit()
+  const navigate = useNavigate()
   const content = AUTH_CONTENT_MAP.forgotPassword
 
   const form = useForm<ForgotPasswordSchema>({
     resolver: zodResolver(forgotPasswordSchema),
-    defaultValues: {
-      email: '',
-    },
+    defaultValues: { email: '' },
   })
 
   const handleForgotPassword = async (data: ForgotPasswordSchema) => {
-    await submit(() => authService.sendPasswordReset(data.email, ROUTE_PATHS.AUTH.UPDATE_PASSWORD), {
+    // Usa 'recovery' para disparar o email de redefinição
+    await submit(() => authService.resendOtp(data.email, 'recovery'), {
       onSuccess: () => {
-        setTitle(content.customTitle ?? null)
-        setDescription(content.customDescription ?? null)
+        // Redireciona para verify passando o contexto de 'recovery'
+        navigate(ROUTE_PATHS.AUTH.VERIFY_EMAIL, {
+          state: { email: data.email, type: 'recovery' }
+        })
       }
     })
   }
 
-  useEffect(() => {
-    return () => {
-      setTitle(null)
-      setDescription(null)
-    }
-  }, [setTitle, setDescription])
-
-  if (isSuccess) return null
-
   return (
-    <>
-      <AuthForm
-        form={form}
-        onSubmit={handleForgotPassword}
-        submitText={content.submit}
-        isLoading={isPending}
-        fields={[
-          {
-            name: 'email',
-            label: content.fields.emailLabel,
-            placeholder: content.fields.emailPlaceholder,
-            type: 'email',
-            autoComplete: 'email',
-          },
-        ]}
-      />
-    </>
+    <AuthForm
+      form={form}
+      onSubmit={handleForgotPassword}
+      submitText={content.submit}
+      isLoading={isPending}
+      fields={[
+        {
+          name: 'email',
+          label: content.fields.emailLabel,
+          placeholder: content.fields.emailPlaceholder,
+          type: 'email',
+          autoComplete: 'email',
+        },
+      ]}
+    />
   )
 }
 

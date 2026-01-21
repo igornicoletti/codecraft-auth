@@ -1,6 +1,6 @@
 import { REGEXP_ONLY_DIGITS } from 'input-otp'
 import { Eye, EyeOff } from 'lucide-react'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import type { Control, ControllerRenderProps, FieldValues } from 'react-hook-form'
 
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -17,7 +17,8 @@ interface Props<T extends FieldValues> {
 
 export const AuthFormField = <T extends FieldValues>({ control, config }: Props<T>) => {
   const [isVisible, setIsVisible] = useState(false)
-  const fieldId = String(config.name)
+  const uniqueId = useId()
+  const fieldId = `${uniqueId}-${String(config.name)}`
 
   const renderInput = (field: ControllerRenderProps<T>) => {
     switch (config.type) {
@@ -29,13 +30,10 @@ export const AuthFormField = <T extends FieldValues>({ control, config }: Props<
             maxLength={6}
             pattern={REGEXP_ONLY_DIGITS}
             disabled={config.disabled}>
-            <InputOTPGroup className="justify-center flex-1 w-full">
-              <InputOTPSlot index={0} className="flex-1" />
-              <InputOTPSlot index={1} className="flex-1" />
-              <InputOTPSlot index={2} className="flex-1" />
-              <InputOTPSlot index={3} className="flex-1" />
-              <InputOTPSlot index={4} className="flex-1" />
-              <InputOTPSlot index={5} className="flex-1" />
+            <InputOTPGroup className="justify-center flex-1 w-full gap-2">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <InputOTPSlot key={index} index={index} className="flex-1 border-none" />
+              ))}
             </InputOTPGroup>
           </InputOTP>
         )
@@ -48,24 +46,26 @@ export const AuthFormField = <T extends FieldValues>({ control, config }: Props<
             placeholder={config.placeholder}
             disabled={config.disabled}
             autoComplete={config.autoComplete}
-            className='resize-none' />
+            className='resize-none min-h-24 border-none'
+          />
         )
 
       case 'password':
         return (
-          <InputGroup>
+          <InputGroup className='border-none'>
             <InputGroupInput
               {...field}
               id={fieldId}
               type={isVisible ? 'text' : 'password'}
               placeholder={config.placeholder}
               disabled={config.disabled}
-              autoComplete={config.autoComplete} />
+              autoComplete={config.autoComplete ?? 'current-password'}
+            />
             <InputGroupAddon align='inline-end'>
               <InputGroupButton
                 type='button'
-                variant='link'
-                onClick={() => setIsVisible((v) => !v)}
+                variant='ghost'
+                onClick={() => setIsVisible((prev) => !prev)}
                 aria-label={isVisible ? 'Ocultar senha' : 'Mostrar senha'}>
                 {isVisible ? <EyeOff /> : <Eye />}
               </InputGroupButton>
@@ -81,7 +81,9 @@ export const AuthFormField = <T extends FieldValues>({ control, config }: Props<
             type={config.type ?? 'text'}
             placeholder={config.placeholder}
             disabled={config.disabled}
-            autoComplete={config.autoComplete} />
+            autoComplete={config.autoComplete}
+            className='border-none'
+          />
         )
     }
   }
@@ -93,11 +95,13 @@ export const AuthFormField = <T extends FieldValues>({ control, config }: Props<
       render={({ field }) => (
         <FormItem>
           <FormLabel htmlFor={fieldId}>{config.label}</FormLabel>
-          <FormControl>{renderInput(field)}</FormControl>
+          <FormControl>
+            {renderInput(field)}
+          </FormControl>
           {config.description && (
             <FormDescription>{config.description}</FormDescription>
           )}
-          <FormMessage className='text-xs text-right' />
+          <FormMessage className='text-xs text-right font-medium' />
         </FormItem>
       )}
     />

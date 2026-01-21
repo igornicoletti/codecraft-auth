@@ -13,23 +13,18 @@ import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 const AuthSignUpPage = () => {
   const { submit, isPending } = useFormSubmit()
   const navigate = useNavigate()
-
   const content = AUTH_CONTENT_MAP.signUp
 
   const form = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-      confirmPassword: ''
-    },
+    defaultValues: { email: '', password: '', confirmPassword: '' },
   })
 
   const handleSignUp = async (data: SignUpSchema) => {
     await submit(() => authService.signUp(data.email, data.password), {
       onSuccess: () => {
         navigate(ROUTE_PATHS.AUTH.VERIFY_EMAIL, {
-          state: { email: data.email }
+          state: { email: data.email, type: 'signup' }
         })
       }
     })
@@ -45,7 +40,8 @@ const AuthSignUpPage = () => {
         text={content.social}
         separator={content.separator}
         isPending={isPending}
-        onGoogleClick={handleGoogleSignUp} />
+        onGoogleClick={handleGoogleSignUp}
+      />
 
       <AuthForm
         form={form}

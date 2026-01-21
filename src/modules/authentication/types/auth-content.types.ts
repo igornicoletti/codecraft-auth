@@ -2,10 +2,8 @@ export interface AuthBaseContent {
   title: string
   description: string
   submit?: string
-  customTitle?: string
-  customDescription?: string
   actions?: {
-    question: string
+    text: string
     label: string
     link: string
   }
@@ -21,7 +19,7 @@ export interface SignInContent extends AuthBaseContent {
     passwordPlaceholder?: string
   }
   forgot: {
-    question: string
+    text: string
     link: string
   }
 }

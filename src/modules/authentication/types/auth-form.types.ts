@@ -25,4 +25,5 @@ export interface FormProps<T extends FieldValues> {
   fields: FormFieldConfig<T>[]
   submitText?: string
   isLoading?: boolean
+  className?: string
 }

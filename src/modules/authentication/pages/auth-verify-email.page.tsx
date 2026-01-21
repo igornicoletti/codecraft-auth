@@ -10,20 +10,28 @@ import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-
 import { verifyEmailSchema, type VerifyEmailSchema } from '@/modules/authentication/schemas/auth.schemas'
 import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
+import type { EmailOtpType } from '@supabase/supabase-js'
+
+interface VerifyPageState {
+  email?: string
+  type?: EmailOtpType
+}
 
 const AuthVerifyEmailPage = () => {
   const { submit, isPending } = useFormSubmit()
   const location = useLocation()
   const navigate = useNavigate()
 
-  const email = location.state?.email as string
+  // Recupera estado da navegação anterior
+  const state = location.state as VerifyPageState
+  const email = state?.email
+  const type = state?.type ?? 'signup'
+
   const content = AUTH_CONTENT_MAP.verifyEmail
 
   const form = useForm<VerifyEmailSchema>({
     resolver: zodResolver(verifyEmailSchema),
-    defaultValues: {
-      token: '',
-    },
+    defaultValues: { token: '' },
   })
 
   useEffect(() => {
@@ -35,15 +43,23 @@ const AuthVerifyEmailPage = () => {
   const handleVerify = async (data: VerifyEmailSchema) => {
     if (!email) return
 
-    await submit(() => authService.verifyOtp(email, data.token, 'signup'), {
-      redirectTo: ROUTE_PATHS.APP.DASHBOARD,
+    await submit(() => authService.verifyOtp(email, data.token, type), {
+      onSuccess: () => {
+        if (type === 'recovery') {
+          navigate(ROUTE_PATHS.AUTH.UPDATE_PASSWORD, { replace: true })
+        } else {
+          navigate(ROUTE_PATHS.APP.DASHBOARD, { replace: true })
+        }
+      }
     })
   }
 
   const handleResendCode = async () => {
     if (!email) return
 
-    await submit(() => authService.resendOtp(email, 'signup'), {
+    const resendType = type === 'recovery' ? 'recovery' : 'signup'
+
+    await submit(() => authService.resendOtp(email, resendType), {
       successMessage: 'Novo código enviado para seu e-mail.',
       skipRateLimit: false,
     })
@@ -66,10 +82,7 @@ const AuthVerifyEmailPage = () => {
         ]}
       />
 
-      <Button
-        variant='link'
-        onClick={handleResendCode}
-        disabled={isPending}>
+      <Button variant='link' onClick={handleResendCode} disabled={isPending}>
         {content.resend}
       </Button>
     </>

@@ -1,18 +1,20 @@
+import type { Session, User } from '@supabase/supabase-js'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
 import { supabase } from '@/lib/supabase'
 import { authService } from '@/modules/authentication/services/auth.service'
 import type { AuthContextData, AuthStatus } from '@/modules/authentication/types/auth.types'
-import type { Session, User } from '@supabase/supabase-js'
 
 const AuthContext = createContext<AuthContextData | undefined>(undefined)
 
-const resolveAuthStatus = (session: Session | null): AuthStatus => {
-  if (!session) return 'anonymous'
+const getStatus = (isLoading: boolean, session: Session | null): AuthStatus => {
+  if (isLoading) return 'loading'
+  if (!session || !session.user) return 'anonymous'
 
   const { user } = session
-  if (user?.recovery_sent_at) return 'password_recovery'
-  if (!user?.email_confirmed_at) return 'email_unverified'
+  if (user.recovery_sent_at) return 'password_recovery'
+  if (!user.email_confirmed_at) return 'email_unverified'
+
   return 'authenticated'
 }
 
@@ -25,7 +27,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await authService.signOut()
     } catch (error) {
-      if (import.meta.env.DEV) console.error('[Auth] Sign out error:', error)
+      if (import.meta.env.DEV) console.error('[Auth] Erro ao sair:', error)
     } finally {
       setSession(null)
       setUser(null)
@@ -34,74 +36,59 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     let isMounted = true
-    let subscription: ReturnType<typeof supabase.auth.onAuthStateChange>['data']['subscription'] | null = null
-    let bootstrapCompleted = false
 
-    const setupAuthListener = () => {
-      const { data } = supabase.auth.onAuthStateChange((_event, currentSession) => {
-        if (!isMounted) return
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+      if (isMounted) {
         setSession(currentSession)
         setUser(currentSession?.user ?? null)
-        if (bootstrapCompleted && isLoading) setIsLoading(false)
-      })
-      subscription = data.subscription
-    }
+        setIsLoading(false)
+      }
+    })
 
-    const bootstrap = async () => {
+    const initAuth = async () => {
       try {
         const result = await authService.getSession()
-        if (!isMounted) return
-
-        if (result.success && result.data) {
-          setSession(result.data)
-          setUser(result.data.user)
-        } else {
-          setSession(null)
-          setUser(null)
+        if (isMounted) {
+          if (result.success) {
+            setSession(result.data)
+            setUser(result.data.user)
+          }
         }
       } catch (err) {
-        if (import.meta.env.DEV) console.error('[Auth] Bootstrap error:', err)
-        if (isMounted) {
-          setSession(null)
-          setUser(null)
-        }
+        if (import.meta.env.DEV) console.error('[Auth] Erro na inicialização:', err)
       } finally {
-        bootstrapCompleted = true
         if (isMounted) setIsLoading(false)
       }
     }
 
-    setupAuthListener()
-    void bootstrap()
+    void initAuth()
 
     return () => {
       isMounted = false
-      subscription?.unsubscribe()
+      subscription.unsubscribe()
     }
-  }, [isLoading])
+  }, [])
 
-  const authStatus = useMemo<AuthStatus>(
-    () => (isLoading ? 'loading' : resolveAuthStatus(session)),
-    [isLoading, session],
-  )
+  const authStatus = useMemo(() => getStatus(isLoading, session), [isLoading, session])
 
-  const value = useMemo<AuthContextData>(
-    () => ({
-      user,
-      session,
-      authStatus,
-      isLoading,
-      isAuthenticated: authStatus === 'authenticated',
-      isEmailVerified: authStatus === 'authenticated',
-      isPasswordRecovery: authStatus === 'password_recovery',
-      signOut,
-    }),
-    [user, session, authStatus, isLoading, signOut],
-  )
+  const contextValue = useMemo<AuthContextData>(() => ({
+    user,
+    session,
+    authStatus,
+    isLoading,
+    isAuthenticated: authStatus === 'authenticated',
+    isEmailVerified: authStatus === 'authenticated',
+    isPasswordRecovery: authStatus === 'password_recovery',
+    signOut,
+  }), [user, session, authStatus, isLoading, signOut])
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => {
-  return useContext(AuthContext)
+  const context = useContext(AuthContext)
+  if (context === undefined) {
+    throw new Error('useAuth deve ser usado dentro de um AuthProvider')
+  }
+  return context
 }
