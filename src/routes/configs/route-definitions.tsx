@@ -1,7 +1,7 @@
-import { ChartLineUpIcon } from '@phosphor-icons/react'
 import { lazy } from 'react'
 import { Navigate } from 'react-router-dom'
 
+import { ROUTE_METADATA } from '@/routes/configs/route-metadata'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 import type { RouteConfig } from '@/routes/types/route.types'
 
@@ -23,27 +23,27 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
     children: [
       {
         index: true,
-        component: () => <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace />
+        component: () => <Navigate to={ROUTE_PATHS.AUTH.SIGN_IN} replace />,
       },
       {
         path: ROUTE_PATHS.AUTH.SIGN_IN,
         component: AuthSignInPage,
-        handle: { title: 'Entrar' }
+        handle: ROUTE_METADATA[ROUTE_PATHS.AUTH.SIGN_IN],
       },
       {
         path: ROUTE_PATHS.AUTH.SIGN_UP,
         component: AuthSignUpPage,
-        handle: { title: 'Criar conta' }
-      },
-      {
-        path: ROUTE_PATHS.AUTH.VERIFY_EMAIL,
-        component: AuthVerifyEmailPage,
-        handle: { title: 'Verificar email' }
+        handle: ROUTE_METADATA[ROUTE_PATHS.AUTH.SIGN_UP],
       },
       {
         path: ROUTE_PATHS.AUTH.FORGOT_PASSWORD,
         component: AuthForgotPasswordPage,
-        handle: { title: 'Recuperar senha' }
+        handle: ROUTE_METADATA[ROUTE_PATHS.AUTH.FORGOT_PASSWORD],
+      },
+      {
+        path: ROUTE_PATHS.AUTH.VERIFY_EMAIL,
+        component: AuthVerifyEmailPage,
+        handle: ROUTE_METADATA[ROUTE_PATHS.AUTH.VERIFY_EMAIL],
       },
     ],
   },
@@ -55,7 +55,7 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
       {
         index: true,
         component: AuthUpdatePasswordPage,
-        handle: { title: 'Atualizar senha' }
+        handle: ROUTE_METADATA[ROUTE_PATHS.AUTH.UPDATE_PASSWORD],
       },
     ],
   },
@@ -66,15 +66,12 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
     children: [
       {
         index: true,
-        component: () => <Navigate to={ROUTE_PATHS.APP.DASHBOARD} replace />
+        component: () => <Navigate to={ROUTE_PATHS.APP.DASHBOARD} replace />,
       },
       {
         path: ROUTE_PATHS.APP.DASHBOARD,
         component: AppDashboardPage,
-        handle: {
-          title: 'Dashboard',
-          icon: ChartLineUpIcon
-        }
+        handle: ROUTE_METADATA[ROUTE_PATHS.APP.DASHBOARD],
       },
     ],
   },

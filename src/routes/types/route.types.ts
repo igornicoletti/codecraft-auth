@@ -9,6 +9,7 @@ export interface RouteHandle {
   hideInSidebar?: boolean
   hideInBreadcrumbs?: boolean
   roles?: string[]
+  description?: string
 }
 
 export interface RouteConfig {

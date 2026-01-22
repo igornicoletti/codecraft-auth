@@ -25,7 +25,7 @@ export const AUTH_CONTENT_MAP: AuthContentMap = {
     },
   },
   signUp: {
-    title: 'Crie sua conta',
+    title: 'Criar conta na CodeCraft',
     description: 'Comece sua jornada explorando nossos principais recursos.',
     social: 'Inscreva-se com o Google',
     submit: 'Criar conta',
