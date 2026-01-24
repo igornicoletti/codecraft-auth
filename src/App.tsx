@@ -9,7 +9,7 @@ export const App = () => (
   <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
     <AuthProvider>
       <RouterProvider router={router} />
-      <Toaster position='top-right' />
+      <Toaster />
     </AuthProvider>
   </ThemeProvider>
 )

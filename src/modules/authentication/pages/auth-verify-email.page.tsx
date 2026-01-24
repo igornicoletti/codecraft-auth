@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { EmailOtpType } from '@supabase/supabase-js'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -10,7 +11,6 @@ import { AUTH_CONTENT_MAP } from '@/modules/authentication/configs/auth-content-
 import { verifyEmailSchema, type VerifyEmailSchema } from '@/modules/authentication/schemas/auth.schemas'
 import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
-import type { EmailOtpType } from '@supabase/supabase-js'
 
 interface VerifyPageState {
   email?: string
@@ -18,12 +18,12 @@ interface VerifyPageState {
 }
 
 const AuthVerifyEmailPage = () => {
-  const { submit, isPending } = useFormSubmit()
+  const { submit, isPending } = useFormSubmit({ uniqueId: 'auth-verify-email' })
   const location = useLocation()
   const navigate = useNavigate()
 
   // Recupera estado da navegação anterior
-  const state = location.state as VerifyPageState
+  const state = location.state as VerifyPageState | null
   const email = state?.email
   const type = state?.type ?? 'signup'
 
@@ -56,14 +56,15 @@ const AuthVerifyEmailPage = () => {
 
   const handleResendCode = async () => {
     if (!email) return
-
     const resendType = type === 'recovery' ? 'recovery' : 'signup'
 
     await submit(() => authService.resendOtp(email, resendType), {
-      successMessage: 'Novo código enviado para seu e-mail.',
+      successMessage: 'Se o e-mail existir, um novo código foi enviado.',
       skipRateLimit: false,
     })
   }
+
+  if (!email) return null
 
   return (
     <>
@@ -82,9 +83,16 @@ const AuthVerifyEmailPage = () => {
         ]}
       />
 
-      <Button variant='link' onClick={handleResendCode} disabled={isPending}>
-        {content.resend}
-      </Button>
+      <div className='text-sm text-muted-foreground text-center'>
+        <span>{content.resend.text}{' '}</span>
+        <Button
+          variant='link'
+          className='p-0 h-auto'
+          onClick={handleResendCode}
+          disabled={isPending}>
+          {content.resend.label}
+        </Button>
+      </div>
     </>
   )
 }

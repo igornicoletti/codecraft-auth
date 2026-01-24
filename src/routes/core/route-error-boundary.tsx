@@ -23,6 +23,7 @@ export class RouteErrorBoundary extends Component<RouteErrorBoundaryProps, Route
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // Em produção, envie isso para um serviço de log (Sentry, LogRocket, etc)
     console.error('[RouteErrorBoundary] Caught error:', error, errorInfo)
   }
 
@@ -36,11 +37,14 @@ export class RouteErrorBoundary extends Component<RouteErrorBoundaryProps, Route
         return this.props.fallback
       }
 
+      // Verificação de segurança: Stack Trace apenas em ambiente de desenvolvimento explícito
+      const isDevMode = import.meta.env.MODE === 'development'
+
       return (
         <main className='flex min-h-svh flex-col p-6'>
           <div className='flex flex-1 items-center justify-center'>
             <div className='w-full max-w-7xl'>
-              {import.meta.env.DEV && this.state.error && (
+              {isDevMode && this.state.error && (
                 <ScrollArea>
                   <pre className='text-sm text-muted-foreground'>
                     <code>{this.state.error.stack}</code>

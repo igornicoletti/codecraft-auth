@@ -9,7 +9,7 @@ import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthUpdatePasswordPage = () => {
-  const { submit, isPending } = useFormSubmit()
+  const { submit, isPending } = useFormSubmit({ uniqueId: 'auth-update-password' })
   const content = AUTH_CONTENT_MAP.updatePassword
 
   const form = useForm<UpdatePasswordSchema>({
@@ -20,7 +20,11 @@ const AuthUpdatePasswordPage = () => {
   const handleUpdatePassword = async (data: UpdatePasswordSchema) => {
     await submit(() => authService.updatePassword(data.password), {
       redirectTo: ROUTE_PATHS.APP.DASHBOARD,
-      successMessage: 'Senha atualizada com sucesso!'
+      successMessage: 'Sua senha foi atualizada com segurança!',
+      onError: () => {
+        form.resetField('password')
+        form.resetField('confirmPassword')
+      }
     })
   }
 

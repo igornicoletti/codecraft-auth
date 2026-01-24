@@ -3,6 +3,16 @@ import { AuthError, type EmailOtpType } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import type { SessionResult, SignInResult, SignUpResult, VoidResult } from '@/modules/authentication/types/auth.types'
 
+// Utilitário para sanitização básica contra XSS
+const escapeHtml = (unsafe: string): string => {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 const makeAuthError = (
   name: string,
   message: string,
@@ -33,11 +43,14 @@ export const authService = {
     fullName?: string,
     redirectPath?: string
   ): Promise<SignUpResult> => {
+    // Sanitização de XSS no Input
+    const sanitizedFullName = fullName ? escapeHtml(fullName.trim()) : undefined
+
     const { data, error } = await supabase.auth.signUp({
       email: sanitizeEmail(email),
       password,
       options: {
-        data: fullName ? { full_name: fullName.trim() } : undefined,
+        data: sanitizedFullName ? { full_name: sanitizedFullName } : undefined,
         emailRedirectTo: redirectPath ? getRedirectUrl(redirectPath) : undefined,
       },
     })
@@ -84,7 +97,15 @@ export const authService = {
       redirectTo: redirectUrl,
     })
 
-    if (error) return { success: false, data: null, error }
+    // Prevenção de Enumeração de Usuários: Retorna sucesso mesmo se falhar por "user not found"
+    if (error) {
+      // Supabase pode retornar erros diferentes dependendo da config, mas geralmente expõe se o user não existe
+      // Aqui engolimos o erro para proteger a privacidade
+      console.warn('[Auth] Erro suprimido na recuperação:', error.message)
+      // Retornamos sucesso falso-positivo
+      return { success: true, data: undefined, error: null }
+    }
+
     return { success: true, data: undefined, error: null }
   },
 
@@ -122,13 +143,19 @@ export const authService = {
     const sanitizedEmail = sanitizeEmail(email)
 
     if (type === 'recovery') {
-      const { error } = await supabase.auth.resetPasswordForEmail(sanitizedEmail)
-      if (error) return { success: false, data: null, error }
-      return { success: true, data: undefined, error: null }
+      return authService.sendPasswordReset(sanitizedEmail, '/auth/update-password')
     }
 
     const { error } = await supabase.auth.resend({ type: 'signup', email: sanitizedEmail })
-    if (error) return { success: false, data: null, error }
+
+    // Prevenção de Enumeração de Usuários
+    if (error) {
+      // Log apenas interno (não mostrar na UI)
+      console.warn('[Auth] Resend OTP falhou (seguro):', error.message)
+      // Retorna sucesso para não revelar se o email existe ou não
+      return { success: true, data: undefined, error: null }
+    }
+
     return { success: true, data: undefined, error: null }
   },
 }

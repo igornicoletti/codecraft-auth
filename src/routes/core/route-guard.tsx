@@ -1,6 +1,7 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
+import { Button } from '@/components/ui/button'
 import { LoaderFour } from '@/components/ui/loader'
 import { useAuth } from '@/modules/authentication/contexts/auth.context'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
@@ -14,6 +15,40 @@ export interface RouteGuardProps {
 export const RouteGuard = ({ guardType = 'public', children }: RouteGuardProps) => {
   const { authStatus, isAuthenticated } = useAuth()
   const location = useLocation()
+  const [isTimeout, setIsTimeout] = useState(false)
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>
+
+    if (authStatus === 'loading') {
+      timer = setTimeout(() => {
+        setIsTimeout(true)
+      }, 10000)
+    }
+
+    return () => clearTimeout(timer)
+  }, [authStatus])
+
+  if (isTimeout) {
+    return (
+      <main className='flex min-h-svh flex-col p-6'>
+        <div className='flex flex-1 items-center justify-center'>
+          <h1 className='text-nowrap'>Verifique sua conexão</h1>
+          <div className='ml-4 pl-4 border-l-2'>
+            <p className='text-sm text-muted-foreground'>
+              O carregamento está demorando muito.{' '}
+              <Button
+                variant='link'
+                className='p-0 h-auto'
+                onClick={() => window.location.reload()}>
+                Recarregar página
+              </Button>
+            </p>
+          </div>
+        </div>
+      </main>
+    )
+  }
 
   if (authStatus === 'loading') {
     return <LoaderFour />

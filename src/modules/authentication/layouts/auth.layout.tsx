@@ -41,14 +41,14 @@ const AuthLayout = () => {
             </CardContent>
             {content.actions && (
               <CardFooter>
-                <p className='text-sm text-muted-foreground w-full text-center'>
-                  {content.actions.text}{' '}
+                <div className='text-sm text-muted-foreground text-center'>
+                  <span>{content.actions.text}{' '}</span>
                   <Link
                     to={content.actions.link}
                     className='text-primary font-medium underline-offset-4 hover:underline transition-all'>
                     {content.actions.label}
                   </Link>
-                </p>
+                </div>
               </CardFooter>
             )}
           </Card>

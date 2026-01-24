@@ -38,7 +38,10 @@ export interface SignUpContent extends AuthBaseContent {
 }
 
 export interface VerifyEmailContent extends AuthBaseContent {
-  resend: string
+  resend: {
+    text: string
+    label: string
+  }
   fields: {
     otpLabel: string
   }

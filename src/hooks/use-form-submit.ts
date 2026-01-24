@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { useRateLimit } from '@/hooks/use-rate-limit'
@@ -18,16 +18,27 @@ export interface SubmitOptions<T> {
   skipRateLimit?: boolean
 }
 
-export const useFormSubmit = <T = unknown>() => {
+interface UseFormSubmitConfig {
+  uniqueId?: string
+}
+
+export const useFormSubmit = <T = unknown>(config?: UseFormSubmitConfig) => {
   const [isPending, setIsPending] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+
   const navigate = useNavigate()
+  const location = useLocation() // Usado para gerar ID único baseado na rota
   const isMountedRef = useRef(true)
+
+  // Gera um ID único se não for informado, baseado na rota atual (ex: /auth/login)
+  // Isso impede que tentativas falhas no login bloqueiem o cadastro
+  const rateLimitId = config?.uniqueId ?? `form-submit-${location.pathname}`
 
   const { checkRateLimit, recordAttempt, reset } = useRateLimit({
     maxAttempts: 5,
-    windowMs: 60000,
-    blockDurationMs: 300000,
+    windowMs: 60000, // 1 minuto
+    blockDurationMs: 300000, // 5 minutos de bloqueio
+    uniqueId: rateLimitId,
   })
 
   useEffect(() => {
@@ -41,6 +52,7 @@ export const useFormSubmit = <T = unknown>() => {
   const submit = useCallback(async (action: () => Promise<ServiceResponse<T>>, options?: SubmitOptions<T>): Promise<ServiceResponse<T> | undefined> => {
     if (!isMountedRef.current) return
 
+    // Verifica Rate Limit antes de executar
     if (!options?.skipRateLimit) {
       const rateLimitStatus = checkRateLimit()
 
@@ -71,6 +83,7 @@ export const useFormSubmit = <T = unknown>() => {
       if (!isMountedRef.current) return result
 
       if (!result.success) {
+        // Registra falha no rate limit
         if (!options?.skipRateLimit) {
           recordAttempt()
         }
@@ -81,6 +94,7 @@ export const useFormSubmit = <T = unknown>() => {
         return result
       }
 
+      // Sucesso: Limpa o rate limit para não punir usuário legítimo
       if (!options?.skipRateLimit) {
         reset()
       }
@@ -104,6 +118,7 @@ export const useFormSubmit = <T = unknown>() => {
         console.error('[FormSubmit] Critical Error:', error)
       }
 
+      // Erro não tratado também conta como tentativa falha
       if (!options?.skipRateLimit) {
         recordAttempt()
       }

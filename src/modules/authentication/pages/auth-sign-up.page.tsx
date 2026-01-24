@@ -11,7 +11,7 @@ import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthSignUpPage = () => {
-  const { submit, isPending } = useFormSubmit()
+  const { submit, isPending } = useFormSubmit({ uniqueId: 'auth-sign-up' })
   const navigate = useNavigate()
   const content = AUTH_CONTENT_MAP.signUp
 
@@ -26,12 +26,18 @@ const AuthSignUpPage = () => {
         navigate(ROUTE_PATHS.AUTH.VERIFY_EMAIL, {
           state: { email: data.email, type: 'signup' }
         })
+      },
+      onError: () => {
+        form.resetField('password')
+        form.resetField('confirmPassword')
       }
     })
   }
 
   const handleGoogleSignUp = async () => {
-    await submit(() => authService.signInWithGoogle(ROUTE_PATHS.APP.DASHBOARD))
+    await submit(() => authService.signInWithGoogle(ROUTE_PATHS.APP.DASHBOARD), {
+      skipRateLimit: true
+    })
   }
 
   return (

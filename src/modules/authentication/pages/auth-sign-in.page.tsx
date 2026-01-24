@@ -12,7 +12,7 @@ import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthSignInPage = () => {
-  const { submit, isPending } = useFormSubmit()
+  const { submit, isPending } = useFormSubmit({ uniqueId: 'auth-sign-in' })
   const content = AUTH_CONTENT_MAP.signIn
 
   const form = useForm<SignInSchema>({
@@ -22,12 +22,17 @@ const AuthSignInPage = () => {
 
   const handleSignIn = async (data: SignInSchema) => {
     await submit(() => authService.signIn(data.email, data.password), {
-      redirectTo: ROUTE_PATHS.APP.DASHBOARD
+      redirectTo: ROUTE_PATHS.APP.DASHBOARD,
+      onError: () => {
+        form.resetField('password')
+      }
     })
   }
 
   const handleGoogleSignIn = async () => {
-    await submit(() => authService.signInWithGoogle(ROUTE_PATHS.APP.DASHBOARD))
+    await submit(() => authService.signInWithGoogle(ROUTE_PATHS.APP.DASHBOARD), {
+      skipRateLimit: true
+    })
   }
 
   return (

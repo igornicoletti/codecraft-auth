@@ -10,7 +10,7 @@ import { authService } from '@/modules/authentication/services/auth.service'
 import { ROUTE_PATHS } from '@/routes/configs/route-paths'
 
 const AuthForgotPasswordPage = () => {
-  const { submit, isPending } = useFormSubmit()
+  const { submit, isPending } = useFormSubmit({ uniqueId: 'auth-forgot-password' })
   const navigate = useNavigate()
   const content = AUTH_CONTENT_MAP.forgotPassword
 
@@ -20,14 +20,13 @@ const AuthForgotPasswordPage = () => {
   })
 
   const handleForgotPassword = async (data: ForgotPasswordSchema) => {
-    // Usa 'recovery' para disparar o email de redefinição
     await submit(() => authService.resendOtp(data.email, 'recovery'), {
       onSuccess: () => {
-        // Redireciona para verify passando o contexto de 'recovery'
         navigate(ROUTE_PATHS.AUTH.VERIFY_EMAIL, {
           state: { email: data.email, type: 'recovery' }
         })
-      }
+      },
+      successMessage: 'Verifique sua caixa de entrada.'
     })
   }
 
